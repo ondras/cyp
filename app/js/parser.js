@@ -1,5 +1,4 @@
 export function linesToStruct(lines) {
-	lines.pop(); // "OK"
 	let result = {};
 	lines.forEach(line => {
 		let cindex = line.indexOf(":");

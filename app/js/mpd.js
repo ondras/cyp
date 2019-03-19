@@ -24,27 +24,33 @@ function onClose(e) {
 
 function processQueue() {
 	if (pendingResolve || commandQueue.length == 0) { return; }
-	let cmd = commandQueue.shift();
+	let {cmd, resolve} = commandQueue.shift();
+	pendingResolve = resolve;
 	if (cmd instanceof Array) { cmd = ["command_list_begin", ...cmd, "command_list_end"].join("\n"); }
 	ws.send(cmd);
 }
 
-export async function command(cmd) {
-	commandQueue.push(cmd);
-	processQueue();
+export function escape(str) {
+	return str.replace(/(['"\\])/g, "\\$1");
+}
 
-	return new Promise(resolve => pendingResolve = resolve);
+export async function command(cmd) {
+	return new Promise(resolve => {
+		commandQueue.push({cmd, resolve});
+		processQueue();
+	});
 }
 
 export async function getStatus() {
 	let lines = await command(["status", "currentsong"]);
+	lines.pop(); // "OK"
 	return parser.linesToStruct(lines);
 }
 
 export async function init() {
 	return new Promise((resolve, reject) => {
 		try {
-			ws = new WebSocket("ws://localhost:8080?server=0:6600");
+			ws = new WebSocket("ws://localhost:8080?server=raspberrypi.local");
 		} catch (e) { reject(e); }
 		pendingResolve = resolve;
 

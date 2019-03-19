@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+header nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+}
+header nav ul li {
+  text-align: center;
+  flex-grow: 1;
+  line-height: 40px;
+}
+header nav ul li:hover {
+  background-color: red;
+}
+main {
+  flex-grow: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+footer {
+  flex-basis: 40px;
+}
