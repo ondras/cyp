@@ -2,12 +2,18 @@ import * as parser from "./parser.js";
 
 let ws;
 let commandQueue = [];
-let pendingResolve;
+let current;
 
 function onMessage(e) {
-	if (pendingResolve) {
-		pendingResolve(JSON.parse(e.data)); // FIXME tady test na ACK
-		pendingResolve = null;
+	if (current) {
+		let lines = JSON.parse(e.data);
+		let last = lines.pop();
+		if (last.startsWith("OK")) {
+			current.resolve(lines);
+		} else {
+			current.reject(last);
+		}
+		current = null;
 	}
 	processQueue();
 }
@@ -23,11 +29,9 @@ function onClose(e) {
 }
 
 function processQueue() {
-	if (pendingResolve || commandQueue.length == 0) { return; }
-	let {cmd, resolve} = commandQueue.shift();
-	pendingResolve = resolve;
-	if (cmd instanceof Array) { cmd = ["command_list_begin", ...cmd, "command_list_end"].join("\n"); }
-	ws.send(cmd);
+	if (current || commandQueue.length == 0) { return; }
+	current = commandQueue.shift();
+	ws.send(current.cmd);
 }
 
 export function escape(str) {
@@ -35,24 +39,30 @@ export function escape(str) {
 }
 
 export async function command(cmd) {
-	return new Promise(resolve => {
-		commandQueue.push({cmd, resolve});
+	if (cmd instanceof Array) { cmd = ["command_list_begin", ...cmd, "command_list_end"].join("\n"); }
+
+	return new Promise((resolve, reject) => {
+		commandQueue.push({cmd, resolve, reject});
 		processQueue();
 	});
 }
 
-export async function getStatus() {
+export async function commandAndStatus(cmd) {
+	let lines = await command([cmd, "status", "currentsong"]);
+	return parser.linesToStruct(lines);
+}
+
+export async function status() {
 	let lines = await command(["status", "currentsong"]);
-	lines.pop(); // "OK"
 	return parser.linesToStruct(lines);
 }
 
 export async function init() {
 	return new Promise((resolve, reject) => {
 		try {
-			ws = new WebSocket("ws://localhost:8080?server=raspberrypi.local");
+			ws = new WebSocket("ws://localhost:8080");
 		} catch (e) { reject(e); }
-		pendingResolve = resolve;
+		current = {resolve, reject};
 
 		ws.addEventListener("error", onError);
 		ws.addEventListener("message", onMessage);

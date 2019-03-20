@@ -10,8 +10,6 @@ async function getImageData(songUrl) {
 	while (1) {
 		let params = ["albumart", `"${mpd.escape(songUrl)}"`, offset];
 		let lines = await mpd.command(params.join(" "));
-		if (lines.length == 1) { return null; }
-
 		data = data.concat(lines[2]);
 		let metadata = parser.linesToStruct(lines.slice(0, 2));
 		if (data.length >= Number(metadata["size"])) { return data; }
@@ -38,14 +36,27 @@ async function resize(image) {
 	return new Promise(resolve => canvas.toBlob(resolve));
 }
 
-export async function get(songUrl) {
-	if (songUrl in cache) { return cache[songUrl]; }
+export async function get(artist, album, songUrl = null) {
+	let key = `${artist}-${album}`;
+	if (key in cache) { return cache[key]; }
 
-	let data = await getImageData(songUrl);
-	let bytes = new Uint8Array(data);
-	let image = await bytesToImage(bytes);
-	let blob = await resize(image);
-	let url = URL.createObjectURL(blob);
-	cache[songUrl] = url;
-	return url;
+	if (!songUrl) { return null; }
+
+	// promise to be returned in the meantime
+	let resolve;
+	let promise = new Promise(res => resolve = res);
+	cache[key] = promise;
+
+	try {
+		let data = await getImageData(songUrl);
+		let bytes = new Uint8Array(data);
+		let image = await bytesToImage(bytes);
+		let blob = await resize(image);
+		let url = URL.createObjectURL(blob);
+		cache[key] = url;
+		resolve(url);
+	} catch (e) {
+		cache[key] = null;
+	}
+	return cache[key];
 }
