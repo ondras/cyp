@@ -1,0 +1,6 @@
+#player {
+	&:not([data-state=play]) .pause { display: none; }
+	&[data-state=play] .play { display: none; }
+
+	&:not(.random) .random, &:not(.repeat) .repeat { opacity: 0.5; }
+}
