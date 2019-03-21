@@ -3,6 +3,16 @@ import * as parser from "./parser.js";
 
 let cache = {};
 const SIZE = 64;
+const MIME = "image/jpeg";
+const STORAGE_PREFIX = `art-${SIZE}` ;
+
+function store(key, data) {
+	localStorage.setItem(`${STORAGE_PREFIX}-${key}`, data);
+}
+
+function load(key) {
+	return localStorage.getItem(`${STORAGE_PREFIX}-${key}`);
+}
 
 async function getImageData(songUrl) {
 	let data = [];
@@ -26,19 +36,24 @@ async function bytesToImage(bytes) {
 	});
 }
 
-async function resize(image) {
+function resize(image) {
 	let canvas = document.createElement("canvas");
 	canvas.width = SIZE;
 	canvas.height = SIZE;
 	let ctx = canvas.getContext("2d");
 	ctx.drawImage(image, 0, 0, SIZE, SIZE);
-
-	return new Promise(resolve => canvas.toBlob(resolve));
+	return canvas;
 }
 
 export async function get(artist, album, songUrl = null) {
 	let key = `${artist}-${album}`;
 	if (key in cache) { return cache[key]; }
+
+	let loaded = await load(key);
+	if (loaded) {
+		cache[key] = loaded;
+		return loaded;
+	}
 
 	if (!songUrl) { return null; }
 
@@ -51,8 +66,8 @@ export async function get(artist, album, songUrl = null) {
 		let data = await getImageData(songUrl);
 		let bytes = new Uint8Array(data);
 		let image = await bytesToImage(bytes);
-		let blob = await resize(image);
-		let url = URL.createObjectURL(blob);
+		let url = resize(image).toDataURL(MIME);
+		store(key, url);
 		cache[key] = url;
 		resolve(url);
 	} catch (e) {
