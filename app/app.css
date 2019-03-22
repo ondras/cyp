@@ -24,13 +24,19 @@ nav ul li {
 nav ul li:hover {
   background-color: red;
 }
+nav ul li.active {
+  background-color: green;
+}
 #player:not([data-state=play]) .pause {
   display: none;
 }
 #player[data-state=play] .play {
   display: none;
 }
-#player:not(.random) .random,
-#player:not(.repeat) .repeat {
+#player:not([data-flags~=random]) .random,
+#player:not([data-flags~=repeat]) .repeat {
   opacity: 0.5;
+}
+#queue .current {
+  font-weight: bold;
 }

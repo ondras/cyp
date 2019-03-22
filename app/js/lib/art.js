@@ -1,5 +1,6 @@
 import * as mpd from "./mpd.js";
 import * as parser from "./parser.js";
+import * as html from "./html.js";
 
 let cache = {};
 const SIZE = 64;
@@ -29,17 +30,15 @@ async function getImageData(songUrl) {
 
 async function bytesToImage(bytes) {
 	let blob = new Blob([bytes]);
-	let image = document.createElement("img");
-	image.src = URL.createObjectURL(blob);
+	let src = URL.createObjectURL(blob);
+	let image = html.node("img", {src});
 	return new Promise(resolve => {
 		image.onload = () => resolve(image);
 	});
 }
 
 function resize(image) {
-	let canvas = document.createElement("canvas");
-	canvas.width = SIZE;
-	canvas.height = SIZE;
+	let canvas = html.node("canvas", {width:SIZE, height:SIZE});
 	let ctx = canvas.getContext("2d");
 	ctx.drawImage(image, 0, 0, SIZE, SIZE);
 	return canvas;

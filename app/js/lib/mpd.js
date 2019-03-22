@@ -57,6 +57,11 @@ export async function status() {
 	return parser.linesToStruct(lines);
 }
 
+export async function listQueue() {
+	let lines = await command("playlistinfo");
+	return parser.songList(lines);
+}
+
 export async function init() {
 	return new Promise((resolve, reject) => {
 		try {
