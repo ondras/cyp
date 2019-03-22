@@ -1,11 +1,11 @@
 import * as mpd from "./mpd.js";
 import * as parser from "./parser.js";
 import * as html from "./html.js";
+import * as conf from "../conf.js";
 
 let cache = {};
-const SIZE = 64;
 const MIME = "image/jpeg";
-const STORAGE_PREFIX = `art-${SIZE}` ;
+const STORAGE_PREFIX = `art-${conf.artSize}` ;
 
 function store(key, data) {
 	localStorage.setItem(`${STORAGE_PREFIX}-${key}`, data);
@@ -38,9 +38,9 @@ async function bytesToImage(bytes) {
 }
 
 function resize(image) {
-	let canvas = html.node("canvas", {width:SIZE, height:SIZE});
+	let canvas = html.node("canvas", {width:conf.artSize, height:conf.artSize});
 	let ctx = canvas.getContext("2d");
-	ctx.drawImage(image, 0, 0, SIZE, SIZE);
+	ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 	return canvas;
 }
 

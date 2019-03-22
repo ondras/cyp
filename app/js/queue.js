@@ -2,6 +2,7 @@ import * as mpd from "./lib/mpd.js";
 import * as html from "./lib/html.js";
 import * as player from "./player.js";
 import * as pubsub from "./lib/pubsub.js";
+import * as format from "./lib/format.js";
 
 let node;
 let currentId;
@@ -18,15 +19,26 @@ async function playSong(id) {
 	player.update();
 }
 
+async function deleteSong(id) {
+	await mpd.command(`deleteid ${id}`);
+	activate();
+}
+
 function buildSong(song) {
 	let id = Number(song["Id"]);
 
 	let node = html.node("li");
 	node.dataset.songId = id;
 
-	node.textContent = song["file"];
-	let play = html.button({}, "▶", node);
-	play.addEventListener("click", e => playSong(id));
+	html.button({className:"play"}, "▶", node).addEventListener("click", e => playSong(id));
+
+	let info = html.node("div", {className:"info"}, "", node);
+
+	html.node("h2", {className:"title"}, song["Title"], info);
+	html.node("span", {className:"artist-album"}, format.artistAlbum(song["Artist"], song["Album"]), info);
+	html.node("span", {className:"duration"}, format.time(Number(song["duration"])), info);
+
+	html.button({className:"delete"}, "🗙", node).addEventListener("click", e => deleteSong(id));
 
 	return node;
 }

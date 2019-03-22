@@ -4,6 +4,10 @@ body {
   flex-direction: column;
   height: 100vh;
 }
+header,
+footer {
+  box-shadow: 0 0 3px #000;
+}
 main {
   flex-grow: 1;
   overflow-x: hidden;
@@ -27,6 +31,16 @@ nav ul li:hover {
 nav ul li.active {
   background-color: green;
 }
+#player {
+  display: flex;
+  flex-direction: row;
+}
+#player .art img {
+  vertical-align: top;
+}
+#player .info {
+  flex-grow: 1;
+}
 #player:not([data-state=play]) .pause {
   display: none;
 }
@@ -36,6 +50,21 @@ nav ul li.active {
 #player:not([data-flags~=random]) .random,
 #player:not([data-flags~=repeat]) .repeat {
   opacity: 0.5;
+}
+#queue ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#queue li {
+  display: flex;
+  flex-direction: row;
+}
+#queue li + li {
+  border-top: 1px solid #888;
+}
+#queue .info {
+  flex-grow: 1;
 }
 #queue .current {
   font-weight: bold;

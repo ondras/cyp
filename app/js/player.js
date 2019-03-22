@@ -17,8 +17,7 @@ function sync(data) {
 	if (data["file"] != current["file"]) { // changed song
 		DOM.duration.textContent = format.time(Number(data["duration"] || 0));
 		DOM.title.textContent = data["Title"] || "";
-		DOM.album.textContent = data["Album"] || "";
-		DOM.artist.textContent = data["Artist"] || "";
+		DOM["artist-album"].textContent = format.artistAlbum(data["Artist"], data["Album"]);
 		pubsub.publish("song-change", null, data);
 	}
 
