@@ -4,14 +4,13 @@ body {
   flex-direction: column;
   height: 100vh;
 }
-header,
-footer {
+body > header,
+body > footer {
   box-shadow: 0 0 3px #000;
 }
 main {
   flex-grow: 1;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
 }
 nav ul {
   margin: 0;
@@ -51,7 +50,19 @@ nav ul li.active {
 #player:not([data-flags~=repeat]) .repeat {
   opacity: 0.5;
 }
+.component {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+#queue {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 #queue ul {
+  flex-grow: 1;
+  overflow: auto;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -68,4 +79,16 @@ nav ul li.active {
 }
 #queue .current {
   font-weight: bold;
+}
+#library {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+#library ul {
+  flex-grow: 1;
+  overflow: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }

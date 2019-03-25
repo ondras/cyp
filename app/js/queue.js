@@ -44,12 +44,11 @@ function buildSong(song) {
 }
 
 function buildSongs(songs) {
-	html.clear(node);
+	let ul = node.querySelector("ul");
+	html.clear(ul);
 
-	let ul = html.node("ul");
 	songs.map(buildSong).forEach(li => ul.appendChild(li));
 
-	node.appendChild(ul);
 	updateCurrent();
 }
 

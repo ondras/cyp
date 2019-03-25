@@ -15,19 +15,6 @@ function load(key) {
 	return localStorage.getItem(`${STORAGE_PREFIX}-${key}`);
 }
 
-async function getImageData(songUrl) {
-	let data = [];
-	let offset = 0;
-	while (1) {
-		let params = ["albumart", `"${mpd.escape(songUrl)}"`, offset];
-		let lines = await mpd.command(params.join(" "));
-		data = data.concat(lines[2]);
-		let metadata = parser.linesToStruct(lines.slice(0, 2));
-		if (data.length >= Number(metadata["size"])) { return data; }
-		offset += Number(metadata["binary"]);
-	}
-}
-
 async function bytesToImage(bytes) {
 	let blob = new Blob([bytes]);
 	let src = URL.createObjectURL(blob);
@@ -62,7 +49,7 @@ export async function get(artist, album, songUrl = null) {
 	cache[key] = promise;
 
 	try {
-		let data = await getImageData(songUrl);
+		let data = await mpd.albumArt(songUrl);
 		let bytes = new Uint8Array(data);
 		let image = await bytesToImage(bytes);
 		let url = resize(image).toDataURL(MIME);

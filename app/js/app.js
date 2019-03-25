@@ -3,8 +3,10 @@ import * as mpd from "./lib/mpd.js";
 import * as player from "./player.js";
 
 import * as queue from "./queue.js";
+import * as library from "./library.js";
+import * as fs from "./fs.js";
 
-const components = { queue };
+const components = { queue, library, fs };
 
 export function activate(what) {
 	for (let id in components) {
@@ -29,8 +31,7 @@ async function init() {
 	await mpd.init();
 	player.init(document.querySelector("#player"));
 
-	activate("queue");
-	window.mpd = mpd;
+	activate("fs");
 }
 
 
