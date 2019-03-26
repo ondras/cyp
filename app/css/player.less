@@ -9,8 +9,16 @@
 	&[data-state=play] .play { display: none; }
 	&:not([data-flags~=random]) .random, &:not([data-flags~=repeat]) .repeat { opacity: 0.5; }
 
-	button {
+	.icon {
 		width: 64px;
-		height: 64px;
 	}
+
+	.misc {
+		display: flex;
+		flex-direction: column;
+		@size: 96px / 2;
+		width: @size;
+		.icon { width: @size; }
+	}
+
 }
