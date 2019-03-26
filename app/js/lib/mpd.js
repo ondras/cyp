@@ -77,13 +77,13 @@ export async function listQueue() {
 	return parser.songList(lines);
 }
 
-export async function enqueue(fileOrFilter, sort = null) {
-	if (typeof(fileOrFilter) == "string") {
-		return command(`addid "${escape(fileOrFilter)}"`);
+export async function enqueue(urlOrFilter, sort = null) {
+	if (typeof(urlOrFilter) == "string") {
+		return command(`add "${escape(urlOrFilter)}"`);
 	}
 
 	let tokens = ["findadd"];
-	tokens.push(serializeFilter(fileOrFilter));
+	tokens.push(serializeFilter(urlOrFilter));
 //	sort && tokens.push("sort", sort);  FIXME not implemented in MPD
 	return command(tokens.join(" "));
 }

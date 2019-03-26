@@ -6,7 +6,6 @@ import * as format from "./lib/format.js";
 import * as ui from "./lib/ui.js";
 
 let node;
-const SORT = "-Track";
 
 function buildHeader(path) {
 	filter = filter || {};
@@ -33,13 +32,14 @@ function buildHeader(path) {
 
 function buildDirectory(data, parent) {
 	let path = data["directory"];
-	let node = ui.group(path, {}, parent);
+	let name = path.split("/").pop();
+	let node = ui.group(ui.GROUP_DIRECTORY, name, path, parent);
 	node.addEventListener("click", e => list(path));
 	return node;
 }
 
 function buildFile(data, parent) {
-	return ui.song(data, parent);
+	return ui.song(ui.SONG_FILE, data, parent);
 }
 
 function buildResults(results) {

@@ -1,5 +1,7 @@
 body {
-  margin: 0;
+  max-width: 800px;
+  margin: 0 auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   height: 100vh;

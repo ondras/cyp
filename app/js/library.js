@@ -1,12 +1,8 @@
-import * as app from "./app.js";
 import * as mpd from "./lib/mpd.js";
 import * as html from "./lib/html.js";
-import * as player from "./player.js";
-import * as format from "./lib/format.js";
 import * as ui from "./lib/ui.js";
 
 let node;
-const SORT = "-Track";
 
 function buildHeader(filter) {
 	filter = filter || {};
@@ -33,14 +29,14 @@ function buildHeader(filter) {
 
 function buildAlbum(album, filter, parent) {
 	let childFilter = Object.assign({}, filter, {"Album": album});
-	let node = ui.group(album, childFilter, parent);
+	let node = ui.group(ui.GROUP_LIBRARY, album, childFilter, parent);
 	node.addEventListener("click", e => listSongs(childFilter));
 	return node;
 }
 
 function buildArtist(artist, filter, parent) {
 	let childFilter = Object.assign({}, filter, {"Artist": artist});
-	let node = ui.group(artist, childFilter, parent);
+	let node = ui.group(ui.GROUP_LIBRARY, artist, childFilter, parent);
 	node.addEventListener("click", e => listAlbums(childFilter));
 	return node;
 }
@@ -49,7 +45,7 @@ function buildSongs(songs, filter) {
 	let ul = node.querySelector("ul");
 	html.clear(ul);
 
-	songs.map(song => ui.song(song, ul));
+	songs.map(song => ui.song(ui.SONG_LIBRARY, song, ul));
 }
 
 function buildAlbums(albums, filter) {
