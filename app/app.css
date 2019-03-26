@@ -1,9 +1,10 @@
 html {
   background-color: #fff;
-  font-family: lato, sans-serif;
 }
 body {
-  background-color: #888;
+  font-family: lato, sans-serif;
+  line-height: 1.3;
+  background-color: #333;
   color: #fff;
   text-shadow: 0 1px 1px #000;
   max-width: 800px;
@@ -16,6 +17,29 @@ body {
 body > header,
 body > footer {
   box-shadow: 0 0 3px #000;
+}
+input,
+select,
+button {
+  color: inherit;
+}
+button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  padding: 0;
+  border: none;
+  line-height: 1;
+  cursor: pointer;
+}
+.icon {
+  width: 24px;
+}
+.icon path:not([fill]),
+.icon polygon:not([fill]),
+.icon circle:not([fill]) {
+  fill: currentColor;
 }
 @font-face {
   font-family: 'Lato';
@@ -71,6 +95,10 @@ nav ul li.active {
 #player:not([data-flags~=repeat]) .repeat {
   opacity: 0.5;
 }
+#player button {
+  width: 64px;
+  height: 64px;
+}
 .component {
   height: 100%;
   display: flex;
@@ -86,16 +114,25 @@ nav ul li.active {
 .component .grid li {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 .component .grid li h2 {
   flex-grow: 1;
+  font-size: 100%;
+  font-weight: normal;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .component .grid li:nth-child(odd) {
-  background-color: #666;
+  background-color: #555;
+}
+.component .grid button {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  font-size: 32px;
 }
 #queue {
   height: 100%;
@@ -112,16 +149,25 @@ nav ul li.active {
 #queue .grid li {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 #queue .grid li h2 {
   flex-grow: 1;
+  font-size: 100%;
+  font-weight: normal;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 #queue .grid li:nth-child(odd) {
-  background-color: #666;
+  background-color: #555;
+}
+#queue .grid button {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  font-size: 32px;
 }
 #queue li {
   display: flex;
@@ -148,16 +194,25 @@ nav ul li.active {
 #library .grid li {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 #library .grid li h2 {
   flex-grow: 1;
+  font-size: 100%;
+  font-weight: normal;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 #library .grid li:nth-child(odd) {
-  background-color: #666;
+  background-color: #555;
+}
+#library .grid button {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  font-size: 32px;
 }
 #fs {
   height: 100%;
@@ -174,14 +229,23 @@ nav ul li.active {
 #fs .grid li {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 #fs .grid li h2 {
   flex-grow: 1;
+  font-size: 100%;
+  font-weight: normal;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 #fs .grid li:nth-child(odd) {
-  background-color: #666;
+  background-color: #555;
+}
+#fs .grid button {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  font-size: 32px;
 }

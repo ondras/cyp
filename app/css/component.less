@@ -15,9 +15,12 @@
 		li {
 			display: flex;
 			flex-direction: row;
+			align-items: center;
 
 			h2 {
 				flex-grow: 1;
+				font-size: 100%;
+				font-weight: normal;
 				margin: 0;
 				white-space: nowrap;
 				overflow: hidden;
@@ -26,7 +29,14 @@
 		}
 
 		li:nth-child(odd) {
-			background-color: #666;
+			background-color: #555;
+		}
+
+		button {
+			flex-shrink: 0;
+			width: 32px;
+			height: 32px;
+			font-size: 32px;
 		}
 	}
 }

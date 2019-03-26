@@ -1,10 +1,11 @@
 html {
 	background-color: #fff;
-	font-family: lato, sans-serif;
 }
 
 body {
-	background-color: #888;
+	font-family: lato, sans-serif;
+	line-height: 1.3;
+	background-color: #333;
 	color: #fff;
 	text-shadow: 0 1px 1px #000;
 	max-width: 800px;
@@ -17,6 +18,32 @@ body {
 	> header, > footer {
 		box-shadow: 0 0 3px #000;
 	}
+}
+
+input, select, button {
+	color: inherit;
+}
+
+button {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+
+	background-color: transparent;
+	padding: 0;
+	border: none;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.icon {
+	width: 24px;
+
+	path, polygon, circle {
+    	&:not([fill]) {
+      		fill: currentColor;
+    	}
+  	}   
 }
 
 

@@ -76,5 +76,12 @@ export function init(n) {
 	DOM.random.addEventListener("click", e => command(`random ${current["random"] == "1" ? "0" : "1"}`));
 	DOM.repeat.addEventListener("click", e => command(`repeat ${current["repeat"] == "1" ? "0" : "1"}`));
 
+	DOM.play.appendChild(html.icon("play"));
+	DOM.pause.appendChild(html.icon("pause"));
+	DOM.prev.appendChild(html.icon("rewind"));
+	DOM.next.appendChild(html.icon("fast-forward"));
+	DOM.random.appendChild(html.icon("shuffle"));
+	DOM.repeat.appendChild(html.icon("repeat"));
+
 	update();
 }
