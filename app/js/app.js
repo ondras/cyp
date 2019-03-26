@@ -22,13 +22,14 @@ export function activate(what) {
 }
 
 async function init() {
+	await mpd.init();
+
 	nav.init(document.querySelector("nav"));
 	for (let id in components) {
 		let node = document.querySelector(`#${id}`);
 		components[id].init(node);
 	}
 
-	await mpd.init();
 	player.init(document.querySelector("#player"));
 
 	activate("fs");

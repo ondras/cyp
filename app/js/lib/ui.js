@@ -100,11 +100,10 @@ export function song(type, data, parent) {
 }
 
 export function group(type, label, urlOrFilter, parent) {
-	let node = html.node("li", {}, label, parent);
+	let node = html.node("li", {}, "", parent);
 
-	if (type == GROUP_DIRECTORY) {
-		node.insertBefore(html.text("📁 "), node.firstChild);
-	}
+	if (type == GROUP_DIRECTORY) { label = `📁 ${label}`; }
+	html.node("h2", {}, label, node);
 
 	addAndPlayButton(urlOrFilter, node);
 	addButton(urlOrFilter, node);

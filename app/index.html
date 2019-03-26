@@ -26,7 +26,7 @@
 		<main>
 			<section id="queue">
 				<header></header>
-				<ul></ul>
+				<ul class="grid"></ul>
 			</section>
 			<section id="playlists"></section>
 			<section id="library">
@@ -35,14 +35,17 @@
 			</section>
 			<section id="fs">
 				<header></header>
-				<ul></ul>
+				<ul class="grid"></ul>
 			</section>
 			<section id="misc"></section>
 		</main>
 		<footer>
 			<nav>
 				<ul>
-					<li data-for="queue">Q</li>
+					<li data-for="queue">
+						Q
+						<span id="queue-length"></span>
+					</li>
 					<li data-for="playlists">Playlists</li>
 					<li data-for="library">Library</li>
 					<li data-for="fs">FS</li>

@@ -34,7 +34,7 @@ function onQueueChange(message, publisher, data) {
 async function syncQueue() {
 	let songs = await mpd.listQueue();
 	buildSongs(songs);
-// FIXME	updateCount(songs.length)
+	document.querySelector("#queue-length").textContent = `(${songs.length})`;
 }
 
 export async function activate() {
@@ -43,6 +43,7 @@ export async function activate() {
 
 export function init(n) {
 	node = n;
+	syncQueue();
 	pubsub.subscribe("song-change", onSongChange);
 	pubsub.subscribe("queue-change", onQueueChange);
 }

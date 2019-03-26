@@ -8,26 +8,17 @@ import * as ui from "./lib/ui.js";
 let node;
 
 function buildHeader(path) {
-	filter = filter || {};
 	let header = node.querySelector("header");
 	html.clear(header);
 
-	let button = html.button({}, "Music Library", header);
-	button.addEventListener("click", e => listArtists());
+	let button = html.button({}, "/", header);
+	button.addEventListener("click", e => list(""));
 
-	let artist = filter["Artist"];
-	if (artist) {
-		let artistFilter = {"Artist":artist};
-		let button = html.button({}, artist, header);
-		button.addEventListener("click", e => listAlbums(artistFilter));
-
-		let album = filter["Album"];
-		if (album) {
-			let albumFilter = Object.assign({}, artistFilter, {"Album":album});
-			let button = html.button({}, album, header);
-			button.addEventListener("click", e => listSongs(albumFilter));
-		}
-	}
+	path.split("/").filter(x => x).forEach((name, index, all) => {
+		let button = html.button({}, name, header);
+		let path = all.slice(0, index+1).join("/");
+		button.addEventListener("click", e => list(path));
+	});
 }
 
 function buildDirectory(data, parent) {
@@ -53,7 +44,7 @@ function buildResults(results) {
 async function list(path) {
 	let results = await mpd.listPath(path);
 	buildResults(results);
-//	buildHeader(path);
+	buildHeader(path);
 }
 
 export async function activate() {

@@ -1,4 +1,11 @@
+html {
+  background-color: #fff;
+  font-family: lato, sans-serif;
+}
 body {
+  background-color: #888;
+  color: #fff;
+  text-shadow: 0 1px 1px #000;
   max-width: 800px;
   margin: 0 auto;
   overflow: hidden;
@@ -9,6 +16,18 @@ body {
 body > header,
 body > footer {
   box-shadow: 0 0 3px #000;
+}
+@font-face {
+  font-family: 'Lato';
+  src: url('font/LatoLatin-Regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: normal;
+}
+@font-face {
+  font-family: 'Lato';
+  src: url('font/LatoLatin-bold.woff2') format('woff2');
+  font-style: bold;
+  font-weight: normal;
 }
 main {
   flex-grow: 1;
@@ -23,7 +42,7 @@ nav ul {
 }
 nav ul li {
   text-align: center;
-  flex-grow: 1;
+  flex: 1 0 0;
   line-height: 40px;
 }
 nav ul li:hover {
@@ -57,6 +76,27 @@ nav ul li.active {
   display: flex;
   flex-direction: column;
 }
+.component ul {
+  flex-grow: 1;
+  overflow: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.component .grid li {
+  display: flex;
+  flex-direction: row;
+}
+.component .grid li h2 {
+  flex-grow: 1;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.component .grid li:nth-child(odd) {
+  background-color: #666;
+}
 #queue {
   height: 100%;
   display: flex;
@@ -69,15 +109,26 @@ nav ul li.active {
   margin: 0;
   padding: 0;
 }
+#queue .grid li {
+  display: flex;
+  flex-direction: row;
+}
+#queue .grid li h2 {
+  flex-grow: 1;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#queue .grid li:nth-child(odd) {
+  background-color: #666;
+}
 #queue li {
   display: flex;
   flex-direction: row;
 }
 #queue li + li {
   border-top: 1px solid #888;
-}
-#queue .info {
-  flex-grow: 1;
 }
 #queue .current {
   font-weight: bold;
@@ -93,4 +144,44 @@ nav ul li.active {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+#library .grid li {
+  display: flex;
+  flex-direction: row;
+}
+#library .grid li h2 {
+  flex-grow: 1;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#library .grid li:nth-child(odd) {
+  background-color: #666;
+}
+#fs {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+#fs ul {
+  flex-grow: 1;
+  overflow: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#fs .grid li {
+  display: flex;
+  flex-direction: row;
+}
+#fs .grid li h2 {
+  flex-grow: 1;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#fs .grid li:nth-child(odd) {
+  background-color: #666;
 }
