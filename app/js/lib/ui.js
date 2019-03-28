@@ -4,29 +4,40 @@ import * as pubsub from "./pubsub.js";
 import * as format from "./format.js";
 import * as player from "../player.js";
 
-export const SONG_FILE = 1;
-export const SONG_LIBRARY = 2;
-export const SONG_QUEUE = 3;
-export const GROUP_DIRECTORY = 4;
-export const GROUP_LIBRARY = 5;
+export const CTX_FS = 1;
+export const CTX_QUEUE = 2;
+export const CTX_LIBRARY = 3;
+
+const TYPE_ID = 1;
+const TYPE_URL = 2;
+const TYPE_FILTER = 3;
+const TYPE_PLAYLIST = 4;
 
 const SORT = "-Track";
+
+function enqueue(type, what) {
+	switch (type) {
+		case TYPE_URL: return mpd.command(`add "${mpd.escape(what)}"`); break;
+		case TYPE_FILTER: return mpd.enqueueByFilter(what, SORT); break;
+		case TYPE_PLAYLIST: return mpd.command(`load "${mpd.escape(what)}"`); break;
+	}
+}
 
 function fileName(data) {
 	return data["file"].split("/").pop();
 }
 
-function formatTitle(type, data) {
-	switch (type) {
-		case SONG_FILE:
+function formatTitle(ctx, data) {
+	switch (ctx) {
+		case CTX_FS:
 			return `🎵 ${fileName(data)}`;
 		break;
 
-		case SONG_LIBRARY:
+		case CTX_LIBRARY:
 			return data["Artist"] || fileName(data);
 		break;
 
-		case SONG_QUEUE:
+		case CTX_QUEUE:
 			let tokens = [];
 			data["Artist"] && tokens.push(data["Artist"]);
 			data["Title"] && tokens.push(data["Title"]);
@@ -36,77 +47,97 @@ function formatTitle(type, data) {
 	}
 }
 
-function playButton(id, parent) {
+function playButton(type, what, parent) {
 	let button = html.button({icon:"play", title:"Play"}, "", parent);
 	button.addEventListener("click", async e => {
-		await mpd.command(`playid ${id}`);
+		if (type == TYPE_ID) {
+			await mpd.command(`playid ${what}`);
+		} else {
+			await mpd.command("clear");
+			await enqueue(type, what);
+			await mpd.command("play");
+			pubsub.publish("queue-change");
+		}
 		player.update();
 	});
+
+	return button;
+
 }
 
-function deleteButton(id, parent) {
-	let button = html.button({icon:"close", title:"Delete from queue"}, "", parent);
+function deleteButton(type, id, parent) {
+	let title;
+
+	switch (type) {
+		case TYPE_ID: title = "Delete from queue"; break;
+		case TYPE_PLAYLIST: title = "Delete playlist"; break;
+	}
+
+	let button = html.button({icon:"close", title}, "", parent);
 	button.addEventListener("click", async e => {
-		await mpd.command(`deleteid ${id}`);
-		pubsub.publish("queue-change");
+		switch (type) {
+			case TYPE_ID:
+				await mpd.command(`deleteid ${id}`);
+				pubsub.publish("queue-change");
+			return;
+			case TYPE_PLAYLIST: 
+				let ok = confirm(`Really delete playlist '${id}'?`);
+				if (!ok) { return; }
+				await mpd.command(`rm "${mpd.escape(id)}"`);
+				pubsub.publish("playlists-change");
+			return;
+		}
 	});
 	return button;
 }
 
-function addAndPlayButton(urlOrFilter, parent) {
-	let button = html.button({icon:"play", title:"Play"}, "", parent);
-	button.addEventListener("click", async e => {
-		e.stopPropagation();
-		await mpd.command("clear");
-		await mpd.enqueue(urlOrFilter, SORT);
-		await mpd.command("play");
-		pubsub.publish("queue-change");
-		player.update();
-	});
-	return button;
-}
-
-function addButton(urlOrFilter, parent) {
+function addButton(type, what, parent) {
 	let button = html.button({icon:"plus", title:"Add to queue"}, "", parent);
 	button.addEventListener("click", async e => {
 		e.stopPropagation();
-		await mpd.enqueue(urlOrFilter, SORT);
+		await enqueue(type, what);
 		pubsub.publish("queue-change");
 		// fixme notification?
 	});
 	return button;
 }
 
-export function song(type, data, parent) {
+export function song(ctx, data, parent) {
 	let node = html.node("li", {}, "", parent);
 
-	let title = formatTitle(type, data);
+	let title = formatTitle(ctx, data);
 	html.node("h2", {}, title, node);
 
 	html.node("span", {className:"duration"}, format.time(Number(data["duration"])), node);
 
-	if (type == SONG_QUEUE) {
-		let id = data["Id"];
-		node.dataset.songId = id;
-		playButton(id, node);
-		deleteButton(id, node);
-	} else {
-		let url = data["file"];
-		addAndPlayButton(url, node);
-		addButton(url, node);
+	switch (ctx) {
+		case CTX_QUEUE:
+			let id = data["Id"];
+			node.dataset.songId = id;
+			playButton(TYPE_ID, id, node);
+			deleteButton(TYPE_ID, id, node);
+		break;
+
+		case CTX_FS:
+			let url = data["file"];
+			playButton(TYPE_URL, url, node);
+			addButton(TYPE_URL, url, node);
+		break;
 	}
 
 	return node;
 }
 
-export function group(type, label, urlOrFilter, parent) {
+export function group(ctx, label, urlOrFilter, parent) {
 	let node = html.node("li", {}, "", parent);
 
-	if (type == GROUP_DIRECTORY) { label = `📁 ${label}`; }
+	if (ctx == CTX_FS) { label = `📁 ${label}`; }
 	html.node("h2", {}, label, node);
 
-	addAndPlayButton(urlOrFilter, node);
-	addButton(urlOrFilter, node);
+	let type = (ctx == CTX_FS ? TYPE_URL : TYPE_FILTER);
+
+	playButton(type, urlOrFilter, node);
+	addButton(type, urlOrFilter, node);
 
 	return node;
 }
@@ -117,9 +148,9 @@ export function playlist(name, parent) {
 	html.icon("playlist-music", node)
 	html.node("h2", {}, name, node);
 
-//	addAndPlayButton(url, node);
-//	addButton(url, node);
-//	deleteButton(id, node);
+	playButton(TYPE_PLAYLIST, name, node);
+	addButton(TYPE_PLAYLIST, name, node);
+	deleteButton(TYPE_PLAYLIST, name, node);
 
 	return node;
 }

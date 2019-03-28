@@ -46,7 +46,7 @@ function serializeFilter(filter) {
 	return `"${escape(filterStr)}"`;
 }
 
-function escape(str) {
+export function escape(str) {
 	return str.replace(/(['"\\])/g, "\\$1");
 }
 
@@ -86,13 +86,9 @@ export async function listPlaylists() {
 	return (list instanceof Array ? list : [list]);
 }
 
-export async function enqueue(urlOrFilter, sort = null) {
-	if (typeof(urlOrFilter) == "string") {
-		return command(`add "${escape(urlOrFilter)}"`);
-	}
-
+export async function enqueueByFilter(filter, sort = null) {
 	let tokens = ["findadd"];
-	tokens.push(serializeFilter(urlOrFilter));
+	tokens.push(serializeFilter(filter));
 //	sort && tokens.push("sort", sort);  FIXME not implemented in MPD
 	return command(tokens.join(" "));
 }
@@ -133,11 +129,8 @@ export async function albumArt(songUrl) {
 		if (data.length >= Number(metadata["size"])) { return data; }
 		offset += Number(metadata["binary"]);
 	}
+	return null;
 }
-
-export async function save(name) {
-	return command(`save "${escape(name)}"`);
-} 
 
 export async function init() {
 	return new Promise((resolve, reject) => {

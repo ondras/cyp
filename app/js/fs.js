@@ -24,13 +24,13 @@ function buildHeader(path) {
 function buildDirectory(data, parent) {
 	let path = data["directory"];
 	let name = path.split("/").pop();
-	let node = ui.group(ui.GROUP_DIRECTORY, name, path, parent);
+	let node = ui.group(ui.CTX_FS, name, path, parent);
 	node.addEventListener("click", e => list(path));
 	return node;
 }
 
 function buildFile(data, parent) {
-	return ui.song(ui.SONG_FILE, data, parent);
+	return ui.song(ui.CTX_FS, data, parent);
 }
 
 function buildResults(results) {

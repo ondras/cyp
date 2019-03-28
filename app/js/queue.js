@@ -17,7 +17,7 @@ function buildSongs(songs) {
 	let ul = node.querySelector("ul");
 	html.clear(ul);
 
-	songs.map(song => ui.song(ui.SONG_QUEUE, song, ul));
+	songs.map(song => ui.song(ui.CTX_QUEUE, song, ul));
 
 	updateCurrent();
 }
@@ -59,6 +59,6 @@ export function init(n) {
 	save.addEventListener("click", e => {
 		let name = prompt("Save current queue as a playlist?", "name");
 		if (name === null) { return; }
-		mpd.save(name);
+		mpd.command(`save "${mpd.escape(name)}"`);
 	});
 }

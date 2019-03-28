@@ -29,14 +29,14 @@ function buildHeader(filter) {
 
 function buildAlbum(album, filter, parent) {
 	let childFilter = Object.assign({}, filter, {"Album": album});
-	let node = ui.group(ui.GROUP_LIBRARY, album, childFilter, parent);
+	let node = ui.group(ui.CTX_LIBRARY, album, childFilter, parent);
 	node.addEventListener("click", e => listSongs(childFilter));
 	return node;
 }
 
 function buildArtist(artist, filter, parent) {
 	let childFilter = Object.assign({}, filter, {"Artist": artist});
-	let node = ui.group(ui.GROUP_LIBRARY, artist, childFilter, parent);
+	let node = ui.group(ui.CTX_LIBRARY, artist, childFilter, parent);
 	node.addEventListener("click", e => listAlbums(childFilter));
 	return node;
 }
@@ -47,7 +47,7 @@ function buildSongs(songs, filter) {
 	ul.classList.remove("tiles");
 	ul.classList.add("grid");
 
-	songs.map(song => ui.song(ui.SONG_LIBRARY, song, ul));
+	songs.map(song => ui.song(ui.CTX_LIBRARY, song, ul));
 }
 
 function buildAlbums(albums, filter) {

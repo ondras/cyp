@@ -9,7 +9,7 @@ html {
 body {
   box-sizing: border-box;
   font-family: lato, sans-serif;
-  line-height: 1.3;
+  line-height: 1;
   background-color: #333;
   color: #fff;
   text-shadow: 0 1px 1px #000;
@@ -75,12 +75,12 @@ nav ul li {
   text-align: center;
   flex: 1 0 0;
   line-height: 40px;
-}
-nav ul li:hover {
-  background-color: red;
+  cursor: pointer;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
 }
 nav ul li.active {
-  background-color: green;
+  border-top-color: dodgerblue;
 }
 #player {
   display: flex;
@@ -133,13 +133,13 @@ nav ul li.active {
   flex-direction: row;
   align-items: center;
   padding: 0 4px;
+  white-space: nowrap;
 }
 .component .grid li h2 {
   flex-grow: 1;
   font-size: 100%;
   font-weight: normal;
   margin: 0;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -171,13 +171,13 @@ nav ul li.active {
   flex-direction: row;
   align-items: center;
   padding: 0 4px;
+  white-space: nowrap;
 }
 #queue .grid li h2 {
   flex-grow: 1;
   font-size: 100%;
   font-weight: normal;
   margin: 0;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -212,13 +212,13 @@ nav ul li.active {
   flex-direction: row;
   align-items: center;
   padding: 0 4px;
+  white-space: nowrap;
 }
 #library .grid li h2 {
   flex-grow: 1;
   font-size: 100%;
   font-weight: normal;
   margin: 0;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -250,13 +250,13 @@ nav ul li.active {
   flex-direction: row;
   align-items: center;
   padding: 0 4px;
+  white-space: nowrap;
 }
 #fs .grid li h2 {
   flex-grow: 1;
   font-size: 100%;
   font-weight: normal;
   margin: 0;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -288,13 +288,13 @@ nav ul li.active {
   flex-direction: row;
   align-items: center;
   padding: 0 4px;
+  white-space: nowrap;
 }
 #playlists .grid li h2 {
   flex-grow: 1;
   font-size: 100%;
   font-weight: normal;
   margin: 0;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }

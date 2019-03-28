@@ -17,10 +17,15 @@ async function syncLists() {
 	buildLists(lists);
 }
 
+function onPlaylistsChange(message, publisher, data) {
+	syncLists();
+}
+
 export async function activate() {
 	syncLists();
 }
 
 export function init(n) {
 	node = n;
+	pubsub.subscribe("playlists-change", onPlaylistsChange);
 }
