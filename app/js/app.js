@@ -6,8 +6,9 @@ import * as queue from "./queue.js";
 import * as library from "./library.js";
 import * as fs from "./fs.js";
 import * as playlists from "./playlists.js";
+import * as yt from "./yt.js";
 
-const components = { queue, library, fs, playlists };
+const components = { queue, library, fs, playlists, yt };
 
 export function activate(what) {
 	for (let id in components) {
@@ -33,7 +34,7 @@ async function init() {
 
 	player.init(document.querySelector("#player"));
 
-	activate("fs");
+	activate("yt");
 }
 
 

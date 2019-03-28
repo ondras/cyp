@@ -28,17 +28,20 @@ function fileName(data) {
 }
 
 function formatTitle(ctx, data) {
+	let tokens = [];
 	switch (ctx) {
 		case CTX_FS:
 			return `🎵 ${fileName(data)}`;
 		break;
 
 		case CTX_LIBRARY:
-			return data["Artist"] || fileName(data);
+			data["Track"] && tokens.push(data["Track"].padStart(2, "0"));
+			data["Title"] && tokens.push(data["Title"]);
+			if (!tokens.length)  {tokens.push(fileName(data)); }
+			return tokens.join(" ");
 		break;
 
 		case CTX_QUEUE:
-			let tokens = [];
 			data["Artist"] && tokens.push(data["Artist"]);
 			data["Title"] && tokens.push(data["Title"]);
 			if (!tokens.length) { tokens.push(fileName(data)); }
@@ -118,6 +121,7 @@ export function song(ctx, data, parent) {
 			deleteButton(TYPE_ID, id, node);
 		break;
 
+		case CTX_LIBRARY:
 		case CTX_FS:
 			let url = data["file"];
 			playButton(TYPE_URL, url, node);
