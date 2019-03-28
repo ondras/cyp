@@ -1,6 +1,7 @@
 import * as nav from "./nav.js";
 import * as mpd from "./lib/mpd.js";
 import * as player from "./player.js";
+import * as html from "./lib/html.js";
 
 import * as queue from "./queue.js";
 import * as library from "./library.js";
@@ -11,6 +12,8 @@ import * as yt from "./yt.js";
 const components = { queue, library, fs, playlists, yt };
 
 export function activate(what) {
+	location.hash = what;
+
 	for (let id in components) {
 		let node = document.querySelector(`#${id}`);
 		if (what == id) {
@@ -23,7 +26,15 @@ export function activate(what) {
 	nav.active(what);
 }
 
+function initIcons() {
+	Array.from(document.querySelectorAll("[data-icon]")).forEach(node => {
+		let icon = html.icon(node.dataset.icon);
+		node.insertBefore(icon, node.firstChild);
+	});
+}
+
 async function init() {
+	initIcons();
 	await mpd.init();
 
 	nav.init(document.querySelector("nav"));

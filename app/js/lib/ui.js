@@ -30,9 +30,7 @@ function fileName(data) {
 function formatTitle(ctx, data) {
 	let tokens = [];
 	switch (ctx) {
-		case CTX_FS:
-			return `🎵 ${fileName(data)}`;
-		break;
+		case CTX_FS: return fileName(data); break;
 
 		case CTX_LIBRARY:
 			data["Track"] && tokens.push(data["Track"].padStart(2, "0"));
@@ -108,8 +106,11 @@ function addButton(type, what, parent) {
 export function song(ctx, data, parent) {
 	let node = html.node("li", {}, "", parent);
 
+
 	let title = formatTitle(ctx, data);
-	html.node("h2", {}, title, node);
+	let h2 = html.node("h2", {}, "", node);
+	if (ctx == CTX_FS || ctx == CTX_LIBRARY) { html.icon("music", h2); }
+	html.text(title, h2);
 
 	html.node("span", {className:"duration"}, format.time(Number(data["duration"])), node);
 
@@ -135,8 +136,9 @@ export function song(ctx, data, parent) {
 export function group(ctx, label, urlOrFilter, parent) {
 	let node = html.node("li", {}, "", parent);
 
-	if (ctx == CTX_FS) { label = `📁 ${label}`; }
-	html.node("h2", {}, label, node);
+	let h2 = html.node("h2", {}, "", node);
+	if (ctx == CTX_FS) { html.icon("folder", h2); }
+	html.text(label, h2);
 
 	let type = (ctx == CTX_FS ? TYPE_URL : TYPE_FILTER);
 
@@ -149,8 +151,9 @@ export function group(ctx, label, urlOrFilter, parent) {
 export function playlist(name, parent) {
 	let node = html.node("li", {}, "", parent);
 
-	html.icon("playlist-music", node)
-	html.node("h2", {}, name, node);
+	let h2 = html.node("h2", {}, "", node);
+	html.icon("playlist-music", h2)
+	html.text(name, h2);
 
 	playButton(TYPE_PLAYLIST, name, node);
 	addButton(TYPE_PLAYLIST, name, node);

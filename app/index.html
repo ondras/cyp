@@ -14,22 +14,26 @@
 					<h2 class="title"></h2>
 					<span class="artist-album"></span>
 				</div>
-				<span class="elapsed"></span>/<span class="duration"></span>
-				<button class="prev"></button>
-				<button class="play"></button>
-				<button class="pause"></button>
-				<button class="next"></button>
+				<div class="controls">
+					<button class="prev" data-icon="rewind"></button>
+					<button class="play" data-icon="play"></button>
+					<button class="pause" data-icon="pause"></button>
+					<button class="next" data-icon="fast-forward"></button>
+					<div>
+						<span class="elapsed"></span>/<span class="duration"></span>
+					</div>
+				</div>
 				<div class="misc">
-					<button class="repeat"></button>
-					<button class="random"></button>
+					<button class="repeat" data-icon="repeat"></button>
+					<button class="random" data-icon="shuffle"></button>
 				</div>
 			</section>
 		</header>
 		<main>
 			<section id="queue">
 				<header>
-					<button class="clear" title="Clear the queue"></button>
-					<button class="save" title="Save the queue"></button>
+					<button class="clear" data-icon="close" title="Clear the queue"></button>
+					<button class="save" data-icon="content-save" title="Save the queue"></button>
 				</header>
 				<ul class="grid"></ul>
 			</section>
@@ -45,20 +49,20 @@
 				<ul class="grid"></ul>
 			</section>
 			<section id="yt">
-				<button class="go">Go!</button>
+				<button class="go" data-icon="download">Go!</button>
 			</section>
 		</main>
 		<footer>
 			<nav>
 				<ul>
-					<li data-for="queue">
+					<li data-for="queue" data-icon="music">
 						Q
 						<span id="queue-length"></span>
 					</li>
-					<li data-for="playlists">Playlists</li>
-					<li data-for="library">Library</li>
-					<li data-for="fs">FS</li>
-					<li data-for="yt">YouTube</li>
+					<li data-for="playlists" data-icon="playlist-music">Playlists</li>
+					<li data-for="library" data-icon="library-music">Library</li>
+					<li data-for="fs" data-icon="folder">FS</li>
+					<li data-for="yt" data-icon="download">YouTube</li>
 				</ul>
 			</nav>
 		</footer>		

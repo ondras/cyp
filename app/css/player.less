@@ -1,8 +1,14 @@
 #player {
 	display: flex;
 	flex-direction: row;
+	align-items: center;
+
+	&:not([data-state=play]) .pause { display: none; }
+	&[data-state=play] .play { display: none; }
+	&:not([data-flags~=random]) .random, &:not([data-flags~=repeat]) .repeat { opacity: 0.5; }
 
 	.art img { vertical-align: top; }
+
 	.info { 
 		flex-grow: 1;
 		white-space: nowrap;
@@ -10,12 +16,10 @@
 		text-overflow: ellipsis;
 	}
 
-	&:not([data-state=play]) .pause { display: none; }
-	&[data-state=play] .play { display: none; }
-	&:not([data-flags~=random]) .random, &:not([data-flags~=repeat]) .repeat { opacity: 0.5; }
-
-	.icon {
-		width: 64px;
+	.controls {
+		white-space: nowrap;
+		text-align: center;
+		.icon { width: 64px; }
 	}
 
 	.misc {

@@ -22,5 +22,5 @@ export async function activate() {}
 export function init(n) {
 	node = n;
 
-	node.querySelector(".go").addEventListener("click", onClick);
+	let button = node.querySelector(".go").addEventListener("click", onClick);
 }
