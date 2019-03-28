@@ -45,7 +45,7 @@ function playButton(id, parent) {
 }
 
 function deleteButton(id, parent) {
-	let button = html.button({icon:"close"}, "", parent);
+	let button = html.button({icon:"close", title:"Delete from queue"}, "", parent);
 	button.addEventListener("click", async e => {
 		await mpd.command(`deleteid ${id}`);
 		pubsub.publish("queue-change");
@@ -67,7 +67,7 @@ function addAndPlayButton(urlOrFilter, parent) {
 }
 
 function addButton(urlOrFilter, parent) {
-	let button = html.button({icon:"plus"}, "", parent);
+	let button = html.button({icon:"plus", title:"Add to queue"}, "", parent);
 	button.addEventListener("click", async e => {
 		e.stopPropagation();
 		await mpd.enqueue(urlOrFilter, SORT);
@@ -107,6 +107,19 @@ export function group(type, label, urlOrFilter, parent) {
 
 	addAndPlayButton(urlOrFilter, node);
 	addButton(urlOrFilter, node);
+
+	return node;
+}
+
+export function playlist(name, parent) {
+	let node = html.node("li", {}, "", parent);
+
+	html.icon("playlist-music", node)
+	html.node("h2", {}, name, node);
+
+//	addAndPlayButton(url, node);
+//	addButton(url, node);
+//	deleteButton(id, node);
 
 	return node;
 }

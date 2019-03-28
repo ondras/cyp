@@ -39,14 +39,6 @@ button {
   line-height: 1;
   cursor: pointer;
 }
-.icon {
-  width: 24px;
-}
-.icon path:not([fill]),
-.icon polygon:not([fill]),
-.icon circle:not([fill]) {
-  fill: currentColor;
-}
 @font-face {
   font-family: 'Lato';
   src: url('font/LatoLatin-Regular.woff2') format('woff2');
@@ -58,6 +50,15 @@ button {
   src: url('font/LatoLatin-bold.woff2') format('woff2');
   font-style: bold;
   font-weight: normal;
+}
+.icon {
+  vertical-align: middle;
+  width: 24px;
+}
+.icon path:not([fill]),
+.icon polygon:not([fill]),
+.icon circle:not([fill]) {
+  fill: currentColor;
 }
 main {
   flex-grow: 1;
@@ -90,6 +91,9 @@ nav ul li.active {
 }
 #player .info {
   flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #player:not([data-state=play]) .pause {
   display: none;
@@ -128,6 +132,7 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
+  padding: 0 4px;
 }
 .component .grid li h2 {
   flex-grow: 1;
@@ -138,11 +143,16 @@ nav ul li.active {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.component .grid li button {
+  flex-shrink: 0;
+}
+@media (pointer: coarse) {
+  .component .grid li button .icon {
+    width: 32px;
+  }
+}
 .component .grid li:nth-child(odd) {
   background-color: #555;
-}
-.component .grid button {
-  flex-shrink: 0;
 }
 #queue {
   height: 100%;
@@ -160,6 +170,7 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
+  padding: 0 4px;
 }
 #queue .grid li h2 {
   flex-grow: 1;
@@ -170,11 +181,16 @@ nav ul li.active {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+#queue .grid li button {
+  flex-shrink: 0;
+}
+@media (pointer: coarse) {
+  #queue .grid li button .icon {
+    width: 32px;
+  }
+}
 #queue .grid li:nth-child(odd) {
   background-color: #555;
-}
-#queue .grid button {
-  flex-shrink: 0;
 }
 #queue .current {
   font-weight: bold;
@@ -195,6 +211,7 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
+  padding: 0 4px;
 }
 #library .grid li h2 {
   flex-grow: 1;
@@ -205,11 +222,16 @@ nav ul li.active {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+#library .grid li button {
+  flex-shrink: 0;
+}
+@media (pointer: coarse) {
+  #library .grid li button .icon {
+    width: 32px;
+  }
+}
 #library .grid li:nth-child(odd) {
   background-color: #555;
-}
-#library .grid button {
-  flex-shrink: 0;
 }
 #fs {
   height: 100%;
@@ -227,6 +249,7 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
+  padding: 0 4px;
 }
 #fs .grid li h2 {
   flex-grow: 1;
@@ -237,9 +260,52 @@ nav ul li.active {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+#fs .grid li button {
+  flex-shrink: 0;
+}
+@media (pointer: coarse) {
+  #fs .grid li button .icon {
+    width: 32px;
+  }
+}
 #fs .grid li:nth-child(odd) {
   background-color: #555;
 }
-#fs .grid button {
+#playlists {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+#playlists ul {
+  flex-grow: 1;
+  overflow: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#playlists .grid li {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 4px;
+}
+#playlists .grid li h2 {
+  flex-grow: 1;
+  font-size: 100%;
+  font-weight: normal;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#playlists .grid li button {
   flex-shrink: 0;
+}
+@media (pointer: coarse) {
+  #playlists .grid li button .icon {
+    width: 32px;
+  }
+}
+#playlists .grid li:nth-child(odd) {
+  background-color: #555;
 }

@@ -5,8 +5,9 @@ import * as player from "./player.js";
 import * as queue from "./queue.js";
 import * as library from "./library.js";
 import * as fs from "./fs.js";
+import * as playlists from "./playlists.js";
 
-const components = { queue, library, fs };
+const components = { queue, library, fs, playlists };
 
 export function activate(what) {
 	for (let id in components) {

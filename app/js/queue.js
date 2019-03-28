@@ -46,4 +46,19 @@ export function init(n) {
 	syncQueue();
 	pubsub.subscribe("song-change", onSongChange);
 	pubsub.subscribe("queue-change", onQueueChange);
+
+	let clear = node.querySelector(".clear");
+	clear.appendChild(html.icon("close"));
+	clear.addEventListener("click", async e => {
+		await mpd.command("clear");
+		syncQueue();
+	});
+
+	let save = node.querySelector(".save");
+	save.appendChild(html.icon("content-save"));
+	save.addEventListener("click", e => {
+		let name = prompt("Save current queue as a playlist?", "name");
+		if (name === null) { return; }
+		mpd.save(name);
+	});
 }

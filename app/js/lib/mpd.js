@@ -77,6 +77,15 @@ export async function listQueue() {
 	return parser.songList(lines);
 }
 
+export async function listPlaylists() {
+	let lines = await command("listplaylists");
+	let parsed = parser.linesToStruct(lines);
+
+	let list = parsed["playlist"];
+	if (!list) { return []; }
+	return (list instanceof Array ? list : [list]);
+}
+
 export async function enqueue(urlOrFilter, sort = null) {
 	if (typeof(urlOrFilter) == "string") {
 		return command(`add "${escape(urlOrFilter)}"`);
@@ -125,6 +134,10 @@ export async function albumArt(songUrl) {
 		offset += Number(metadata["binary"]);
 	}
 }
+
+export async function save(name) {
+	return command(`save "${escape(name)}"`);
+} 
 
 export async function init() {
 	return new Promise((resolve, reject) => {

@@ -3,7 +3,12 @@
 	flex-direction: row;
 
 	.art img { vertical-align: top; }
-	.info { flex-grow: 1; }
+	.info { 
+		flex-grow: 1;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 
 	&:not([data-state=play]) .pause { display: none; }
 	&[data-state=play] .play { display: none; }
