@@ -1,15 +1,15 @@
 *, *::before, *::after { box-sizing: inherit; }
 
 html {
-	background-color: #fff;
+	background-color: var(--fg);
 }
 
 body {
 	box-sizing: border-box;
 	font-family: lato, sans-serif;
 	line-height: 1;
-	background-color: #333;
-	color: #fff;
+	background-color: var(--bg);
+	color: var(--fg);
 	text-shadow: 0 1px 1px #000;
 	max-width: 800px;
 	margin: 0 auto;
@@ -50,3 +50,4 @@ button {
 @import "library.less";
 @import "fs.less";
 @import "playlists.less";
+@import "variables.less";

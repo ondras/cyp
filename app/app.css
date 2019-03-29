@@ -4,14 +4,14 @@
   box-sizing: inherit;
 }
 html {
-  background-color: #fff;
+  background-color: var(--fg);
 }
 body {
   box-sizing: border-box;
   font-family: lato, sans-serif;
   line-height: 1;
-  background-color: #333;
-  color: #fff;
+  background-color: var(--bg);
+  color: var(--fg);
   text-shadow: 0 1px 1px #000;
   max-width: 800px;
   margin: 0 auto;
@@ -73,18 +73,18 @@ nav ul {
   flex-direction: row;
 }
 nav ul .icon {
-  margin-right: 4px;
+  display: block;
+  margin: 4px auto;
 }
 nav ul li {
   text-align: center;
   flex: 1 0 0;
-  line-height: 40px;
   cursor: pointer;
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
 }
 nav ul li.active {
-  border-top-color: dodgerblue;
+  border-top-color: var(--primary);
 }
 #player {
   display: flex;
@@ -154,6 +154,7 @@ nav ul li.active {
 }
 .component .grid h2 .icon {
   margin-right: 4px;
+  color: var(--primary);
 }
 .component .grid li:nth-child(odd) {
   background-color: #555;
@@ -192,6 +193,7 @@ nav ul li.active {
 }
 #queue .grid h2 .icon {
   margin-right: 4px;
+  color: var(--primary);
 }
 #queue .grid li:nth-child(odd) {
   background-color: #555;
@@ -233,6 +235,7 @@ nav ul li.active {
 }
 #library .grid h2 .icon {
   margin-right: 4px;
+  color: var(--primary);
 }
 #library .grid li:nth-child(odd) {
   background-color: #555;
@@ -271,6 +274,7 @@ nav ul li.active {
 }
 #fs .grid h2 .icon {
   margin-right: 4px;
+  color: var(--primary);
 }
 #fs .grid li:nth-child(odd) {
   background-color: #555;
@@ -279,6 +283,9 @@ nav ul li.active {
   #fs .grid .icon {
     width: 32px;
   }
+}
+#fs .group {
+  cursor: pointer;
 }
 #playlists {
   height: 100%;
@@ -309,6 +316,7 @@ nav ul li.active {
 }
 #playlists .grid h2 .icon {
   margin-right: 4px;
+  color: var(--primary);
 }
 #playlists .grid li:nth-child(odd) {
   background-color: #555;
@@ -317,4 +325,9 @@ nav ul li.active {
   #playlists .grid .icon {
     width: 32px;
   }
+}
+:root {
+  --primary: dodgerblue;
+  --fg: #fff;
+  --bg: #333;
 }

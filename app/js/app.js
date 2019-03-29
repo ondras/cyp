@@ -33,6 +33,15 @@ function initIcons() {
 	});
 }
 
+function fromHash() {
+	let hash = location.hash.substring(1);
+	activate(hash || "queue");
+}
+
+function onHashChange(e) {
+	fromHash();
+}
+
 async function init() {
 	initIcons();
 	await mpd.init();
@@ -44,8 +53,8 @@ async function init() {
 	}
 
 	player.init(document.querySelector("#player"));
-
-	activate("yt");
+	window.addEventListener("hashchange", onHashChange);
+	fromHash();
 }
 
 

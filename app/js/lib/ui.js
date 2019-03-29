@@ -104,7 +104,7 @@ function addButton(type, what, parent) {
 }
 
 export function song(ctx, data, parent) {
-	let node = html.node("li", {}, "", parent);
+	let node = html.node("li", {className:"song"}, "", parent);
 
 
 	let title = formatTitle(ctx, data);
@@ -134,7 +134,7 @@ export function song(ctx, data, parent) {
 }
 
 export function group(ctx, label, urlOrFilter, parent) {
-	let node = html.node("li", {}, "", parent);
+	let node = html.node("li", {className:"group"}, "", parent);
 
 	let h2 = html.node("h2", {}, "", node);
 	if (ctx == CTX_FS) { html.icon("folder", h2); }
