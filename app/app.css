@@ -245,6 +245,14 @@ nav ul li.active {
     width: 32px;
   }
 }
+#library .tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+#library .tiles li {
+  border: 3px solid lime;
+  height: 200px;
+}
 #fs {
   height: 100%;
   display: flex;

@@ -1,3 +1,13 @@
 #library {
 	.component;
+
+	.tiles {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+
+		li {
+			border: 3px solid lime;
+			height: 200px;
+		}
+	}
 }
