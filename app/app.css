@@ -40,6 +40,9 @@ button {
   cursor: pointer;
   flex-shrink: 0;
 }
+.art img {
+  vertical-align: top;
+}
 @font-face {
   font-family: 'Lato';
   src: url('font/LatoLatin-Regular.woff2') format('woff2');
@@ -100,9 +103,6 @@ nav ul li.active {
 #player:not([data-flags~=random]) .random,
 #player:not([data-flags~=repeat]) .repeat {
   opacity: 0.5;
-}
-#player .art img {
-  vertical-align: top;
 }
 #player .info {
   flex-grow: 1;
@@ -245,6 +245,9 @@ nav ul li.active {
     width: 32px;
   }
 }
+#library li {
+  padding: 0;
+}
 #library .tiles {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -339,6 +342,78 @@ nav ul li.active {
 @media (pointer: coarse) {
   #playlists .icon {
     width: 32px;
+  }
+}
+#yt {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#yt ul {
+  flex-grow: 1;
+  overflow: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#yt li {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+#yt h2 {
+  flex-grow: 1;
+  font-size: 100%;
+  font-weight: normal;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#yt h2 .icon {
+  margin-right: 4px;
+  color: var(--primary);
+}
+#yt li:nth-child(odd) {
+  background-color: #555;
+}
+@media (pointer: coarse) {
+  #yt .icon {
+    width: 32px;
+  }
+}
+#yt .go {
+  width: 96px;
+  height: 96px;
+}
+#yt .go:disabled {
+  position: relative;
+}
+#yt .go:disabled::before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border-top: 3px solid var(--primary);
+  border-radius: 50%;
+  animation: rotate linear 3s infinite;
+}
+#yt p {
+  margin: 16px 8px;
+  white-space: pre-wrap;
+}
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 :root {

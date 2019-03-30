@@ -1,0 +1,38 @@
+#yt {
+	.component; 
+
+	align-items: center;
+	justify-content: center;
+
+	.go {
+		width: 96px;
+		height: 96px;
+
+		&:disabled {
+			position: relative;
+
+			&::before {
+				content: "";
+				display: block;
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				border-top: 3px solid var(--primary);
+				border-radius: 50%;
+				animation: rotate linear 3s infinite;
+			}			
+		}
+	}
+
+	p {
+		margin: 16px 8px;
+		white-space: pre-wrap;
+	}
+}
+
+@keyframes rotate {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
