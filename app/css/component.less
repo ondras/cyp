@@ -11,35 +11,33 @@
 		padding: 0;
 	}
 
-	.grid {
-		li {
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			padding: 0 4px;
-			white-space: nowrap;
-		}
+	li {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding: 0 4px;
+		white-space: nowrap;
+	}
 
-		h2 {
-			flex-grow: 1;
-			font-size: 100%;
-			font-weight: normal;
-			margin: 0;
-			overflow: hidden;
-			text-overflow: ellipsis;
+	h2 {
+		flex-grow: 1;
+		font-size: 100%;
+		font-weight: normal;
+		margin: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
 
-			.icon {
-				margin-right: 4px;
-				color: var(--primary);
-			}
+		.icon {
+			margin-right: 4px;
+			color: var(--primary);
 		}
+	}
 
-		li:nth-child(odd) {
-			background-color: #555;
-		}
+	li:nth-child(odd) {
+		background-color: #555;
+	}
 
-		@media (pointer: coarse) {
-			.icon { width: 32px; }
-		}
+	@media (pointer: coarse) {
+		.icon { width: 32px; }
 	}
 }

@@ -2,6 +2,7 @@ import * as mpd from "./mpd.js";
 import * as html from "./html.js";
 import * as pubsub from "./pubsub.js";
 import * as format from "./format.js";
+import * as art from "./art.js";
 import * as player from "../player.js";
 
 export const CTX_FS = 1;
@@ -15,11 +16,33 @@ const TYPE_PLAYLIST = 4;
 
 const SORT = "-Track";
 
-function enqueue(type, what) {
+async function enqueue(type, what) {
 	switch (type) {
 		case TYPE_URL: return mpd.command(`add "${mpd.escape(what)}"`); break;
 		case TYPE_FILTER: return mpd.enqueueByFilter(what, SORT); break;
 		case TYPE_PLAYLIST: return mpd.command(`load "${mpd.escape(what)}"`); break;
+	}
+}
+
+async function fillArt(parent, filter) {
+	let artist = filter["Artist"];
+	let album = filter["Album"];
+	let src = null;
+
+	if (artist && album) {
+		src = await art.get(artist, album);
+		if (!src) {
+			let songs = await mpd.listSongs(filter, [0,1]);
+			if (songs.length) {
+				src = await art.get(artist, album, songs[0]["file"]);
+			}
+		}
+	}
+
+	if (src) {
+		html.node("img", {src}, "", parent);
+	} else {
+		html.icon("music", parent);
 	}
 }
 
@@ -106,7 +129,6 @@ function addButton(type, what, parent) {
 export function song(ctx, data, parent) {
 	let node = html.node("li", {className:"song"}, "", parent);
 
-
 	let title = formatTitle(ctx, data);
 	let h2 = html.node("h2", {}, "", node);
 	if (ctx == CTX_FS || ctx == CTX_LIBRARY) { html.icon("music", h2); }
@@ -136,9 +158,15 @@ export function song(ctx, data, parent) {
 export function group(ctx, label, urlOrFilter, parent) {
 	let node = html.node("li", {className:"group"}, "", parent);
 
+	if (ctx == CTX_LIBRARY) {
+		let art = html.node("span", {className:"art"}, "", node);
+		fillArt(art, urlOrFilter);
+	}
+
 	let h2 = html.node("h2", {}, "", node);
 	if (ctx == CTX_FS) { html.icon("folder", h2); }
 	html.text(label, h2);
+
 
 	let type = (ctx == CTX_FS ? TYPE_URL : TYPE_FILTER);
 

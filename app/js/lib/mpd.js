@@ -11,6 +11,7 @@ function onMessage(e) {
 		if (last.startsWith("OK")) {
 			current.resolve(lines);
 		} else {
+			console.warn(last);
 			current.reject(last);
 		}
 		current = null;
@@ -108,12 +109,13 @@ export async function listTags(tag, filter = null) {
 	}
 	let lines = await command(tokens.join(" "));
 	let parsed = parser.linesToStruct(lines);
-	return [].concat(parsed[tag] || []);
+	return [].concat(tag in parsed ? parsed[tag] : []);
 }
 
-export async function listSongs(filter) {
+export async function listSongs(filter, window = null) {
 	let tokens = ["find"];
 	tokens.push(serializeFilter(filter));
+	if (window) { tokens.push("window", window.join(":")); }
 	let lines = await command(tokens.join(" "));
 	return parser.songList(lines);
 }

@@ -12,7 +12,7 @@ body {
   line-height: 1;
   background-color: var(--bg);
   color: var(--fg);
-  text-shadow: 0 1px 1px #000;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
   max-width: 800px;
   margin: 0 auto;
   overflow: hidden;
@@ -137,14 +137,14 @@ nav ul li.active {
   margin: 0;
   padding: 0;
 }
-.component .grid li {
+.component li {
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 0 4px;
   white-space: nowrap;
 }
-.component .grid h2 {
+.component h2 {
   flex-grow: 1;
   font-size: 100%;
   font-weight: normal;
@@ -152,15 +152,15 @@ nav ul li.active {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.component .grid h2 .icon {
+.component h2 .icon {
   margin-right: 4px;
   color: var(--primary);
 }
-.component .grid li:nth-child(odd) {
+.component li:nth-child(odd) {
   background-color: #555;
 }
 @media (pointer: coarse) {
-  .component .grid .icon {
+  .component .icon {
     width: 32px;
   }
 }
@@ -176,14 +176,14 @@ nav ul li.active {
   margin: 0;
   padding: 0;
 }
-#queue .grid li {
+#queue li {
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 0 4px;
   white-space: nowrap;
 }
-#queue .grid h2 {
+#queue h2 {
   flex-grow: 1;
   font-size: 100%;
   font-weight: normal;
@@ -191,15 +191,15 @@ nav ul li.active {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#queue .grid h2 .icon {
+#queue h2 .icon {
   margin-right: 4px;
   color: var(--primary);
 }
-#queue .grid li:nth-child(odd) {
+#queue li:nth-child(odd) {
   background-color: #555;
 }
 @media (pointer: coarse) {
-  #queue .grid .icon {
+  #queue .icon {
     width: 32px;
   }
 }
@@ -218,14 +218,14 @@ nav ul li.active {
   margin: 0;
   padding: 0;
 }
-#library .grid li {
+#library li {
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 0 4px;
   white-space: nowrap;
 }
-#library .grid h2 {
+#library h2 {
   flex-grow: 1;
   font-size: 100%;
   font-weight: normal;
@@ -233,25 +233,32 @@ nav ul li.active {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#library .grid h2 .icon {
+#library h2 .icon {
   margin-right: 4px;
   color: var(--primary);
 }
-#library .grid li:nth-child(odd) {
+#library li:nth-child(odd) {
   background-color: #555;
 }
 @media (pointer: coarse) {
-  #library .grid .icon {
+  #library .icon {
     width: 32px;
   }
 }
 #library .tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 2px;
 }
 #library .tiles li {
-  border: 3px solid lime;
+  text-align: center;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.08);
   height: 200px;
+}
+#library .tiles li h2 {
+  font-size: 150%;
+  margin: 4px 0;
 }
 #fs {
   height: 100%;
@@ -265,14 +272,14 @@ nav ul li.active {
   margin: 0;
   padding: 0;
 }
-#fs .grid li {
+#fs li {
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 0 4px;
   white-space: nowrap;
 }
-#fs .grid h2 {
+#fs h2 {
   flex-grow: 1;
   font-size: 100%;
   font-weight: normal;
@@ -280,15 +287,15 @@ nav ul li.active {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#fs .grid h2 .icon {
+#fs h2 .icon {
   margin-right: 4px;
   color: var(--primary);
 }
-#fs .grid li:nth-child(odd) {
+#fs li:nth-child(odd) {
   background-color: #555;
 }
 @media (pointer: coarse) {
-  #fs .grid .icon {
+  #fs .icon {
     width: 32px;
   }
 }
@@ -307,14 +314,14 @@ nav ul li.active {
   margin: 0;
   padding: 0;
 }
-#playlists .grid li {
+#playlists li {
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 0 4px;
   white-space: nowrap;
 }
-#playlists .grid h2 {
+#playlists h2 {
   flex-grow: 1;
   font-size: 100%;
   font-weight: normal;
@@ -322,15 +329,15 @@ nav ul li.active {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#playlists .grid h2 .icon {
+#playlists h2 .icon {
   margin-right: 4px;
   color: var(--primary);
 }
-#playlists .grid li:nth-child(odd) {
+#playlists li:nth-child(odd) {
   background-color: #555;
 }
 @media (pointer: coarse) {
-  #playlists .grid .icon {
+  #playlists .icon {
     width: 32px;
   }
 }

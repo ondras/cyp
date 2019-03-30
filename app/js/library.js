@@ -44,8 +44,6 @@ function buildArtist(artist, filter, parent) {
 function buildSongs(songs, filter) {
 	let ul = node.querySelector("ul");
 	html.clear(ul);
-	ul.classList.remove("tiles");
-	ul.classList.add("grid");
 
 	songs.map(song => ui.song(ui.CTX_LIBRARY, song, ul));
 }
@@ -53,8 +51,6 @@ function buildSongs(songs, filter) {
 function buildAlbums(albums, filter) {
 	let ul = node.querySelector("ul");
 	html.clear(ul);
-	ul.classList.add("tiles");
-	ul.classList.remove("grid");
 
 	albums.map(album => buildAlbum(album, filter, ul));
 }
@@ -62,8 +58,6 @@ function buildAlbums(albums, filter) {
 function buildArtists(artists, filter) {
 	let ul = node.querySelector("ul");
 	html.clear(ul);
-	ul.classList.add("tiles");
-	ul.classList.remove("grid");
 
 	artists.map(artist => buildArtist(artist, filter, ul));
 }

@@ -15,9 +15,16 @@ function sync(data) {
 	DOM.elapsed.textContent = format.time(Number(data["elapsed"] || 0)); // changed time
 
 	if (data["file"] != current["file"]) { // changed song
-		DOM.duration.textContent = format.time(Number(data["duration"] || 0));
-		DOM.title.textContent = data["Title"] || data["file"].split("/").pop();
-		DOM["artist-album"].textContent = format.artistAlbum(data["Artist"], data["Album"]);
+		if (data["file"]) { // playing at all?
+			DOM.duration.textContent = format.time(Number(data["duration"] || 0));
+			DOM.title.textContent = data["Title"] || data["file"].split("/").pop();
+			DOM["artist-album"].textContent = format.artistAlbum(data["Artist"], data["Album"]);
+		} else {
+			DOM.duration.textContent = "";
+			DOM.title.textContent = "";
+			DOM["artist-album"].textContent = "";
+		}
+
 		pubsub.publish("song-change", null, data);
 	}
 
