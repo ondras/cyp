@@ -141,7 +141,6 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0 4px;
   white-space: nowrap;
 }
 .component h2 {
@@ -149,6 +148,7 @@ nav ul li.active {
   font-size: 100%;
   font-weight: normal;
   margin: 0;
+  margin-left: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -180,7 +180,6 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0 4px;
   white-space: nowrap;
 }
 #queue h2 {
@@ -188,6 +187,7 @@ nav ul li.active {
   font-size: 100%;
   font-weight: normal;
   margin: 0;
+  margin-left: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -222,7 +222,6 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0 4px;
   white-space: nowrap;
 }
 #library h2 {
@@ -230,6 +229,7 @@ nav ul li.active {
   font-size: 100%;
   font-weight: normal;
   margin: 0;
+  margin-left: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -245,8 +245,8 @@ nav ul li.active {
     width: 32px;
   }
 }
-#library li {
-  padding: 0;
+#library .art img {
+  width: 64px;
 }
 #library .tiles {
   display: grid;
@@ -279,7 +279,6 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0 4px;
   white-space: nowrap;
 }
 #fs h2 {
@@ -287,6 +286,7 @@ nav ul li.active {
   font-size: 100%;
   font-weight: normal;
   margin: 0;
+  margin-left: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -321,7 +321,6 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0 4px;
   white-space: nowrap;
 }
 #playlists h2 {
@@ -329,6 +328,7 @@ nav ul li.active {
   font-size: 100%;
   font-weight: normal;
   margin: 0;
+  margin-left: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -362,7 +362,6 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0 4px;
   white-space: nowrap;
 }
 #yt h2 {
@@ -370,6 +369,7 @@ nav ul li.active {
   font-size: 100%;
   font-weight: normal;
   margin: 0;
+  margin-left: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
 }

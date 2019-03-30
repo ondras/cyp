@@ -2,12 +2,18 @@ import * as mpd from "./lib/mpd.js";
 import * as html from "./lib/html.js";
 import * as ui from "./lib/ui.js";
 
-let node;
+import Search from "./lib/search.js";
+
+let node, search;
+
+function nonempty(x) { return x.length > 0; }
 
 function buildHeader(filter) {
 	filter = filter || {};
 	let header = node.querySelector("header");
 	html.clear(header);
+
+	header.appendChild(search.getNode());
 
 	let button = html.button({}, "Music Library", header);
 	button.addEventListener("click", e => listArtists());
@@ -52,14 +58,14 @@ function buildAlbums(albums, filter) {
 	let ul = node.querySelector("ul");
 	html.clear(ul);
 
-	albums.map(album => buildAlbum(album, filter, ul));
+	albums.filter(nonempty).map(album => buildAlbum(album, filter, ul));
 }
 
 function buildArtists(artists, filter) {
 	let ul = node.querySelector("ul");
 	html.clear(ul);
 
-	artists.map(artist => buildArtist(artist, filter, ul));
+	artists.filter(nonempty).map(artist => buildArtist(artist, filter, ul));
 }
 
 async function listSongs(filter) {
@@ -80,10 +86,17 @@ async function listArtists(filter) {
 	buildHeader(filter);
 }
 
+function onSearch(e) {
+	
+}
+
 export async function activate() {
 	listArtists();
 }
 
 export function init(n) {
 	node = n;
+
+	search = new Search(node.querySelector(".search"));
+	search.addEventListener("input", onSearch);
 }
