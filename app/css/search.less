@@ -1,0 +1,21 @@
+.search {
+	.icon {
+		width: 32px;
+	}
+
+	input {
+		border: none;
+		color: inherit;
+		background-color: inherit;
+		border-bottom: 1px solid var(--fg);
+		transition: all 300ms;
+		padding: 0;
+		width: 30%;
+	}
+
+	&:not(.open) {
+		input {
+			width: 0;
+		}
+	}
+}

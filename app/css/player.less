@@ -7,25 +7,37 @@
 	&[data-state=play] .play { display: none; }
 	&:not([data-flags~=random]) .random, &:not([data-flags~=repeat]) .repeat { opacity: 0.5; }
 
+	.art {
+		margin-right: var(--icon-spacing);
+	}
+
+	h2 {
+		font-size: 125%;
+		margin-top: 0;
+	}
+
 	.info { 
 		flex-grow: 1;
-		white-space: nowrap;
 		overflow: hidden;
-		text-overflow: ellipsis;
 	}
+
+	.title, .subtitle { .long-line; }
 
 	.controls {
 		white-space: nowrap;
 		text-align: center;
-		.icon { width: 64px; }
+		.icon { 
+			width: 32px;
+			margin: 8px;
+		}
 	}
 
 	.misc {
 		display: flex;
 		flex-direction: column;
-		@size: 96px / 2;
-		width: @size;
-		.icon { width: @size; }
+		align-self: stretch;
+		justify-content: space-around;
+		.icon { width: 32px; }
 	}
 
 }

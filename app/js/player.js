@@ -18,11 +18,11 @@ function sync(data) {
 		if (data["file"]) { // playing at all?
 			DOM.duration.textContent = format.time(Number(data["duration"] || 0));
 			DOM.title.textContent = data["Title"] || data["file"].split("/").pop();
-			DOM["artist-album"].textContent = format.artistAlbum(data["Artist"], data["Album"]);
+			DOM.subtitle.textContent = format.subtitle(data);
 		} else {
 			DOM.duration.textContent = "";
 			DOM.title.textContent = "";
-			DOM["artist-album"].textContent = "";
+			DOM.subtitle.textContent = "";
 		}
 
 		pubsub.publish("song-change", null, data);

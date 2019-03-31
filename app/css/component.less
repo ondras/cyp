@@ -15,21 +15,30 @@
 		display: flex;
 		flex-direction: row;
 		align-items: center;
-		white-space: nowrap;
-	}
 
-	h2 {
-		flex-grow: 1;
-		font-size: 100%;
-		font-weight: normal;
-		margin: 0;
-		margin-left: 4px;
-		overflow: hidden;
-		text-overflow: ellipsis;
+		.info { 
+			flex-grow: 1;
+			overflow: hidden;
 
-		.icon {
-			margin-right: 4px;
-			color: var(--primary);
+			.icon {
+				color: var(--primary);
+				margin-right: var(--icon-spacing);
+			}
+
+			h2 {
+				font-size: var(--font-size-large);
+				margin: 0;
+			}
+
+			h2, div { .long-line; }
+		}
+
+		&.has-art {
+
+		}
+
+		&:not(.has-art) {
+			padding: 8px;
 		}
 	}
 
@@ -37,7 +46,6 @@
 		background-color: #555;
 	}
 
-	@media (pointer: coarse) {
-		.icon { width: 32px; }
-	}
+	button .icon { width: 32px; }
+
 }

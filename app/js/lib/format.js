@@ -1,3 +1,5 @@
+const SEPARATOR = " · ";
+
 export function time(sec) {
 	sec = Math.round(sec);
 	let m = Math.floor(sec / 60);
@@ -5,9 +7,10 @@ export function time(sec) {
 	return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-export function artistAlbum(artist, album) {
+export function subtitle(data) {
 	let tokens = [];
-	artist && tokens.push(artist);
-	album && tokens.push(album);
-	return tokens.join(" – ");
+	data["Artist"] && tokens.push(data["Artist"]);
+	data["Album"] && tokens.push(data["Album"]);
+	data["duration"] && tokens.push(time(Number(data["duration"])));
+	return tokens.join(SEPARATOR);
 }

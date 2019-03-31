@@ -7,7 +7,7 @@ html {
 body {
 	box-sizing: border-box;
 	font-family: lato, sans-serif;
-	line-height: 1;
+	line-height: 1.25;
 	background-color: var(--bg);
 	color: var(--fg);
 	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
@@ -25,6 +25,7 @@ body {
 
 input, select, button {
 	color: inherit;
+	font: inherit;
 }
 
 button {
@@ -44,6 +45,20 @@ button {
 	vertical-align: top;
 }
 
+.long-line {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.multiline {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
+	h2 { font-weight: normal; }
+}
+
 @import "font.less";
 @import "icons.less";
 @import "main.less";
@@ -55,4 +70,5 @@ button {
 @import "fs.less";
 @import "playlists.less";
 @import "yt.less";
+@import "search.less";
 @import "variables.less";

@@ -42,7 +42,7 @@ async function fillArt(parent, filter) {
 	if (src) {
 		html.node("img", {src}, "", parent);
 	} else {
-		html.icon("music", parent);
+		html.icon(album ? "album" : "artist", parent);
 	}
 }
 
@@ -50,25 +50,29 @@ function fileName(data) {
 	return data["file"].split("/").pop();
 }
 
-function formatTitle(ctx, data) {
+function formatSongInfo(ctx, data) {
+	let lines = [];
 	let tokens = [];
 	switch (ctx) {
-		case CTX_FS: return fileName(data); break;
+		case CTX_FS: lines.push(fileName(data)); break;
 
 		case CTX_LIBRARY:
-			data["Track"] && tokens.push(data["Track"].padStart(2, "0"));
-			data["Title"] && tokens.push(data["Title"]);
-			if (!tokens.length)  {tokens.push(fileName(data)); }
-			return tokens.join(" ");
-		break;
-
 		case CTX_QUEUE:
-			data["Artist"] && tokens.push(data["Artist"]);
-			data["Title"] && tokens.push(data["Title"]);
-			if (!tokens.length) { tokens.push(fileName(data)); }
-			return tokens.join(" - ");
+			if (data["Title"]) {
+				if (ctx == CTX_LIBRARY && data["Track"]) {
+					tokens.push(data["Track"].padStart(2, "0"));
+				}
+				tokens.push(data["Title"]);
+				lines.push(tokens.join(" "));
+				lines.push(format.subtitle(data));
+			} else {
+				lines.push(fileName(data));
+				lines.push("\u00A0");
+			}
 		break;
 	}
+
+	return lines;
 }
 
 function playButton(type, what, parent) {
@@ -128,13 +132,14 @@ function addButton(type, what, parent) {
 
 export function song(ctx, data, parent) {
 	let node = html.node("li", {className:"song"}, "", parent);
+	let info = html.node("div", {className:"info"}, "", node);
 
-	let title = formatTitle(ctx, data);
-	let h2 = html.node("h2", {}, "", node);
-	if (ctx == CTX_FS || ctx == CTX_LIBRARY) { html.icon("music", h2); }
-	html.text(title, h2);
+	if (ctx == CTX_FS) { html.icon("music", info); }
 
-	html.node("span", {className:"duration"}, format.time(Number(data["duration"])), node);
+	let lines = formatSongInfo(ctx, data);
+	html.node("h2", {}, lines.shift(), info);
+	lines.length && html.node("div", {}, lines.shift(), info);
+
 
 	switch (ctx) {
 		case CTX_QUEUE:
@@ -159,14 +164,14 @@ export function group(ctx, label, urlOrFilter, parent) {
 	let node = html.node("li", {className:"group"}, "", parent);
 
 	if (ctx == CTX_LIBRARY) {
+		node.classList.add("has-art");
 		let art = html.node("span", {className:"art"}, "", node);
 		fillArt(art, urlOrFilter);
 	}
 
-	let h2 = html.node("h2", {}, "", node);
-	if (ctx == CTX_FS) { html.icon("folder", h2); }
-	html.text(label, h2);
-
+	let info = html.node("span", {className:"info"}, "", node);
+	if (ctx == CTX_FS) { html.icon("folder", info); }
+	html.node("h2", {}, label, info);
 
 	let type = (ctx == CTX_FS ? TYPE_URL : TYPE_FILTER);
 
@@ -179,9 +184,9 @@ export function group(ctx, label, urlOrFilter, parent) {
 export function playlist(name, parent) {
 	let node = html.node("li", {}, "", parent);
 
-	let h2 = html.node("h2", {}, "", node);
-	html.icon("playlist-music", h2)
-	html.text(name, h2);
+	let info = html.node("span", {className:"info"}, "", node);
+	html.icon("playlist-music", info)
+	html.node("h2", {}, name, info);
 
 	playButton(TYPE_PLAYLIST, name, node);
 	addButton(TYPE_PLAYLIST, name, node);

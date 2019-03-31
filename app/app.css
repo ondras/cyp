@@ -9,7 +9,7 @@ html {
 body {
   box-sizing: border-box;
   font-family: lato, sans-serif;
-  line-height: 1;
+  line-height: 1.25;
   background-color: var(--bg);
   color: var(--fg);
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
@@ -28,6 +28,7 @@ input,
 select,
 button {
   color: inherit;
+  font: inherit;
 }
 button {
   -webkit-appearance: none;
@@ -42,6 +43,19 @@ button {
 }
 .art img {
   vertical-align: top;
+}
+.long-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.multiline {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.multiline h2 {
+  font-weight: normal;
 }
 @font-face {
   font-family: 'Lato';
@@ -104,8 +118,19 @@ nav ul li.active {
 #player:not([data-flags~=repeat]) .repeat {
   opacity: 0.5;
 }
+#player .art {
+  margin-right: var(--icon-spacing);
+}
+#player h2 {
+  font-size: 125%;
+  margin-top: 0;
+}
 #player .info {
   flex-grow: 1;
+  overflow: hidden;
+}
+#player .title,
+#player .subtitle {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -115,15 +140,17 @@ nav ul li.active {
   text-align: center;
 }
 #player .controls .icon {
-  width: 64px;
+  width: 32px;
+  margin: 8px;
 }
 #player .misc {
   display: flex;
   flex-direction: column;
-  width: 48px;
+  align-self: stretch;
+  justify-content: space-around;
 }
 #player .misc .icon {
-  width: 48px;
+  width: 32px;
 }
 .component {
   height: 100%;
@@ -141,28 +168,33 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  white-space: nowrap;
 }
-.component h2 {
+.component li .info {
   flex-grow: 1;
-  font-size: 100%;
-  font-weight: normal;
+  overflow: hidden;
+}
+.component li .info .icon {
+  color: var(--primary);
+  margin-right: var(--icon-spacing);
+}
+.component li .info h2 {
+  font-size: var(--font-size-large);
   margin: 0;
-  margin-left: 4px;
+}
+.component li .info h2,
+.component li .info div {
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.component h2 .icon {
-  margin-right: 4px;
-  color: var(--primary);
+.component li:not(.has-art) {
+  padding: 8px;
 }
 .component li:nth-child(odd) {
   background-color: #555;
 }
-@media (pointer: coarse) {
-  .component .icon {
-    width: 32px;
-  }
+.component button .icon {
+  width: 32px;
 }
 #queue {
   height: 100%;
@@ -180,31 +212,36 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  white-space: nowrap;
 }
-#queue h2 {
+#queue li .info {
   flex-grow: 1;
-  font-size: 100%;
-  font-weight: normal;
+  overflow: hidden;
+}
+#queue li .info .icon {
+  color: var(--primary);
+  margin-right: var(--icon-spacing);
+}
+#queue li .info h2 {
+  font-size: var(--font-size-large);
   margin: 0;
-  margin-left: 4px;
+}
+#queue li .info h2,
+#queue li .info div {
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#queue h2 .icon {
-  margin-right: 4px;
-  color: var(--primary);
+#queue li:not(.has-art) {
+  padding: 8px;
 }
 #queue li:nth-child(odd) {
   background-color: #555;
 }
-@media (pointer: coarse) {
-  #queue .icon {
-    width: 32px;
-  }
+#queue button .icon {
+  width: 32px;
 }
-#queue .current * {
-  font-weight: bold !important;
+#queue .current {
+  color: var(--primary);
 }
 #library {
   height: 100%;
@@ -222,31 +259,44 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  white-space: nowrap;
 }
-#library h2 {
+#library li .info {
   flex-grow: 1;
-  font-size: 100%;
-  font-weight: normal;
+  overflow: hidden;
+}
+#library li .info .icon {
+  color: var(--primary);
+  margin-right: var(--icon-spacing);
+}
+#library li .info h2 {
+  font-size: var(--font-size-large);
   margin: 0;
-  margin-left: 4px;
+}
+#library li .info h2,
+#library li .info div {
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#library h2 .icon {
-  margin-right: 4px;
-  color: var(--primary);
+#library li:not(.has-art) {
+  padding: 8px;
 }
 #library li:nth-child(odd) {
   background-color: #555;
 }
-@media (pointer: coarse) {
-  #library .icon {
-    width: 32px;
-  }
+#library button .icon {
+  width: 32px;
 }
-#library .art img {
+#library .art img,
+#library .art .icon {
   width: 64px;
+  margin-right: var(--icon-spacing);
+}
+#library .group {
+  cursor: pointer;
+}
+#library .group h2 {
+  font-weight: normal;
 }
 #library .tiles {
   display: grid;
@@ -279,31 +329,44 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  white-space: nowrap;
 }
-#fs h2 {
+#fs li .info {
   flex-grow: 1;
-  font-size: 100%;
-  font-weight: normal;
+  overflow: hidden;
+}
+#fs li .info .icon {
+  color: var(--primary);
+  margin-right: var(--icon-spacing);
+}
+#fs li .info h2 {
+  font-size: var(--font-size-large);
   margin: 0;
-  margin-left: 4px;
+}
+#fs li .info h2,
+#fs li .info div {
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#fs h2 .icon {
-  margin-right: 4px;
-  color: var(--primary);
+#fs li:not(.has-art) {
+  padding: 8px;
 }
 #fs li:nth-child(odd) {
   background-color: #555;
 }
-@media (pointer: coarse) {
-  #fs .icon {
-    width: 32px;
-  }
+#fs button .icon {
+  width: 32px;
 }
 #fs .group {
   cursor: pointer;
+}
+#fs .info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+#fs .info h2 {
+  font-weight: normal;
 }
 #playlists {
   height: 100%;
@@ -321,28 +384,41 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  white-space: nowrap;
 }
-#playlists h2 {
+#playlists li .info {
   flex-grow: 1;
-  font-size: 100%;
-  font-weight: normal;
+  overflow: hidden;
+}
+#playlists li .info .icon {
+  color: var(--primary);
+  margin-right: var(--icon-spacing);
+}
+#playlists li .info h2 {
+  font-size: var(--font-size-large);
   margin: 0;
-  margin-left: 4px;
+}
+#playlists li .info h2,
+#playlists li .info div {
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#playlists h2 .icon {
-  margin-right: 4px;
-  color: var(--primary);
+#playlists li:not(.has-art) {
+  padding: 8px;
 }
 #playlists li:nth-child(odd) {
   background-color: #555;
 }
-@media (pointer: coarse) {
-  #playlists .icon {
-    width: 32px;
-  }
+#playlists button .icon {
+  width: 32px;
+}
+#playlists .info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+#playlists .info h2 {
+  font-weight: normal;
 }
 #yt {
   height: 100%;
@@ -362,28 +438,33 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  white-space: nowrap;
 }
-#yt h2 {
+#yt li .info {
   flex-grow: 1;
-  font-size: 100%;
-  font-weight: normal;
+  overflow: hidden;
+}
+#yt li .info .icon {
+  color: var(--primary);
+  margin-right: var(--icon-spacing);
+}
+#yt li .info h2 {
+  font-size: var(--font-size-large);
   margin: 0;
-  margin-left: 4px;
+}
+#yt li .info h2,
+#yt li .info div {
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#yt h2 .icon {
-  margin-right: 4px;
-  color: var(--primary);
+#yt li:not(.has-art) {
+  padding: 8px;
 }
 #yt li:nth-child(odd) {
   background-color: #555;
 }
-@media (pointer: coarse) {
-  #yt .icon {
-    width: 32px;
-  }
+#yt button .icon {
+  width: 32px;
 }
 #yt .go {
   width: 96px;
@@ -416,8 +497,25 @@ nav ul li.active {
     transform: rotate(360deg);
   }
 }
+.search .icon {
+  width: 32px;
+}
+.search input {
+  border: none;
+  color: inherit;
+  background-color: inherit;
+  border-bottom: 1px solid var(--fg);
+  transition: all 300ms;
+  padding: 0;
+  width: 30%;
+}
+.search:not(.open) input {
+  width: 0;
+}
 :root {
   --primary: dodgerblue;
   --fg: #fff;
   --bg: #333;
+  --font-size-large: 112.5%;
+  --icon-spacing: 4px;
 }
