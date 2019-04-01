@@ -30,6 +30,7 @@ function buildHeader(filter) {
 		}
 	}
 
+	search.reset();
 	header.appendChild(search.getNode());
 }
 
@@ -37,6 +38,7 @@ function buildAlbum(album, filter, parent) {
 	let childFilter = Object.assign({}, filter, {"Album": album});
 	let node = ui.group(ui.CTX_LIBRARY, album, childFilter, parent);
 	node.addEventListener("click", e => listSongs(childFilter));
+	node.dataset.name = album;
 	return node;
 }
 
@@ -44,6 +46,7 @@ function buildArtist(artist, filter, parent) {
 	let childFilter = Object.assign({}, filter, {"Artist": artist});
 	let node = ui.group(ui.CTX_LIBRARY, artist, childFilter, parent);
 	node.addEventListener("click", e => listAlbums(childFilter));
+	node.dataset.name = artist;
 	return node;
 }
 
@@ -51,7 +54,10 @@ function buildSongs(songs, filter) {
 	let ul = node.querySelector("ul");
 	html.clear(ul);
 
-	songs.map(song => ui.song(ui.CTX_LIBRARY, song, ul));
+	songs.map(song => {
+		let node = ui.song(ui.CTX_LIBRARY, song, ul);
+		node.dataset.name = song["Title"];
+	});
 }
 
 function buildAlbums(albums, filter) {
@@ -87,7 +93,10 @@ async function listArtists(filter) {
 }
 
 function onSearch(e) {
-	
+	Array.from(node.querySelectorAll("[data-name]")).forEach(node => {
+		let name = node.dataset.name;
+		node.style.display = (search.match(name) ? "" : "none");
+	});
 }
 
 export async function activate() {

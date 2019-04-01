@@ -22,6 +22,7 @@ function buildHeader(path) {
 		button.addEventListener("click", e => list(path));
 	});
 
+	search.reset();
 	header.appendChild(search.getNode());
 }
 
@@ -30,11 +31,15 @@ function buildDirectory(data, parent) {
 	let name = path.split("/").pop();
 	let node = ui.group(ui.CTX_FS, name, path, parent);
 	node.addEventListener("click", e => list(path));
+	node.dataset.name = name;
 	return node;
 }
 
 function buildFile(data, parent) {
-	return ui.song(ui.CTX_FS, data, parent);
+	let node = ui.song(ui.CTX_FS, data, parent);
+	let name = data["file"].split("/").pop();
+	node.dataset.name = name;
+	return node;
 }
 
 function buildResults(results) {
@@ -52,7 +57,10 @@ async function list(path) {
 }
 
 function onSearch(e) {
-
+	Array.from(node.querySelectorAll("[data-name]")).forEach(node => {
+		let name = node.dataset.name;
+		node.style.display = (search.match(name) ? "" : "none");
+	});
 }
 
 export async function activate() {

@@ -18,16 +18,25 @@ export default class Search extends EventTarget {
 		this._node.addEventListener("click", e => {
 			if (e.target == this._input) { return; }
 			if (this._node.classList.contains(OPEN)) {
-				this.reset()
+				this.reset();
+				this.dispatchEvent(new Event("input"));	
 			} else {
 				this._node.classList.add(OPEN);
 			}
+		});
+
+		this._input.addEventListener("input", e => {
+			this.dispatchEvent(new Event("input"));
 		});
 	}
 
 	getNode() { return this._node; }
 
-	getValue() { return this._input.value; }
+	match(str) {
+		let q = normalize(this._input.value.trim());
+		if (!q) { return true; }
+		return normalize(str).split(" ").some(str => str.indexOf(q) == 0);
+	}
 
 	reset() {
 		this._input.value = "";

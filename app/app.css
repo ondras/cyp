@@ -42,7 +42,7 @@ button {
   flex-shrink: 0;
 }
 button .icon {
-  vertical-align: top;
+  vertical-align: middle;
 }
 .long-line {
   white-space: nowrap;
