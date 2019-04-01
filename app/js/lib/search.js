@@ -1,11 +1,8 @@
 import * as html from "./html.js";
+import * as conf from "../conf.js";
 
 const OPEN = "open";
-
-export function normalize(str) {
-	// FIXME diac/translit
-	return str.toLowerCase();
-}  
+const collator = new Intl.Collator(conf.locale, {usage:"search", sensitivity:"base"});
 
 export default class Search extends EventTarget {
 	constructor(parent) {
@@ -33,9 +30,10 @@ export default class Search extends EventTarget {
 	getNode() { return this._node; }
 
 	match(str) {
-		let q = normalize(this._input.value.trim());
+		let q = this._input.value.trim();
 		if (!q) { return true; }
-		return normalize(str).split(" ").some(str => str.indexOf(q) == 0);
+		let len = q.length;
+		return str.split(" ").some(str => collator.compare(q, str.substring(0, len)) == 0);
 	}
 
 	reset() {
