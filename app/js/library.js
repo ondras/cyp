@@ -13,8 +13,6 @@ function buildHeader(filter) {
 	let header = node.querySelector("header");
 	html.clear(header);
 
-	header.appendChild(search.getNode());
-
 	let button = html.button({}, "Music Library", header);
 	button.addEventListener("click", e => listArtists());
 
@@ -31,6 +29,8 @@ function buildHeader(filter) {
 			button.addEventListener("click", e => listSongs(albumFilter));
 		}
 	}
+
+	header.appendChild(search.getNode());
 }
 
 function buildAlbum(album, filter, parent) {

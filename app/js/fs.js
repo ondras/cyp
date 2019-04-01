@@ -13,8 +13,6 @@ function buildHeader(path) {
 	let header = node.querySelector("header");
 	html.clear(header);
 
-	header.appendChild(search.getNode());
-
 	let button = html.button({}, "/", header);
 	button.addEventListener("click", e => list(""));
 
@@ -23,6 +21,8 @@ function buildHeader(path) {
 		let path = all.slice(0, index+1).join("/");
 		button.addEventListener("click", e => list(path));
 	});
+
+	header.appendChild(search.getNode());
 }
 
 function buildDirectory(data, parent) {

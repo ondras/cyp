@@ -3,6 +3,10 @@
 	display: flex;
 	flex-direction: column;
 
+	header {
+		display: flex;
+	}
+
 	ul {
 		flex-grow: 1;
 		overflow: auto;
@@ -23,6 +27,7 @@
 			.icon {
 				color: var(--primary);
 				margin-right: var(--icon-spacing);
+				filter: drop-shadow(var(--shadow));
 			}
 
 			h2 {

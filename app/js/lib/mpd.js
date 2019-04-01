@@ -39,7 +39,7 @@ function serializeFilter(filter) {
 	let tokens = ["("];
 	Object.entries(filter).forEach(([key, value], index) => {
 		index && tokens.push(" AND ");
-		tokens.push(`(${key} == "${value}")`);
+		tokens.push(`(${key} == "${escape(value)}")`);
 	});
 	tokens.push(")");
 

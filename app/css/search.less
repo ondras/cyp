@@ -1,6 +1,13 @@
 .search {
+	display: flex;
+	align-items: center;
+	max-width: 50%;
+	margin-left: auto;
+	transition: all 300ms;
+
 	.icon {
 		width: 32px;
+		cursor: pointer;
 	}
 
 	input {
@@ -8,14 +15,15 @@
 		color: inherit;
 		background-color: inherit;
 		border-bottom: 1px solid var(--fg);
-		transition: all 300ms;
+		xtransition: all 300ms;
+		width: 0;
 		padding: 0;
-		width: 30%;
 	}
 
-	&:not(.open) {
+	&.open {
+		flex-grow: 1;
 		input {
-			width: 0;
+			flex-grow: 1;
 		}
 	}
 }

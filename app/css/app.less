@@ -10,7 +10,7 @@ body {
 	line-height: 1.25;
 	background-color: var(--bg);
 	color: var(--fg);
-	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+	text-shadow: var(--shadow);
 	max-width: 800px;
 	margin: 0 auto;
 	overflow: hidden;
@@ -39,10 +39,8 @@ button {
 	line-height: 1;
 	cursor: pointer;
 	flex-shrink: 0;
-}
 
-.art img {
-	vertical-align: top;
+	.icon { vertical-align: top; }
 }
 
 .long-line {
@@ -71,4 +69,5 @@ button {
 @import "playlists.less";
 @import "yt.less";
 @import "search.less";
+@import "art.less";
 @import "variables.less";
