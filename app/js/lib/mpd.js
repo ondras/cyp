@@ -62,7 +62,10 @@ export async function command(cmd) {
 
 export async function commandAndStatus(cmd) {
 	let lines = await command([cmd, "status", "currentsong"]);
-	return parser.linesToStruct(lines);
+	let status = parser.linesToStruct(lines);
+	// duration returned 2x => arrayfied
+	if ("duration" in status) { status["duration"] = status["duration"][0]; }
+	return status;
 }
 
 export async function status() {

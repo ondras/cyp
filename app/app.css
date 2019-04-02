@@ -45,6 +45,12 @@ button {
   cursor: pointer;
   flex-shrink: 0;
 }
+select {
+  background-color: transparent;
+  border: 1px solid var(--fg);
+  border-radius: 4px;
+  padding: 2px 4px;
+}
 @font-face {
   font-family: 'Lato';
   src: url('font/LatoLatin-Regular.woff2') format('woff2');
@@ -218,7 +224,7 @@ nav ul li.active {
   width: 32px;
 }
 .component li:nth-child(odd) {
-  background-color: #555;
+  background-color: var(--bg-alt);
 }
 #queue {
   height: 100%;
@@ -276,7 +282,7 @@ nav ul li.active {
   width: 32px;
 }
 #queue li:nth-child(odd) {
-  background-color: #555;
+  background-color: var(--bg-alt);
 }
 #queue .current {
   color: var(--primary);
@@ -337,7 +343,7 @@ nav ul li.active {
   width: 32px;
 }
 #library li:nth-child(odd) {
-  background-color: #555;
+  background-color: var(--bg-alt);
 }
 #library header {
   white-space: pre;
@@ -432,7 +438,7 @@ nav ul li.active {
   width: 32px;
 }
 #fs li:nth-child(odd) {
-  background-color: #555;
+  background-color: var(--bg-alt);
 }
 #fs header {
   white-space: pre;
@@ -510,7 +516,7 @@ nav ul li.active {
   width: 32px;
 }
 #playlists li:nth-child(odd) {
-  background-color: #555;
+  background-color: var(--bg-alt);
 }
 #playlists .info {
   display: flex;
@@ -578,7 +584,7 @@ nav ul li.active {
   width: 32px;
 }
 #yt li:nth-child(odd) {
-  background-color: #555;
+  background-color: var(--bg-alt);
 }
 #yt .go {
   width: 96px;
@@ -610,6 +616,27 @@ nav ul li.active {
   100% {
     transform: rotate(360deg);
   }
+}
+#settings dl {
+  margin: 8px;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
+  grid-gap: 8px;
+}
+#settings dt {
+  font-weight: bold;
+}
+#settings dd {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+#settings label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 .search {
   display: flex;
@@ -645,10 +672,27 @@ nav ul li.active {
   vertical-align: top;
 }
 :root {
-  --primary: dodgerblue;
-  --fg: #fff;
-  --bg: #333;
-  --shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
   --font-size-large: 112.5%;
   --icon-spacing: 4px;
+}
+:root[data-theme=light] {
+  --fg: #000;
+  --bg: #fff;
+  --bg-alt: #eee;
+  --shadow: none;
+}
+:root[data-theme=dark] {
+  --fg: #fff;
+  --bg: #333;
+  --bg-alt: #555;
+  --shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+:root[data-color=dodgerblue] {
+  --primary: dodgerblue;
+}
+:root[data-color=darkorange] {
+  --primary: darkorange;
+}
+:root[data-color=limegreen] {
+  --primary: limegreen;
 }

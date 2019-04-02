@@ -1,9 +1,30 @@
 :root {
-	--primary: dodgerblue;
-	--fg: #fff;
-	--bg: #333;
-	--shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
-
 	--font-size-large: 112.5%;
 	--icon-spacing: 4px;
+}
+
+:root[data-theme=light] {
+	--fg: #000;
+	--bg: #fff;
+	--bg-alt: #eee;
+	--shadow: none;
+}
+
+:root[data-theme=dark] {
+	--fg: #fff;
+	--bg: #333;
+	--bg-alt: #555;
+	--shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+}
+
+:root[data-color=dodgerblue] {
+	--primary: dodgerblue;
+}
+
+:root[data-color=darkorange] {
+	--primary: darkorange;
+}
+
+:root[data-color=limegreen] {
+	--primary: limegreen;
 }

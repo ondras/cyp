@@ -8,8 +8,9 @@ import * as library from "./library.js";
 import * as fs from "./fs.js";
 import * as playlists from "./playlists.js";
 import * as yt from "./yt.js";
+import * as settings from "./settings.js";
 
-const components = { queue, library, fs, playlists, yt };
+const components = { queue, library, fs, playlists, yt, settings };
 
 export function activate(what) {
 	location.hash = what;
