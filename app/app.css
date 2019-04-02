@@ -7,6 +7,8 @@ html {
   background-color: var(--fg);
 }
 body {
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
   font-family: lato, sans-serif;
   line-height: 1.25;
@@ -16,8 +18,6 @@ body {
   max-width: 800px;
   margin: 0 auto;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
   height: 100vh;
 }
 body > header,
@@ -34,28 +34,16 @@ button {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  display: inline-flex;
   background-color: transparent;
   padding: 0;
   border: none;
   line-height: 1;
   cursor: pointer;
   flex-shrink: 0;
-}
-button .icon {
-  vertical-align: middle;
-}
-.long-line {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.multiline {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-.multiline h2 {
-  font-weight: normal;
 }
 @font-face {
   font-family: 'Lato';
@@ -77,6 +65,28 @@ button .icon {
 .icon circle:not([fill]) {
   fill: currentColor;
 }
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.long-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.multiline {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.multiline h2 {
+  font-weight: normal;
+}
 main {
   flex-grow: 1;
   overflow: hidden;
@@ -87,6 +97,7 @@ nav ul {
   list-style: none;
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 nav ul .icon {
   display: block;
@@ -158,6 +169,16 @@ nav ul li.active {
 }
 .component header {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px;
+}
+.component header button {
+  font-size: var(--font-size-large);
+  font-weight: bold;
+}
+.component header button .icon {
+  margin-right: var(--icon-spacing);
 }
 .component ul {
   flex-grow: 1;
@@ -193,11 +214,11 @@ nav ul li.active {
 .component li:not(.has-art) {
   padding: 8px;
 }
+.component li button .icon {
+  width: 32px;
+}
 .component li:nth-child(odd) {
   background-color: #555;
-}
-.component button .icon {
-  width: 32px;
 }
 #queue {
   height: 100%;
@@ -206,6 +227,16 @@ nav ul li.active {
 }
 #queue header {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px;
+}
+#queue header button {
+  font-size: var(--font-size-large);
+  font-weight: bold;
+}
+#queue header button .icon {
+  margin-right: var(--icon-spacing);
 }
 #queue ul {
   flex-grow: 1;
@@ -241,11 +272,11 @@ nav ul li.active {
 #queue li:not(.has-art) {
   padding: 8px;
 }
+#queue li button .icon {
+  width: 32px;
+}
 #queue li:nth-child(odd) {
   background-color: #555;
-}
-#queue button .icon {
-  width: 32px;
 }
 #queue .current {
   color: var(--primary);
@@ -257,6 +288,16 @@ nav ul li.active {
 }
 #library header {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px;
+}
+#library header button {
+  font-size: var(--font-size-large);
+  font-weight: bold;
+}
+#library header button .icon {
+  margin-right: var(--icon-spacing);
 }
 #library ul {
   flex-grow: 1;
@@ -292,11 +333,20 @@ nav ul li.active {
 #library li:not(.has-art) {
   padding: 8px;
 }
+#library li button .icon {
+  width: 32px;
+}
 #library li:nth-child(odd) {
   background-color: #555;
 }
-#library button .icon {
-  width: 32px;
+#library header {
+  white-space: pre;
+}
+#library .search {
+  order: 1;
+}
+#library .search.open ~ * {
+  display: none;
 }
 #library .art img,
 #library .art .icon {
@@ -333,6 +383,16 @@ nav ul li.active {
 }
 #fs header {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px;
+}
+#fs header button {
+  font-size: var(--font-size-large);
+  font-weight: bold;
+}
+#fs header button .icon {
+  margin-right: var(--icon-spacing);
 }
 #fs ul {
   flex-grow: 1;
@@ -368,11 +428,20 @@ nav ul li.active {
 #fs li:not(.has-art) {
   padding: 8px;
 }
+#fs li button .icon {
+  width: 32px;
+}
 #fs li:nth-child(odd) {
   background-color: #555;
 }
-#fs button .icon {
-  width: 32px;
+#fs header {
+  white-space: pre;
+}
+#fs .search {
+  order: 1;
+}
+#fs .search.open ~ * {
+  display: none;
 }
 #fs .group {
   cursor: pointer;
@@ -392,6 +461,16 @@ nav ul li.active {
 }
 #playlists header {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px;
+}
+#playlists header button {
+  font-size: var(--font-size-large);
+  font-weight: bold;
+}
+#playlists header button .icon {
+  margin-right: var(--icon-spacing);
 }
 #playlists ul {
   flex-grow: 1;
@@ -427,11 +506,11 @@ nav ul li.active {
 #playlists li:not(.has-art) {
   padding: 8px;
 }
+#playlists li button .icon {
+  width: 32px;
+}
 #playlists li:nth-child(odd) {
   background-color: #555;
-}
-#playlists button .icon {
-  width: 32px;
 }
 #playlists .info {
   display: flex;
@@ -450,6 +529,16 @@ nav ul li.active {
 }
 #yt header {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px;
+}
+#yt header button {
+  font-size: var(--font-size-large);
+  font-weight: bold;
+}
+#yt header button .icon {
+  margin-right: var(--icon-spacing);
 }
 #yt ul {
   flex-grow: 1;
@@ -485,11 +574,11 @@ nav ul li.active {
 #yt li:not(.has-art) {
   padding: 8px;
 }
+#yt li button .icon {
+  width: 32px;
+}
 #yt li:nth-child(odd) {
   background-color: #555;
-}
-#yt button .icon {
-  width: 32px;
 }
 #yt .go {
   width: 96px;
@@ -524,8 +613,12 @@ nav ul li.active {
 }
 .search {
   display: flex;
+  flex-direction: row;
   align-items: center;
   margin-left: auto;
+  transition: all 300ms;
+  width: 32px;
+  max-width: 20ch;
 }
 .search .icon {
   width: 32px;
@@ -533,15 +626,16 @@ nav ul li.active {
 }
 .search input {
   border: none;
+  outline: none;
   color: inherit;
   background-color: inherit;
   border-bottom: 1px solid var(--fg);
-  transition: all 300ms;
   width: 0;
   padding: 0;
+  flex-grow: 1;
 }
-.search.open input {
-  width: 10vw;
+.search.open {
+  flex: 1;
 }
 .art {
   margin-right: var(--icon-spacing);

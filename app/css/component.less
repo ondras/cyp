@@ -1,10 +1,17 @@
 .component {
 	height: 100%;
-	display: flex;
-	flex-direction: column;
+	.flex-column;
 
 	header {
-		display: flex;
+		.flex-row;
+		padding: 8px;
+
+		button {
+			font-size: var(--font-size-large);
+			font-weight: bold;
+			.icon { margin-right: var(--icon-spacing); }
+		}
+
 	}
 
 	ul {
@@ -16,9 +23,7 @@
 	}
 
 	li {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
+		.flex-row;
 
 		.info { 
 			flex-grow: 1;
@@ -45,12 +50,11 @@
 		&:not(.has-art) {
 			padding: 8px;
 		}
+
+		button .icon { width: 32px; }
 	}
 
 	li:nth-child(odd) {
 		background-color: #555;
 	}
-
-	button .icon { width: 32px; }
-
 }

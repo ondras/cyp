@@ -13,17 +13,16 @@ function buildHeader(path) {
 	let header = node.querySelector("header");
 	html.clear(header);
 
-	let button = html.button({}, "/", header);
-	button.addEventListener("click", e => list(""));
+	search.reset();
+	header.appendChild(search.getNode());
 
 	path.split("/").filter(x => x).forEach((name, index, all) => {
-		let button = html.button({}, name, header);
+		index && html.node("span", {}, " / ", header);
+		let button = html.button({icon:"folder"}, name, header);
 		let path = all.slice(0, index+1).join("/");
 		button.addEventListener("click", e => list(path));
 	});
 
-	search.reset();
-	header.appendChild(search.getNode());
 }
 
 function buildDirectory(data, parent) {

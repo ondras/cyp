@@ -1,6 +1,6 @@
 const static = require("node-static");
 const app = new static.Server("./app");
-const port = 8080;
+const port = Number(process.argv[2]) || 8080;
 
 function downloadYoutube(url, response) {
 	// FIXME create directory
@@ -41,7 +41,6 @@ function handleYoutube(request, response) {
 	request.on("data", chunk => str += chunk);
 	request.on("end", () => {
 		let url = require("querystring").parse(str)["url"];
-		console.log(url);
 		if (url) {
 			downloadYoutube(url, response);
 		} else {

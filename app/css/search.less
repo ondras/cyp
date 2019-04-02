@@ -1,7 +1,9 @@
 .search {
-	display: flex;
-	align-items: center;
+	.flex-row;
 	margin-left: auto;
+	transition: all 300ms;
+	width: 32px;
+	max-width: 20ch;
 
 	.icon {
 		width: 32px;
@@ -10,17 +12,16 @@
 
 	input {
 		border: none;
+		outline: none;
 		color: inherit;
 		background-color: inherit;
 		border-bottom: 1px solid var(--fg);
-		transition: all 300ms;
 		width: 0;
 		padding: 0;
+		flex-grow: 1;
 	}
 
 	&.open {
-		input {
-			width: 10vw;
-		}
+		flex: 1;
 	}
 }

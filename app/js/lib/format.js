@@ -1,4 +1,4 @@
-const SEPARATOR = " · ";
+export const SEPARATOR = " · ";
 
 export function time(sec) {
 	sec = Math.round(sec);

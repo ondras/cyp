@@ -1,6 +1,15 @@
 #library {
 	.component;
 
+	header {
+		white-space: pre; // separator
+	}
+
+	.search {
+		order: 1;
+		&.open ~ * { display: none; }
+	}
+
 	.art img, .art .icon {
 		width: 64px;
 	}

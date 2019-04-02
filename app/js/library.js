@@ -1,6 +1,7 @@
 import * as mpd from "./lib/mpd.js";
 import * as html from "./lib/html.js";
 import * as ui from "./lib/ui.js";
+import * as format from "./lib/format.js";
 
 import Search from "./lib/search.js";
 
@@ -13,25 +14,24 @@ function buildHeader(filter) {
 	let header = node.querySelector("header");
 	html.clear(header);
 
-	let button = html.button({}, "Music Library", header);
-	button.addEventListener("click", e => listArtists());
+	search.reset();
+	header.appendChild(search.getNode());
 
 	let artist = filter["Artist"];
 	if (artist) {
 		let artistFilter = {"Artist":artist};
-		let button = html.button({}, artist, header);
+		let button = html.button({icon:"artist"}, artist, header);
 		button.addEventListener("click", e => listAlbums(artistFilter));
 
 		let album = filter["Album"];
 		if (album) {
+			html.node("span", {}, format.SEPARATOR, header);
 			let albumFilter = Object.assign({}, artistFilter, {"Album":album});
-			let button = html.button({}, album, header);
+			let button = html.button({icon:"album"}, album, header);
 			button.addEventListener("click", e => listSongs(albumFilter));
 		}
 	}
 
-	search.reset();
-	header.appendChild(search.getNode());
 }
 
 function buildAlbum(album, filter, parent) {

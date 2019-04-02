@@ -137,7 +137,7 @@ export async function albumArt(songUrl) {
 export async function init() {
 	return new Promise((resolve, reject) => {
 		try {
-			ws = new WebSocket("ws://localhost:8080");
+			ws = new WebSocket(`ws://${location.host}`);
 		} catch (e) { reject(e); }
 		current = {resolve, reject};
 

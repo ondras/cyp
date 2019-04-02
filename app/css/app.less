@@ -5,6 +5,8 @@ html {
 }
 
 body {
+	.flex-column;
+
 	box-sizing: border-box;
 	font-family: lato, sans-serif;
 	line-height: 1.25;
@@ -14,8 +16,6 @@ body {
 	max-width: 800px;
 	margin: 0 auto;
 	overflow: hidden;
-	display: flex;
-	flex-direction: column;
 	height: 100vh;
 
 	> header, > footer {
@@ -33,32 +33,20 @@ button {
 	-moz-appearance: none;
 	appearance: none;
 
+	.flex-row;
+	display: inline-flex;
+
 	background-color: transparent;
 	padding: 0;
 	border: none;
 	line-height: 1;
 	cursor: pointer;
 	flex-shrink: 0;
-
-	.icon { vertical-align: middle; }
-}
-
-.long-line {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-.multiline {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-
-	h2 { font-weight: normal; }
 }
 
 @import "font.less";
 @import "icons.less";
+@import "mixins.less";
 @import "main.less";
 @import "nav.less";
 @import "player.less";
