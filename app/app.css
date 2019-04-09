@@ -135,7 +135,11 @@ nav ul li.active {
   opacity: 0.5;
 }
 #player .art {
-  margin-right: var(--icon-spacing);
+  height: 96px;
+}
+#player .art img,
+#player .art .icon {
+  width: 96px;
 }
 #player h2 {
   font-size: 125%;
@@ -158,6 +162,10 @@ nav ul li.active {
 #player .controls .icon {
   width: 32px;
   margin: 8px;
+}
+#player .controls [type=range] {
+  width: 144px;
+  margin: 0;
 }
 #player .misc {
   display: flex;
@@ -616,6 +624,9 @@ nav ul li.active {
   100% {
     transform: rotate(360deg);
   }
+}
+#settings {
+  font-size: var(--font-size-large);
 }
 #settings dl {
   margin: 8px;

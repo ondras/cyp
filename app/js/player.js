@@ -3,6 +3,7 @@ import * as art from "./lib/art.js";
 import * as html from "./lib/html.js";
 import * as format from "./lib/format.js";
 import * as pubsub from "./lib/pubsub.js";
+import * as settings from "./settings.js";
 
 const DELAY = 2000;
 const DOM = {};
@@ -12,15 +13,18 @@ let node;
 let idleTimeout = null;
 
 function sync(data) {
-	DOM.elapsed.textContent = format.time(Number(data["elapsed"] || 0)); // changed time
+	settings.notifyVolume(data["volume"]);
+
+	DOM.elapsed.value = Number(data["elapsed"] || 0); // changed time
 
 	if (data["file"] != current["file"]) { // changed song
 		if (data["file"]) { // playing at all?
-			DOM.duration.textContent = format.time(Number(data["duration"] || 0));
+			DOM.elapsed.disabled = false;
+			DOM.elapsed.max = Number(data["duration"]);
 			DOM.title.textContent = data["Title"] || data["file"].split("/").pop();
 			DOM.subtitle.textContent = format.subtitle(data);
 		} else {
-			DOM.duration.textContent = "";
+			DOM.elapsed.disabled = true;
 			DOM.title.textContent = "";
 			DOM.subtitle.textContent = "";
 		}
@@ -29,11 +33,13 @@ function sync(data) {
 	}
 
 	if (data["Artist"] != current["Artist"] || data["Album"] != current["Album"]) { // changed album (art)
-		DOM.art.innerHTML = "";
+		html.clear(DOM.art);
 		art.get(data["Artist"], data["Album"], data["file"]).then(src => {
-			if (!src) { return; }
-			let image = html.node("img", {src});
-			DOM.art.appendChild(image);
+			if (src) {
+				html.node("img", {src}, "", DOM.art);
+			} else {
+				html.icon("music", DOM.art);
+			}
 		});
 	}
 
@@ -82,6 +88,7 @@ export function init(n) {
 
 	DOM.random.addEventListener("click", e => command(`random ${current["random"] == "1" ? "0" : "1"}`));
 	DOM.repeat.addEventListener("click", e => command(`repeat ${current["repeat"] == "1" ? "0" : "1"}`));
+	DOM.elapsed.addEventListener("input", e => command(`seekcur ${e.target.value}`));
 
 	update();
 }

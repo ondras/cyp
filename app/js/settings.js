@@ -1,3 +1,5 @@
+import * as mpd from "./lib/mpd.js";
+
 let node;
 let inputs = {};
 const prefix = "cyp";
@@ -33,6 +35,14 @@ function setColor(color) {
 	document.documentElement.dataset.color = color;
 }
 
+async function setVolume(volume) {
+	mpd.command(`setvol ${volume}`);
+}
+
+export async function notifyVolume(volume) {
+	inputs.volume.value = volume;
+}
+
 export async function activate() {}
 
 export function init(n) {
@@ -40,6 +50,7 @@ export function init(n) {
 
 	inputs.theme = n.querySelector("[name=theme]");
 	inputs.color = Array.from(n.querySelectorAll("[name=color]"));
+	inputs.volume = n.querySelector("[name=volume]");
 
 	load();
 
@@ -47,4 +58,6 @@ export function init(n) {
 	inputs.color.forEach(input => {
 		input.addEventListener("click", e => setColor(e.target.value));
 	});
+
+	inputs.volume.addEventListener("input", e => setVolume(e.target.valueAsNumber));
 }

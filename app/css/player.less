@@ -6,7 +6,11 @@
 	&:not([data-flags~=random]) .random, &:not([data-flags~=repeat]) .repeat { opacity: 0.5; }
 
 	.art {
-		margin-right: var(--icon-spacing);
+		@size: 96px;
+		height: @size;
+		img, .icon {
+			width: @size;
+		}
 	}
 
 	h2 {
@@ -22,11 +26,18 @@
 	.title, .subtitle { .long-line; }
 
 	.controls {
+		@icon-margin: 8px;
+		@icon-size: 32px;
 		white-space: nowrap;
 		text-align: center;
 		.icon { 
-			width: 32px;
-			margin: 8px;
+			width: @icon-size;
+			margin: @icon-margin;
+		}
+
+		[type=range] {
+			width: 3 * (@icon-size + 2*@icon-margin);
+			margin: 0;
 		}
 	}
 
@@ -37,5 +48,4 @@
 		justify-content: space-around;
 		.icon { width: 32px; }
 	}
-
 }

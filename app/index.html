@@ -20,7 +20,7 @@
 					<button class="pause" data-icon="pause"></button>
 					<button class="next" data-icon="fast-forward"></button>
 					<div>
-						<span class="elapsed"></span>/<span class="duration"></span>
+						<input type="range" step="any" min="0" class="elapsed" />
 					</div>
 				</div>
 				<div class="misc">
@@ -54,6 +54,10 @@
 			</section>
 			<section id="settings">
 				<dl>
+					<dt>Volume</dt>
+					<dd>
+						<input type="range" name="volume" min="0" max="100" step="1" />
+					</dd>
 					<dt>Theme</dt>
 					<dd>
 						<select name="theme">
