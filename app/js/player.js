@@ -19,12 +19,10 @@ function sync(data) {
 
 	if (data["file"] != current["file"]) { // changed song
 		if (data["file"]) { // playing at all?
-			DOM.elapsed.disabled = false;
 			DOM.elapsed.max = Number(data["duration"]);
 			DOM.title.textContent = data["Title"] || data["file"].split("/").pop();
 			DOM.subtitle.textContent = format.subtitle(data);
 		} else {
-			DOM.elapsed.disabled = true;
 			DOM.title.textContent = "";
 			DOM.subtitle.textContent = "";
 		}
@@ -88,7 +86,12 @@ export function init(n) {
 
 	DOM.random.addEventListener("click", e => command(`random ${current["random"] == "1" ? "0" : "1"}`));
 	DOM.repeat.addEventListener("click", e => command(`repeat ${current["repeat"] == "1" ? "0" : "1"}`));
-	DOM.elapsed.addEventListener("input", e => command(`seekcur ${e.target.value}`));
+
+	DOM.elapsed.addEventListener("click", e => {
+		let rect = e.target.getBoundingClientRect();
+		let frac = (e.clientX - rect.left) / rect.width;
+		command(`seekcur ${frac * e.target.max}`);
+	});
 
 	update();
 }

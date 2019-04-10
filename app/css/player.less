@@ -15,29 +15,30 @@
 
 	h2 {
 		font-size: 125%;
-		margin-top: 0;
+		margin: 0;
 	}
 
 	.info { 
 		flex-grow: 1;
+		align-self: stretch;
+
 		overflow: hidden;
+		.flex-column;
+		justify-content: space-evenly;
 	}
 
 	.title, .subtitle { .long-line; }
 
-	.controls {
-		@icon-margin: 8px;
-		@icon-size: 32px;
-		white-space: nowrap;
-		text-align: center;
-		.icon { 
-			width: @icon-size;
-			margin: @icon-margin;
-		}
 
-		[type=range] {
-			width: 3 * (@icon-size + 2*@icon-margin);
-			margin: 0;
+	progress {
+		width: 100%;
+	}
+
+	.controls {
+		.flex-row;
+		.icon { 
+			width: 32px;
+			margin: 8px;
 		}
 	}
 

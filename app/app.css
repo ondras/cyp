@@ -143,11 +143,15 @@ nav ul li.active {
 }
 #player h2 {
   font-size: 125%;
-  margin-top: 0;
+  margin: 0;
 }
 #player .info {
   flex-grow: 1;
+  align-self: stretch;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 #player .title,
 #player .subtitle {
@@ -155,17 +159,17 @@ nav ul li.active {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+#player progress {
+  width: 100%;
+}
 #player .controls {
-  white-space: nowrap;
-  text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 #player .controls .icon {
   width: 32px;
   margin: 8px;
-}
-#player .controls [type=range] {
-  width: 144px;
-  margin: 0;
 }
 #player .misc {
   display: flex;
