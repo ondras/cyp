@@ -29,17 +29,53 @@
 
 	.title, .subtitle { .long-line; }
 
+	.timeline {
+		.flex-row;
 
-	progress {
-		width: 100%;
+		.duration, .elapsed {
+			flex-basis: 5ch;
+		}
+
+		.duration { text-align: right; }
+
+		progress {
+			flex-grow: 1;
+			height: 8px;
+		}
 	}
 
 	.controls {
-		.flex-row;
-		.icon { 
-			width: 32px;
-			margin: 8px;
+		.flex-column;
+		flex-basis: 64px + 2*48px;
+
+		.playback {
+			.flex-row;
+			justify-content: space-around;
+
+			.icon { 
+				width: 32px;
+			}
+
+			.icon-play, .icon-pause {
+				width: 48px;
+			}
 		}
+
+		.volume {
+			.flex-row;
+
+			.icon {
+				margin-right: 4px;
+			}
+
+			meter {
+				flex-grow: 1;
+				vertical-align: top;
+				height: 8px;
+			}
+		}
+
+
 	}
 
 	.misc {

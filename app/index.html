@@ -13,13 +13,22 @@
 				<div class="info">
 					<h2 class="title"></h2>
 					<div class="subtitle"></div>
-					<progress class="elapsed"></progress>
+					<div class="timeline">
+						<span class="elapsed"></span>
+						<progress></progress>
+						<span class="duration"></span>
+					</div>
 				</div>
 				<div class="controls">
-					<button class="prev" data-icon="rewind"></button>
-					<button class="play" data-icon="play"></button>
-					<button class="pause" data-icon="pause"></button>
-					<button class="next" data-icon="fast-forward"></button>
+					<div class="playback">
+						<button class="prev" data-icon="rewind"></button>
+						<button class="play" data-icon="play"></button>
+						<button class="pause" data-icon="pause"></button>
+						<button class="next" data-icon="fast-forward"></button>
+					</div>
+					<div class="volume">
+						<meter max="100"></meter>
+					</div>
 				</div>
 				<div class="misc">
 					<button class="repeat" data-icon="repeat"></button>
@@ -52,10 +61,6 @@
 			</section>
 			<section id="settings">
 				<dl>
-					<dt>Volume</dt>
-					<dd>
-						<input type="range" name="volume" min="0" max="100" step="1" />
-					</dd>
 					<dt>Theme</dt>
 					<dd>
 						<select name="theme">

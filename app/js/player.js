@@ -3,7 +3,6 @@ import * as art from "./lib/art.js";
 import * as html from "./lib/html.js";
 import * as format from "./lib/format.js";
 import * as pubsub from "./lib/pubsub.js";
-import * as settings from "./settings.js";
 
 const DELAY = 2000;
 const DOM = {};
@@ -13,15 +12,20 @@ let node;
 let idleTimeout = null;
 
 function sync(data) {
-	settings.notifyVolume(data["volume"]);
+	if ("volume" in data) { DOM.volume.value = data["volume"]; }
 
-	DOM.elapsed.value = Number(data["elapsed"] || 0); // changed time
+	// changed time
+	let elapsed = Number(data["elapsed"] || 0);
+	DOM.progress.value = elapsed;
+	DOM.elapsed.textContent = format.time(elapsed);
 
 	if (data["file"] != current["file"]) { // changed song
 		if (data["file"]) { // playing at all?
-			DOM.elapsed.max = Number(data["duration"]);
+			let duration = Number(data["duration"]);
+			DOM.duration.textContent = format.time(duration); 
+			DOM.progress.max = duration;
 			DOM.title.textContent = data["Title"] || data["file"].split("/").pop();
-			DOM.subtitle.textContent = format.subtitle(data);
+			DOM.subtitle.textContent = format.subtitle(data, {duration:false});
 		} else {
 			DOM.title.textContent = "";
 			DOM.subtitle.textContent = "";
@@ -79,6 +83,11 @@ export function init(n) {
 	let all = node.querySelectorAll("[class]");
 	Array.from(all).forEach(node => DOM[node.className] = node);
 
+	DOM.progress = DOM.timeline.querySelector("progress");
+
+	DOM.volume.insertBefore(html.icon("volume-high"), DOM.volume.firstChild);
+	DOM.volume = DOM.volume.querySelector("meter");
+
 	DOM.play.addEventListener("click", e => command("play"));
 	DOM.pause.addEventListener("click", e => command("pause 1"));
 	DOM.prev.addEventListener("click", e => command("previous"));
@@ -87,7 +96,7 @@ export function init(n) {
 	DOM.random.addEventListener("click", e => command(`random ${current["random"] == "1" ? "0" : "1"}`));
 	DOM.repeat.addEventListener("click", e => command(`repeat ${current["repeat"] == "1" ? "0" : "1"}`));
 
-	DOM.elapsed.addEventListener("click", e => {
+	DOM.progress.addEventListener("click", e => {
 		let rect = e.target.getBoundingClientRect();
 		let frac = (e.clientX - rect.left) / rect.width;
 		command(`seekcur ${frac * e.target.max}`);

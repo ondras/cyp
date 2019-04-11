@@ -159,17 +159,52 @@ nav ul li.active {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#player progress {
-  width: 100%;
-}
-#player .controls {
+#player .timeline {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
-#player .controls .icon {
+#player .timeline .duration,
+#player .timeline .elapsed {
+  flex-basis: 5ch;
+}
+#player .timeline .duration {
+  text-align: right;
+}
+#player .timeline progress {
+  flex-grow: 1;
+  height: 8px;
+}
+#player .controls {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 160px;
+}
+#player .controls .playback {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+#player .controls .playback .icon {
   width: 32px;
-  margin: 8px;
+}
+#player .controls .playback .icon-play,
+#player .controls .playback .icon-pause {
+  width: 48px;
+}
+#player .controls .volume {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+#player .controls .volume .icon {
+  margin-right: 4px;
+}
+#player .controls .volume meter {
+  flex-grow: 1;
+  vertical-align: top;
+  height: 8px;
 }
 #player .misc {
   display: flex;

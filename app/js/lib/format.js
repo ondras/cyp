@@ -7,10 +7,10 @@ export function time(sec) {
 	return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-export function subtitle(data) {
+export function subtitle(data, options = {duration:true}) {
 	let tokens = [];
 	data["Artist"] && tokens.push(data["Artist"]);
 	data["Album"] && tokens.push(data["Album"]);
-	data["duration"] && tokens.push(time(Number(data["duration"])));
+	options.duration && data["duration"] && tokens.push(time(Number(data["duration"])));
 	return tokens.join(SEPARATOR);
 }
