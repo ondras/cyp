@@ -118,11 +118,13 @@ nav ul li {
 }
 nav ul li.active {
   border-top-color: var(--primary);
+  color: var(--primary);
 }
 #player {
   display: flex;
   flex-direction: row;
   align-items: center;
+  align-items: stretch;
 }
 #player:not([data-state=play]) .pause {
   display: none;
@@ -147,17 +149,19 @@ nav ul li.active {
 }
 #player .info {
   flex-grow: 1;
-  align-self: stretch;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-around;
 }
 #player .title,
 #player .subtitle {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+#player [type=range] {
+  margin: 0;
 }
 #player .timeline {
   display: flex;
@@ -167,18 +171,15 @@ nav ul li.active {
 #player .timeline .duration,
 #player .timeline .elapsed {
   flex-basis: 5ch;
+  text-align: center;
 }
-#player .timeline .duration {
-  text-align: right;
-}
-#player .timeline progress {
+#player .timeline [type=range] {
   flex-grow: 1;
-  height: 8px;
 }
 #player .controls {
   display: flex;
   flex-direction: column;
-  flex-basis: 160px;
+  justify-content: space-around;
 }
 #player .controls .playback {
   display: flex;
@@ -198,13 +199,11 @@ nav ul li.active {
   flex-direction: row;
   align-items: center;
 }
-#player .controls .volume .icon {
+#player .controls .volume .mute {
   margin-right: 4px;
 }
-#player .controls .volume meter {
-  flex-grow: 1;
-  vertical-align: top;
-  height: 8px;
+#player .controls .volume [type=range] {
+  width: 132px;
 }
 #player .misc {
   display: flex;
@@ -688,6 +687,10 @@ nav ul li.active {
   flex-direction: row;
   align-items: center;
 }
+#settings label [type=radio],
+#settings label [type=checkbox] {
+  margin: 0 4px 0 0;
+}
 .search {
   display: flex;
   flex-direction: row;
@@ -726,13 +729,13 @@ nav ul li.active {
   --icon-spacing: 4px;
 }
 :root[data-theme=light] {
-  --fg: #000;
-  --bg: #fff;
-  --bg-alt: #eee;
+  --fg: #333;
+  --bg: #f0f0f0;
+  --bg-alt: #e0e0e0;
   --shadow: none;
 }
 :root[data-theme=dark] {
-  --fg: #fff;
+  --fg: #f0f0f0;
   --bg: #333;
   --bg-alt: #555;
   --shadow: 0 1px 1px rgba(0, 0, 0, 0.8);

@@ -10,9 +10,33 @@ const DOM = {};
 let current = {};
 let node;
 let idleTimeout = null;
+let toggledVolume = 0;
 
 function sync(data) {
-	if ("volume" in data) { DOM.volume.value = data["volume"]; }
+	if ("volume" in data) {
+		data["volume"] = Number(data["volume"]);
+
+		DOM.mute.disabled = false;
+		DOM.volume.disabled = false;
+		DOM.volume.value = data["volume"];
+
+		if (data["volume"] == 0 && current["volume"] > 0) { // muted
+			toggledVolume = current["volume"];
+			html.clear(DOM.mute);
+			DOM.mute.appendChild(html.icon("volume-off"));
+		}
+
+		if (data["volume"] > 0 && current["volume"] == 0) { // restored
+			toggledVolume = 0;
+			html.clear(DOM.mute);
+			DOM.mute.appendChild(html.icon("volume-high"));
+		}
+
+	} else {
+		DOM.mute.disabled = true;
+		DOM.volume.disabled = true;
+		DOM.volume.value = 50;
+	}
 
 	// changed time
 	let elapsed = Number(data["elapsed"] || 0);
@@ -22,13 +46,16 @@ function sync(data) {
 	if (data["file"] != current["file"]) { // changed song
 		if (data["file"]) { // playing at all?
 			let duration = Number(data["duration"]);
-			DOM.duration.textContent = format.time(duration); 
+			DOM.duration.textContent = format.time(duration);
 			DOM.progress.max = duration;
+			DOM.progress.disabled = false;
 			DOM.title.textContent = data["Title"] || data["file"].split("/").pop();
 			DOM.subtitle.textContent = format.subtitle(data, {duration:false});
 		} else {
 			DOM.title.textContent = "";
 			DOM.subtitle.textContent = "";
+			DOM.progress.value = 0;
+			DOM.progress.disabled = true;
 		}
 
 		pubsub.publish("song-change", null, data);
@@ -83,10 +110,8 @@ export function init(n) {
 	let all = node.querySelectorAll("[class]");
 	Array.from(all).forEach(node => DOM[node.className] = node);
 
-	DOM.progress = DOM.timeline.querySelector("progress");
-
-	DOM.volume.insertBefore(html.icon("volume-high"), DOM.volume.firstChild);
-	DOM.volume = DOM.volume.querySelector("meter");
+	DOM.progress = DOM.timeline.querySelector("[type=range]");
+	DOM.volume = DOM.volume.querySelector("[type=range]");
 
 	DOM.play.addEventListener("click", e => command("play"));
 	DOM.pause.addEventListener("click", e => command("pause 1"));
@@ -96,11 +121,10 @@ export function init(n) {
 	DOM.random.addEventListener("click", e => command(`random ${current["random"] == "1" ? "0" : "1"}`));
 	DOM.repeat.addEventListener("click", e => command(`repeat ${current["repeat"] == "1" ? "0" : "1"}`));
 
-	DOM.progress.addEventListener("click", e => {
-		let rect = e.target.getBoundingClientRect();
-		let frac = (e.clientX - rect.left) / rect.width;
-		command(`seekcur ${frac * e.target.max}`);
-	});
+	DOM.volume.addEventListener("input", e => command(`setvol ${e.target.valueAsNumber}`));
+	DOM.progress.addEventListener("input", e => command(`seekcur ${e.target.valueAsNumber}`));
+
+	DOM.mute.addEventListener("click", e => command(`setvol ${toggledVolume}`));
 
 	update();
 }

@@ -1,5 +1,6 @@
 #player {
 	.flex-row;
+	align-items: stretch;
 
 	&:not([data-state=play]) .pause { display: none; }
 	&[data-state=play] .play { display: none; }
@@ -20,33 +21,32 @@
 
 	.info { 
 		flex-grow: 1;
-		align-self: stretch;
 
 		overflow: hidden;
 		.flex-column;
-		justify-content: space-evenly;
+		justify-content: space-around;
 	}
 
 	.title, .subtitle { .long-line; }
+
+	[type=range] { margin: 0; }
 
 	.timeline {
 		.flex-row;
 
 		.duration, .elapsed {
 			flex-basis: 5ch;
+			text-align: center;
 		}
 
-		.duration { text-align: right; }
-
-		progress {
+		[type=range] {
 			flex-grow: 1;
-			height: 8px;
 		}
 	}
 
 	.controls {
 		.flex-column;
-		flex-basis: 64px + 2*48px;
+		justify-content: space-around;
 
 		.playback {
 			.flex-row;
@@ -64,18 +64,14 @@
 		.volume {
 			.flex-row;
 
-			.icon {
+			.mute {
 				margin-right: 4px;
 			}
 
-			meter {
-				flex-grow: 1;
-				vertical-align: top;
-				height: 8px;
+			[type=range] {
+				width: 132px;
 			}
 		}
-
-
 	}
 
 	.misc {

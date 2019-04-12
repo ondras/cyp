@@ -45,7 +45,11 @@ function onHashChange(e) {
 
 async function init() {
 	initIcons();
-	await mpd.init();
+	try {
+		await mpd.init();
+	} catch (e) {
+		console.error(e);
+	}
 
 	nav.init(document.querySelector("nav"));
 	for (let id in components) {

@@ -21,11 +21,13 @@ function onMessage(e) {
 
 function onError(e) {
 	console.error(e);
+	current && current.reject(e);
 	ws = null; // fixme
 }
 
 function onClose(e) {
 	console.warn(e);
+	current && current.reject(e);
 	ws = null; // fixme
 }
 
