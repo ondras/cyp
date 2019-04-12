@@ -60,3 +60,4 @@ function onRequest(request, response) {
 
 let httpServer = require("http").createServer(onRequest).listen(port);
 require("ws2mpd").ws2mpd(httpServer, `http://localhost:${port}`);
+require("ws2mpd").logging(false);

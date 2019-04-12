@@ -4,7 +4,7 @@ import * as html from "./lib/html.js";
 import * as format from "./lib/format.js";
 import * as pubsub from "./lib/pubsub.js";
 
-const DELAY = 2000;
+const DELAY = 1000;
 const DOM = {};
 
 let current = {};
