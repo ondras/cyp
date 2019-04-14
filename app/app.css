@@ -635,6 +635,7 @@ nav ul li.active {
 #yt .go {
   width: 96px;
   height: 96px;
+  justify-content: center;
 }
 #yt .go:disabled {
   position: relative;

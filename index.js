@@ -2,7 +2,13 @@ const static = require("node-static");
 const app = new static.Server("./app");
 const port = Number(process.argv[2]) || 8080;
 
+const cmd = "youtube-dl";
+//const cmd = "./test.sh";
+
 function downloadYoutube(url, response) {
+	response.setHeader("Content-Type", "text/plain"); // necessary for firefox to read by chunks
+//	response.setHeader("Content-Type", "text/plain; charset=utf-8");
+
 	// FIXME create directory
 	console.log("YouTube downloading", url);
 	let args = [
@@ -10,12 +16,10 @@ function downloadYoutube(url, response) {
 		"-o", `${__dirname}/_youtube/%(title)s-%(id)s.%(ext)s`,
 		url
 	]
-	let child = require("child_process").spawn("youtube-dl", args);
-	let stdOut = "";
-	let stdErr = "";
+	let child = require("child_process").spawn(cmd, args);
 
-	child.stdout.setEncoding("utf8").on("data", chunk => stdOut += chunk);
-	child.stderr.setEncoding("utf8").on("data", chunk => stdErr += chunk);
+	child.stdout.setEncoding("utf8").on("data", chunk => response.write(chunk));
+	child.stderr.setEncoding("utf8").on("data", chunk => response.write(chunk));
 
 	child.on("error", error => {
 		console.log(error);
@@ -24,14 +28,9 @@ function downloadYoutube(url, response) {
 	});
 
 	child.on("close", code => {
-		if (code == 0) {
-			console.log("OK");
-			response.end(stdOut);
-		} else {
-			console.log(code, stdOut, stdErr);
-			response.writeHead(500);
-			response.end(stdErr);
+		if (code != 0) { // fixme
 		}
+		response.end();
 	});
 }
 
@@ -60,4 +59,4 @@ function onRequest(request, response) {
 
 let httpServer = require("http").createServer(onRequest).listen(port);
 require("ws2mpd").ws2mpd(httpServer, `http://localhost:${port}`);
-require("ws2mpd").logging(false);
+//require("ws2mpd").logging(false);
