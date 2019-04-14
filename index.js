@@ -5,16 +5,16 @@ const port = Number(process.argv[2]) || 8080;
 const cmd = "youtube-dl";
 //const cmd = "./test.sh";
 
-function downloadYoutube(url, response) {
+function downloadYoutube(q, response) {
 	response.setHeader("Content-Type", "text/plain"); // necessary for firefox to read by chunks
 //	response.setHeader("Content-Type", "text/plain; charset=utf-8");
 
 	// FIXME create directory
-	console.log("YouTube downloading", url);
+	console.log("YouTube downloading", q);
 	let args = [
 		"-f", "bestaudio",
 		"-o", `${__dirname}/_youtube/%(title)s-%(id)s.%(ext)s`,
-		url
+		q
 	]
 	let child = require("child_process").spawn(cmd, args);
 
@@ -39,9 +39,9 @@ function handleYoutube(request, response) {
 	request.setEncoding("utf8");
 	request.on("data", chunk => str += chunk);
 	request.on("end", () => {
-		let url = require("querystring").parse(str)["url"];
-		if (url) {
-			downloadYoutube(url, response);
+		let q = require("querystring").parse(str)["q"];
+		if (q) {
+			downloadYoutube(q, response);
 		} else {
 			response.writeHead(404);
 			response.end();

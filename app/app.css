@@ -38,6 +38,7 @@ button {
   flex-direction: row;
   align-items: center;
   display: inline-flex;
+  white-space: nowrap;
   background-color: transparent;
   padding: 0;
   border: none;
@@ -576,8 +577,6 @@ nav ul li.active {
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 #yt header {
   display: flex;
@@ -632,36 +631,32 @@ nav ul li.active {
 #yt li:nth-child(odd) {
   background-color: var(--bg-alt);
 }
-#yt .go {
-  width: 96px;
-  height: 96px;
-  justify-content: center;
+#yt header {
+  border-bottom: 1px solid var(--fg);
 }
-#yt .go:disabled {
-  position: relative;
+#yt header button + button {
+  margin-left: 16px;
 }
-#yt .go:disabled::before {
-  content: "";
-  display: block;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  border-top: 3px solid var(--primary);
-  border-radius: 50%;
-  animation: rotate linear 3s infinite;
+#yt .clear {
+  margin-left: auto;
 }
-#yt p {
-  margin: 16px 8px;
+#yt pre {
+  flex-grow: 1;
+  overflow: auto;
   white-space: pre-wrap;
 }
-@keyframes rotate {
+#yt.pending header {
+  background-image: linear-gradient(var(--primary), var(--primary));
+  background-repeat: no-repeat;
+  background-size: 25% 4px;
+  animation: bar ease-in-out 3s alternate infinite;
+}
+@keyframes bar {
   0% {
-    transform: rotate(0deg);
+    background-position: 0 100%;
   }
   100% {
-    transform: rotate(360deg);
+    background-position: 100% 100%;
   }
 }
 #settings {

@@ -1,39 +1,33 @@
 #yt {
-	.component; 
+	.component;
 
-	align-items: center;
-	justify-content: center;
+	header {
+		border-bottom: 1px solid var(--fg);
 
-	.go {
-		width: 96px;
-		height: 96px;
-		justify-content: center;
-
-		&:disabled {
-			position: relative;
-
-			&::before {
-				content: "";
-				display: block;
-				position: absolute;
-				left: 0;
-				right: 0;
-				top: 0;
-				bottom: 0;
-				border-top: 3px solid var(--primary);
-				border-radius: 50%;
-				animation: rotate linear 3s infinite;
-			}			
+		button + button {
+			margin-left: 16px;
 		}
 	}
 
-	p {
-		margin: 16px 8px;
+	.clear {
+		margin-left: auto;
+	}
+
+	pre {
+		flex-grow: 1;
+		overflow: auto;
 		white-space: pre-wrap;
+	}
+
+	&.pending header {
+		background-image: linear-gradient(var(--primary), var(--primary));
+		background-repeat: no-repeat;
+		background-size: 25% 4px;
+		animation: bar ease-in-out 3s alternate infinite;
 	}
 }
 
-@keyframes rotate {
-	0% { transform: rotate(0deg); }
-	100% { transform: rotate(360deg); }
+@keyframes bar {
+	0% { background-position: 0 100%; }
+	100% { background-position: 100% 100%; }
 }
