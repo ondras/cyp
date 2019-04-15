@@ -7,6 +7,7 @@
 	&:not([data-flags~=random]) .random, &:not([data-flags~=repeat]) .repeat { opacity: 0.5; }
 
 	.art {
+		margin-right: 0;
 		@size: 96px;
 		height: @size;
 		img, .icon {
@@ -22,6 +23,7 @@
 	.info { 
 		flex-grow: 1;
 
+		padding-left: var(--icon-spacing);
 		overflow: hidden;
 		.flex-column;
 		justify-content: space-around;
@@ -29,7 +31,10 @@
 
 	.title, .subtitle { .long-line; }
 
-	[type=range] { margin: 0; }
+	[type=range] {
+		margin: 0;
+		min-width: 0; // fails to shrink otherwise
+	}
 
 	.timeline {
 		.flex-row;
@@ -80,5 +85,15 @@
 		align-self: stretch;
 		justify-content: space-around;
 		.icon { width: 32px; }
+	}
+
+	@media (max-width: 519px) {
+		flex-wrap: wrap;
+		justify-content: space-between;
+
+		.info {
+			order: 1;
+			height: 96px;
+		}
 	}
 }

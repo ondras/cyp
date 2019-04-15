@@ -148,6 +148,7 @@ nav ul li.active {
   opacity: 0.5;
 }
 #player .art {
+  margin-right: 0;
   height: 96px;
 }
 #player .art img,
@@ -160,6 +161,7 @@ nav ul li.active {
 }
 #player .info {
   flex-grow: 1;
+  padding-left: var(--icon-spacing);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -173,6 +175,7 @@ nav ul li.active {
 }
 #player [type=range] {
   margin: 0;
+  min-width: 0;
 }
 #player .timeline {
   display: flex;
@@ -224,6 +227,16 @@ nav ul li.active {
 }
 #player .misc .icon {
   width: 32px;
+}
+@media (max-width: 519px) {
+  #player {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  #player .info {
+    order: 1;
+    height: 96px;
+  }
 }
 .component {
   height: 100%;
