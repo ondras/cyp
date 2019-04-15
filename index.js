@@ -2,14 +2,15 @@ const static = require("node-static");
 const app = new static.Server("./app");
 const port = Number(process.argv[2]) || 8080;
 
+let tickets = [];
+
 const cmd = "youtube-dl";
-//const cmd = "./test.sh";
+
 
 function downloadYoutube(q, response) {
 	response.setHeader("Content-Type", "text/plain"); // necessary for firefox to read by chunks
 //	response.setHeader("Content-Type", "text/plain; charset=utf-8");
 
-	// FIXME create directory
 	console.log("YouTube downloading", q);
 	let args = [
 		"-f", "bestaudio",
@@ -49,15 +50,42 @@ function handleYoutube(request, response) {
 	});
 }
 
+function handleTicket(request, response) {
+	request.resume().on("end", () => {
+		let ticket = require("crypto").randomBytes(16).toString("hex");
+		tickets.push(ticket);
+		if (tickets.length > 10) { tickets.shift(); }
+
+		let data = {ticket};
+		response.setHeader("Content-Type", "application/json");
+		response.end(JSON.stringify(data));
+	});
+}
+
 function onRequest(request, response) {
-	if (request.method == "POST" && request.url == "/youtube") {
-		return handleYoutube(request, response);
+	switch (true) {
+		case request.method == "POST" && request.url == "/youtube":
+			return handleYoutube(request, response);
+
+		case request.method == "POST" && request.url == "/ticket":
+			return handleTicket(request, response);
+
+		default:
+			return request.on("end", () => app.serve(request, response)).resume();
+	}
+}
+
+function requestValidator(request) {
+	let ticket = request.resourceURL.query["ticket"];
+	let index = tickets.indexOf(ticket);
+	if (index > -1) {
+		tickets.splice(index, 1);
+		return true;
 	} else {
-		request.on("end", () => app.serve(request, response)).resume();
+		return false;
 	}
 }
 
 let httpServer = require("http").createServer(onRequest).listen(port);
-require("ws2mpd").ws2mpd(httpServer, /.*/);
-//require("ws2mpd").ws2mpd(httpServer, `http://localhost:${port}`);
-//require("ws2mpd").logging(false);
+require("ws2mpd").ws2mpd(httpServer, requestValidator);
+require("ws2mpd").logging(false);

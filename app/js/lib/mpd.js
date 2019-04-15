@@ -138,9 +138,12 @@ export async function albumArt(songUrl) {
 }
 
 export async function init() {
+	let response = await fetch("/ticket", {method:"POST"});
+	let ticket = (await response.json()).ticket;
+
 	return new Promise((resolve, reject) => {
 		try {
-			ws = new WebSocket(`ws://${location.host}`);
+			ws = new WebSocket(`ws://${location.host}/?ticket=${encodeURIComponent(ticket)}`);
 		} catch (e) { reject(e); }
 		current = {resolve, reject};
 

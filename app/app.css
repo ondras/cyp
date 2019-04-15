@@ -665,9 +665,10 @@ nav ul li.active {
   margin-left: auto;
 }
 #yt pre {
+  margin: 0.5em 0.5ch;
   flex-grow: 1;
   overflow: auto;
-  white-space: pre;
+  white-space: pre-wrap;
 }
 #yt.pending header {
   background-image: linear-gradient(var(--primary), var(--primary));
