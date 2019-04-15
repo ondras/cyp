@@ -150,7 +150,8 @@ nav ul li.active {
 }
 #player [type=range] {
   margin: 0;
-  min-width: 0;
+  width: 0;
+  flex-grow: 1;
 }
 #player .art {
   margin-right: 0;
@@ -161,7 +162,8 @@ nav ul li.active {
   width: 96px;
 }
 #player .info {
-  flex-grow: 1;
+  flex-grow: 2;
+  flex-basis: 0;
   padding-left: var(--icon-spacing);
   overflow: hidden;
   display: flex;
@@ -188,10 +190,10 @@ nav ul li.active {
   flex-basis: 5ch;
   text-align: center;
 }
-#player .timeline [type=range] {
-  flex-grow: 1;
-}
 #player .controls {
+  flex-grow: 1;
+  flex-basis: 0;
+  max-width: 220px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -217,9 +219,6 @@ nav ul li.active {
 #player .controls .volume .mute {
   margin-right: 4px;
 }
-#player .controls .volume [type=range] {
-  width: 132px;
-}
 #player .misc {
   display: flex;
   flex-direction: column;
@@ -236,6 +235,7 @@ nav ul li.active {
   }
   #player .info {
     order: 1;
+    flex-basis: 100%;
     height: 96px;
   }
 }
