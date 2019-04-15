@@ -4,22 +4,30 @@ nav ul {
 	list-style: none;
 	.flex-row;
 
-	.icon {
-		display: block;
-		margin: 4px auto;
-	}
-
 	li {
-		text-align: center;
 		flex: 1 0 0;
+
+		.flex-column;
+		align-items: center;
+
 		cursor: pointer;
+		padding: 4px 0 8px 0;
 
 		border-top: 4px solid transparent;
-		border-bottom: 4px solid transparent;
+
+		.icon {
+			margin-right: 4px;
+		}
 
 		&.active {
 			border-top-color: var(--primary);
 			color: var(--primary);
+		}
+
+		@media (max-width: 480px) {
+			flex-direction: row;
+			justify-content: center;
+			span:not([id]) { display: none; }
 		}
 	}
 }

@@ -106,20 +106,30 @@ nav ul {
   flex-direction: row;
   align-items: center;
 }
-nav ul .icon {
-  display: block;
-  margin: 4px auto;
-}
 nav ul li {
-  text-align: center;
   flex: 1 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   cursor: pointer;
+  padding: 4px 0 8px 0;
   border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
+}
+nav ul li .icon {
+  margin-right: 4px;
 }
 nav ul li.active {
   border-top-color: var(--primary);
   color: var(--primary);
+}
+@media (max-width: 480px) {
+  nav ul li {
+    flex-direction: row;
+    justify-content: center;
+  }
+  nav ul li span:not([id]) {
+    display: none;
+  }
 }
 #player {
   display: flex;
@@ -643,7 +653,7 @@ nav ul li.active {
 #yt pre {
   flex-grow: 1;
   overflow: auto;
-  white-space: pre-wrap;
+  white-space: pre;
 }
 #yt.pending header {
   background-image: linear-gradient(var(--primary), var(--primary));
