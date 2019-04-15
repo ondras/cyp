@@ -128,6 +128,9 @@ nav ul li.active {
     flex-direction: row;
     justify-content: center;
   }
+  nav ul li:not([data-for=queue]) .icon {
+    margin-right: 0;
+  }
   nav ul li span:not([id]) {
     display: none;
   }

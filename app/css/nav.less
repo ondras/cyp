@@ -28,6 +28,8 @@ nav ul {
 		@media (max-width: 480px) {
 			flex-direction: row;
 			justify-content: center;
+
+			&:not([data-for=queue]) .icon { margin-right: 0; }
 			span:not([id]) { display: none; }
 		}
 	}
