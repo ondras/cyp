@@ -1,4 +1,5 @@
 #player {
+	@art-size: 96px;
 	.flex-row;
 	align-items: stretch;
 
@@ -6,18 +7,17 @@
 	&[data-state=play] .play { display: none; }
 	&:not([data-flags~=random]) .random, &:not([data-flags~=repeat]) .repeat { opacity: 0.5; }
 
-	.art {
-		margin-right: 0;
-		@size: 96px;
-		height: @size;
-		img, .icon {
-			width: @size;
-		}
+	[type=range] {
+		margin: 0;
+		min-width: 0; // fails to shrink otherwise
 	}
 
-	h2 {
-		font-size: 125%;
-		margin: 0;
+	.art {
+		margin-right: 0;
+		height: @art-size;
+		img, .icon {
+			width: @art-size;
+		}
 	}
 
 	.info { 
@@ -27,15 +27,15 @@
 		overflow: hidden;
 		.flex-column;
 		justify-content: space-around;
+
+		h2 {
+			font-size: 125%;
+			margin: 0;
+		}
+
+		.title, .subtitle { .long-line; }
 	}
-
-	.title, .subtitle { .long-line; }
-
-	[type=range] {
-		margin: 0;
-		min-width: 0; // fails to shrink otherwise
-	}
-
+	
 	.timeline {
 		.flex-row;
 
@@ -58,11 +58,11 @@
 			justify-content: space-around;
 
 			.icon { 
-				width: 32px;
+				width: 40px;
 			}
 
 			.icon-play, .icon-pause {
-				width: 48px;
+				width: 64px;
 			}
 		}
 
@@ -93,7 +93,7 @@
 
 		.info {
 			order: 1;
-			height: 96px;
+			height: @art-size;
 		}
 	}
 }

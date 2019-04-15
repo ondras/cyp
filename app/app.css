@@ -121,6 +121,7 @@ nav ul li .icon {
 nav ul li.active {
   border-top-color: var(--primary);
   color: var(--primary);
+  background-color: rgb(var(--primary-raw), 0.1);
 }
 @media (max-width: 480px) {
   nav ul li {
@@ -147,6 +148,10 @@ nav ul li.active {
 #player:not([data-flags~=repeat]) .repeat {
   opacity: 0.5;
 }
+#player [type=range] {
+  margin: 0;
+  min-width: 0;
+}
 #player .art {
   margin-right: 0;
   height: 96px;
@@ -154,10 +159,6 @@ nav ul li.active {
 #player .art img,
 #player .art .icon {
   width: 96px;
-}
-#player h2 {
-  font-size: 125%;
-  margin: 0;
 }
 #player .info {
   flex-grow: 1;
@@ -167,15 +168,15 @@ nav ul li.active {
   flex-direction: column;
   justify-content: space-around;
 }
-#player .title,
-#player .subtitle {
+#player .info h2 {
+  font-size: 125%;
+  margin: 0;
+}
+#player .info .title,
+#player .info .subtitle {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-#player [type=range] {
-  margin: 0;
-  min-width: 0;
 }
 #player .timeline {
   display: flex;
@@ -202,11 +203,11 @@ nav ul li.active {
   justify-content: space-around;
 }
 #player .controls .playback .icon {
-  width: 32px;
+  width: 40px;
 }
 #player .controls .playback .icon-play,
 #player .controls .playback .icon-pause {
-  width: 48px;
+  width: 64px;
 }
 #player .controls .volume {
   display: flex;
@@ -746,6 +747,7 @@ nav ul li.active {
 :root {
   --font-size-large: 112.5%;
   --icon-spacing: 4px;
+  --primary: rgb(var(--primary-raw));
 }
 :root[data-theme=light] {
   --fg: #333;
@@ -760,11 +762,11 @@ nav ul li.active {
   --shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
 }
 :root[data-color=dodgerblue] {
-  --primary: dodgerblue;
+  --primary-raw: 30, 144, 255;
 }
 :root[data-color=darkorange] {
-  --primary: darkorange;
+  --primary-raw: 255, 140, 0;
 }
 :root[data-color=limegreen] {
-  --primary: limegreen;
+  --primary-raw: 50, 205, 50;
 }
