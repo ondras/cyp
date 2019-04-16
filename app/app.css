@@ -14,15 +14,16 @@ body {
   line-height: 1.25;
   background-color: var(--bg);
   color: var(--fg);
-  text-shadow: var(--shadow);
+  text-shadow: var(--text-shadow);
   max-width: 800px;
   margin: 0 auto;
   overflow: hidden;
   height: 100vh;
 }
-body > header,
-body > footer {
-  box-shadow: 0 0 3px #000;
+header,
+footer {
+  z-index: 1;
+  box-shadow: var(--box-shadow);
 }
 input,
 select,
@@ -280,7 +281,7 @@ nav ul li.active {
 .component li .info .icon {
   color: var(--primary);
   margin-right: var(--icon-spacing);
-  filter: drop-shadow(var(--shadow));
+  filter: drop-shadow(var(--text-shadow));
 }
 .component li .info h2 {
   font-size: var(--font-size-large);
@@ -339,7 +340,7 @@ nav ul li.active {
 #queue li .info .icon {
   color: var(--primary);
   margin-right: var(--icon-spacing);
-  filter: drop-shadow(var(--shadow));
+  filter: drop-shadow(var(--text-shadow));
 }
 #queue li .info h2 {
   font-size: var(--font-size-large);
@@ -401,7 +402,7 @@ nav ul li.active {
 #library li .info .icon {
   color: var(--primary);
   margin-right: var(--icon-spacing);
-  filter: drop-shadow(var(--shadow));
+  filter: drop-shadow(var(--text-shadow));
 }
 #library li .info h2 {
   font-size: var(--font-size-large);
@@ -436,7 +437,7 @@ nav ul li.active {
   width: 64px;
 }
 #library .art .icon {
-  filter: drop-shadow(var(--shadow));
+  filter: drop-shadow(var(--text-shadow));
 }
 #library .group {
   cursor: pointer;
@@ -497,7 +498,7 @@ nav ul li.active {
 #fs li .info .icon {
   color: var(--primary);
   margin-right: var(--icon-spacing);
-  filter: drop-shadow(var(--shadow));
+  filter: drop-shadow(var(--text-shadow));
 }
 #fs li .info h2 {
   font-size: var(--font-size-large);
@@ -576,7 +577,7 @@ nav ul li.active {
 #playlists li .info .icon {
   color: var(--primary);
   margin-right: var(--icon-spacing);
-  filter: drop-shadow(var(--shadow));
+  filter: drop-shadow(var(--text-shadow));
 }
 #playlists li .info h2 {
   font-size: var(--font-size-large);
@@ -643,7 +644,7 @@ nav ul li.active {
 #yt li .info .icon {
   color: var(--primary);
   margin-right: var(--icon-spacing);
-  filter: drop-shadow(var(--shadow));
+  filter: drop-shadow(var(--text-shadow));
 }
 #yt li .info h2 {
   font-size: var(--font-size-large);
@@ -759,18 +760,19 @@ nav ul li.active {
   --icon-spacing: 4px;
   --primary: rgb(var(--primary-raw));
   --spacing: 8px;
+  --box-shadow: 0 0 3px #000;
 }
 :root[data-theme=light] {
   --fg: #333;
   --bg: #f0f0f0;
   --bg-alt: #e0e0e0;
-  --shadow: none;
+  --text-shadow: none;
 }
 :root[data-theme=dark] {
   --fg: #f0f0f0;
   --bg: #333;
   --bg-alt: #555;
-  --shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
+  --text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
 }
 :root[data-color=dodgerblue] {
   --primary-raw: 30, 144, 255;

@@ -12,15 +12,16 @@ body {
 	line-height: 1.25;
 	background-color: var(--bg);
 	color: var(--fg);
-	text-shadow: var(--shadow);
+	text-shadow: var(--text-shadow);
 	max-width: 800px;
 	margin: 0 auto;
 	overflow: hidden;
 	height: 100vh;
+}
 
-	> header, > footer {
-		box-shadow: 0 0 3px #000;
-	}
+header, footer {
+	z-index: 1;
+	box-shadow: var(--box-shadow);
 }
 
 input, select, button {
