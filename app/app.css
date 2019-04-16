@@ -44,7 +44,6 @@ button {
   border: none;
   line-height: 1;
   cursor: pointer;
-  flex-shrink: 0;
 }
 select {
   background-color: transparent;
@@ -66,6 +65,7 @@ select {
 }
 .icon {
   width: 24px;
+  flex-shrink: 0;
 }
 .icon path:not([fill]),
 .icon polygon:not([fill]),
@@ -116,7 +116,7 @@ nav ul li {
   border-top: 4px solid transparent;
 }
 nav ul li .icon {
-  margin-right: 4px;
+  margin-right: var(--icon-spacing);
 }
 nav ul li.active {
   border-top-color: var(--primary);
@@ -167,7 +167,7 @@ nav ul li.active {
 #player .info {
   flex-grow: 2;
   flex-basis: 0;
-  padding-left: var(--icon-spacing);
+  padding: 0 var(--icon-spacing);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -251,11 +251,12 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 8px;
+  padding: var(--spacing);
 }
 .component header button {
   font-size: var(--font-size-large);
   font-weight: bold;
+  overflow: hidden;
 }
 .component header button .icon {
   margin-right: var(--icon-spacing);
@@ -309,11 +310,12 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 8px;
+  padding: var(--spacing);
 }
 #queue header button {
   font-size: var(--font-size-large);
   font-weight: bold;
+  overflow: hidden;
 }
 #queue header button .icon {
   margin-right: var(--icon-spacing);
@@ -370,11 +372,12 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 8px;
+  padding: var(--spacing);
 }
 #library header button {
   font-size: var(--font-size-large);
   font-weight: bold;
+  overflow: hidden;
 }
 #library header button .icon {
   margin-right: var(--icon-spacing);
@@ -465,11 +468,12 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 8px;
+  padding: var(--spacing);
 }
 #fs header button {
   font-size: var(--font-size-large);
   font-weight: bold;
+  overflow: hidden;
 }
 #fs header button .icon {
   margin-right: var(--icon-spacing);
@@ -543,11 +547,12 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 8px;
+  padding: var(--spacing);
 }
 #playlists header button {
   font-size: var(--font-size-large);
   font-weight: bold;
+  overflow: hidden;
 }
 #playlists header button .icon {
   margin-right: var(--icon-spacing);
@@ -609,11 +614,12 @@ nav ul li.active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 8px;
+  padding: var(--spacing);
 }
 #yt header button {
   font-size: var(--font-size-large);
   font-weight: bold;
+  overflow: hidden;
 }
 #yt header button .icon {
   margin-right: var(--icon-spacing);
@@ -691,11 +697,11 @@ nav ul li.active {
   font-size: var(--font-size-large);
 }
 #settings dl {
-  margin: 8px;
+  margin: var(--spacing);
   display: grid;
   grid-template-columns: max-content 1fr;
   align-items: center;
-  grid-gap: 8px;
+  grid-gap: var(--spacing);
 }
 #settings dt {
   font-weight: bold;
@@ -752,6 +758,7 @@ nav ul li.active {
   --font-size-large: 112.5%;
   --icon-spacing: 4px;
   --primary: rgb(var(--primary-raw));
+  --spacing: 8px;
 }
 :root[data-theme=light] {
   --fg: #333;
@@ -773,4 +780,9 @@ nav ul li.active {
 }
 :root[data-color=limegreen] {
   --primary-raw: 50, 205, 50;
+}
+@media (max-width: 480px) {
+  :root {
+    --spacing: var(--icon-spacing);
+  }
 }

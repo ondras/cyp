@@ -2,6 +2,7 @@
 	--font-size-large: 112.5%;
 	--icon-spacing: 4px;
 	--primary: rgb(var(--primary-raw));
+	--spacing: 8px;
 }
 
 :root[data-theme=light] {
@@ -28,4 +29,10 @@
 
 :root[data-color=limegreen] {
 	--primary-raw: 50, 205, 50;
+}
+
+@media (max-width: 480px) {
+	:root {
+		--spacing: var(--icon-spacing);
+	}
 }
