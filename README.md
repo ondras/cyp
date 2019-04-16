@@ -2,6 +2,7 @@
 
 CYP is a web-based frontend for [MPD](https://www.musicpd.org/), the Music Player Daemon. You can use it to control the playback without having to install native application(s). It works in modern web browsers, both desktop and mobile.
 
+![](screen1.png) ![](screen2.png)
 
 ## Features
   - Control the playback, queue, volume
