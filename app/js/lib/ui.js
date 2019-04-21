@@ -25,7 +25,7 @@ async function enqueue(type, what) {
 }
 
 async function fillArt(parent, filter) {
-	let artist = filter["Artist"];
+	let artist = filter["AlbumArtist"];
 	let album = filter["Album"];
 	let src = null;
 

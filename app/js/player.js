@@ -61,9 +61,11 @@ function sync(data) {
 		pubsub.publish("song-change", null, data);
 	}
 
-	if (data["Artist"] != current["Artist"] || data["Album"] != current["Album"]) { // changed album (art)
+	let artistNew = data["AlbumArtist"] || data["Artist"];
+	let artistOld = current["AlbumArtist"] || current["Artist"];
+	if (artistNew != artistOld || data["Album"] != current["Album"]) { // changed album (art)
 		html.clear(DOM.art);
-		art.get(data["Artist"], data["Album"], data["file"]).then(src => {
+		art.get(artistNew, data["Album"], data["file"]).then(src => {
 			if (src) {
 				html.node("img", {src}, "", DOM.art);
 			} else {

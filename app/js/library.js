@@ -17,9 +17,9 @@ function buildHeader(filter) {
 	search.reset();
 	header.appendChild(search.getNode());
 
-	let artist = filter["Artist"];
+	let artist = filter["AlbumArtist"];
 	if (artist) {
-		let artistFilter = {"Artist":artist};
+		let artistFilter = {"AlbumArtist":artist};
 		let button = html.button({icon:"artist"}, artist, header);
 		button.addEventListener("click", e => listAlbums(artistFilter));
 
@@ -43,7 +43,7 @@ function buildAlbum(album, filter, parent) {
 }
 
 function buildArtist(artist, filter, parent) {
-	let childFilter = Object.assign({}, filter, {"Artist": artist});
+	let childFilter = Object.assign({}, filter, {"AlbumArtist": artist});
 	let node = ui.group(ui.CTX_LIBRARY, artist, childFilter, parent);
 	node.addEventListener("click", e => listAlbums(childFilter));
 	node.dataset.name = artist;
@@ -87,7 +87,7 @@ async function listAlbums(filter) {
 }
 
 async function listArtists(filter) {
-	let artists = await mpd.listTags("Artist", filter);
+	let artists = await mpd.listTags("AlbumArtist", filter);
 	buildArtists(artists, filter);
 	buildHeader(filter);
 }
