@@ -4,7 +4,7 @@ CYP is a web-based frontend for [MPD](https://www.musicpd.org/), the Music Playe
 
 ## Screenshots
 
-![](screen1.png) ![](screen2.png)
+![](misc/screen1.png) ![](misc/screen2.png)
 
 
 ## Features

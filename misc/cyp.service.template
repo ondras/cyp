@@ -1,0 +1,9 @@
+[Unit]
+Description=Control Your Player
+
+[Service]
+WorkingDirectory=$PWD
+ExecStart=node .
+
+[Install]
+WantedBy=multi-user.target
