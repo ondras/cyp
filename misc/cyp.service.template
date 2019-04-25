@@ -6,4 +6,4 @@ WorkingDirectory=$PWD
 ExecStart=node .
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target

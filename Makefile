@@ -16,9 +16,7 @@ $(CSS): $(APP)/css/*
 	$(LESS) $(APP)/css/app.less > $@
 
 service: $(SERVICE)
-	mkdir -p $(SYSD_USER)
-	ln -fs $(realpath $^) $(SYSD_USER)/$^
-	systemctl --user daemon-reload
+	systemctl --user enable $(PWD)/$(SERVICE)
 
 $(SERVICE): misc/cyp.service.template
 	cat $^ | envsubst > $@
@@ -27,6 +25,7 @@ watch: all
 	while inotifywait -e MODIFY -r $(APP)/css $(APP)/js ; do make $^ ; done
 
 clean:
+	systemctl --user disable $(SERVICE)
 	rm -f $(SERVICE) $(CSS)
 
 .PHONY: all watch icons service clean
