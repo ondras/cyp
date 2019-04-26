@@ -96,31 +96,59 @@ select {
   font-weight: normal;
 }
 x-range {
+  --thumb-size: 8px;
+  --thumb-color: #fff;
+  --thumb-shadow: #000;
+  --track-size: 4px;
+  --track-color: gray;
+  --elapsed-color: lightgray;
+  --remaining-color: transparent;
+  --radius: calc(var(--track-size)/2);
   width: 144px;
   height: 16px;
   position: relative;
-  --thumb: 6px;
-  --track: 4px;
-  padding: 0 var(--thumb);
 }
 x-range .-track,
-x-range .-elapsed {
+x-range .-elapsed,
+x-range .-remaining {
   position: absolute;
-  top: calc(50% - var(--track)/2);
-  height: var(--track);
-  left: 0;
+  top: calc(50% - var(--track-size)/2);
+  height: var(--track-size);
+  border-radius: var(--radius);
 }
 x-range .-track {
   width: 100%;
+  left: 0;
+  background-color: gray;
+}
+x-range .-elapsed {
+  left: 0;
+  background-color: var(--elapsed-color);
+}
+x-range .-remaining {
+  right: 0;
+  background-color: var(--remaining-color);
+}
+x-range .-inner {
+  position: absolute;
+  left: var(--thumb-size);
+  right: var(--thumb-size);
+  top: 0;
+  bottom: 0;
 }
 x-range .-thumb {
+  all: unset;
   position: absolute;
   top: 50%;
-  border-radius: 50%;
-  width: calc(2*var(--thumb));
-  height: calc(2*var(--thumb));
-  background-color: #fff;
   transform: translate(-50%, -50%);
+  border-radius: 50%;
+  width: calc(2*var(--thumb-size));
+  height: calc(2*var(--thumb-size));
+  background-color: var(--thumb-color);
+  box-shadow: 0 0 2px var(--thumb-shadow);
+}
+x-range[disabled] {
+  opacity: 0.5;
 }
 main {
   flex-grow: 1;
@@ -179,10 +207,9 @@ nav ul li.active {
 #player:not([data-flags~=repeat]) .repeat {
   opacity: 0.5;
 }
-#player [type=range] {
-  margin: 0;
-  width: 0;
+#player x-range {
   flex-grow: 1;
+  --elapsed-color: var(--primary);
 }
 #player .art {
   margin-right: 0;

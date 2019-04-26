@@ -7,10 +7,9 @@
 	&[data-state=play] .play { display: none; }
 	&:not([data-flags~=random]) .random, &:not([data-flags~=repeat]) .repeat { opacity: 0.5; }
 
-	[type=range] {
-		margin: 0;
-		width: 0; // fails to shrink otherwise
+	x-range {
 		flex-grow: 1;
+		--elapsed-color: var(--primary);
 	}
 
 	.art {

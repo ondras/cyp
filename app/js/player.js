@@ -112,8 +112,8 @@ export function init(n) {
 	let all = node.querySelectorAll("[class]");
 	Array.from(all).forEach(node => DOM[node.className] = node);
 
-	DOM.progress = DOM.timeline.querySelector("[type=range]");
-	DOM.volume = DOM.volume.querySelector("[type=range]");
+	DOM.progress = DOM.timeline.querySelector("x-range");
+	DOM.volume = DOM.volume.querySelector("x-range");
 
 	DOM.play.addEventListener("click", e => command("play"));
 	DOM.pause.addEventListener("click", e => command("pause 1"));
