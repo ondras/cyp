@@ -3,7 +3,7 @@ Description=Control Your Player
 
 [Service]
 WorkingDirectory=$PWD
-ExecStart=node .
+ExecStart=/usr/bin/env node .
 
 [Install]
 WantedBy=default.target
