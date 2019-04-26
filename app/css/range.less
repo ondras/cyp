@@ -1,0 +1,36 @@
+x-range {
+	width: 144px;
+	height: 16px;
+	position: relative;
+
+	--thumb: 6px;
+	--track: 4px;
+	padding: 0 var(--thumb);
+
+	.-track, .-elapsed {
+		position: absolute;
+		top: calc(50% - var(--track)/2);
+		height: var(--track);
+		left: 0;
+	}
+
+	.-track {
+		width: 100%;
+	}
+
+	.-elapsed {
+		
+	}
+
+	.-thumb {
+		position: absolute;
+		top: 50%;
+
+		border-radius: 50%;
+		width: calc(2*var(--thumb));
+		height: calc(2*var(--thumb));
+		background-color: #fff;
+
+		transform: translate(-50%, -50%);
+	}
+}

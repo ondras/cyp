@@ -2,6 +2,7 @@ import * as nav from "./nav.js";
 import * as mpd from "./lib/mpd.js";
 import * as player from "./player.js";
 import * as html from "./lib/html.js";
+import * as range from "./lib/range.js";
 
 import * as queue from "./queue.js";
 import * as library from "./library.js";

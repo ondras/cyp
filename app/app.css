@@ -95,6 +95,33 @@ select {
 .multiline h2 {
   font-weight: normal;
 }
+x-range {
+  width: 144px;
+  height: 16px;
+  position: relative;
+  --thumb: 6px;
+  --track: 4px;
+  padding: 0 var(--thumb);
+}
+x-range .-track,
+x-range .-elapsed {
+  position: absolute;
+  top: calc(50% - var(--track)/2);
+  height: var(--track);
+  left: 0;
+}
+x-range .-track {
+  width: 100%;
+}
+x-range .-thumb {
+  position: absolute;
+  top: 50%;
+  border-radius: 50%;
+  width: calc(2*var(--thumb));
+  height: calc(2*var(--thumb));
+  background-color: #fff;
+  transform: translate(-50%, -50%);
+}
 main {
   flex-grow: 1;
   overflow: hidden;
