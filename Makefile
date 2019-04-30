@@ -25,7 +25,6 @@ watch: all
 	while inotifywait -e MODIFY -r $(APP)/css $(APP)/js ; do make $^ ; done
 
 clean:
-	systemctl --user disable $(SERVICE)
 	rm -f $(SERVICE) $(CSS)
 
 .PHONY: all watch icons service clean

@@ -99,9 +99,11 @@ x-range {
   --thumb-size: 8px;
   --thumb-color: #fff;
   --thumb-shadow: #000;
+  --thumb-hover-color: #ddd;
   --track-size: 4px;
-  --track-color: gray;
-  --elapsed-color: lightgray;
+  --track-color: #888;
+  --track-shadow: #000;
+  --elapsed-color: #ddd;
   --remaining-color: transparent;
   --radius: calc(var(--track-size)/2);
   width: 192px;
@@ -119,7 +121,8 @@ x-range .-remaining {
 x-range .-track {
   width: 100%;
   left: 0;
-  background-color: gray;
+  background-color: var(--track-color);
+  box-shadow: 0 0 1px var(--thumb-shadow);
 }
 x-range .-elapsed {
   left: 0;
@@ -149,6 +152,9 @@ x-range .-thumb {
 }
 x-range[disabled] {
   opacity: 0.5;
+}
+x-range:not([disabled]) .-thumb:hover {
+  background-color: var(--thumb-hover-color);
 }
 main {
   flex-grow: 1;
