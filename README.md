@@ -18,7 +18,7 @@ CYP is a web-based frontend for [MPD](https://www.musicpd.org/), the Music Playe
 
 ## Installation
 
-Make sure you have a working MPD setup first.
+Make sure you have a working MPD setup first and Node version >= 10
 
 ```sh
 git clone https://github.com/ondras/cyp.git && cd cyp
