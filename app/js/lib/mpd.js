@@ -143,7 +143,11 @@ export async function init() {
 
 	return new Promise((resolve, reject) => {
 		try {
-			ws = new WebSocket(`ws://${location.host}/?ticket=${encodeURIComponent(ticket)}`);
+			let url = new URL(location.href);
+			url.protocol = "ws";
+			url.hash = "";
+			url.searchParams.set("ticket", ticket);
+			ws = new WebSocket(url.href);
 		} catch (e) { reject(e); }
 		current = {resolve, reject};
 

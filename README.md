@@ -26,7 +26,7 @@ npm i
 node .
 ```
 
-Point your browser to http://localhost:8080 to open the interface.
+Point your browser to http://localhost:8080 to open the interface. Specify a custom MPD address via a `server` querystring argument (`?server=localhost:6655`).
 
 
 ## Technology
