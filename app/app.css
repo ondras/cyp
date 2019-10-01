@@ -53,14 +53,14 @@ select {
   padding: 2px 4px;
 }
 @font-face {
-  font-family: 'Lato';
-  src: url('font/LatoLatin-Regular.woff2') format('woff2');
+  font-family: "Lato";
+  src: url("font/LatoLatin-Regular.woff2") format("woff2");
   font-style: normal;
   font-weight: normal;
 }
 @font-face {
-  font-family: 'Lato';
-  src: url('font/LatoLatin-bold.woff2') format('woff2');
+  font-family: "Lato";
+  src: url("font/LatoLatin-Bold.woff2") format("woff2");
   font-style: bold;
   font-weight: normal;
 }
@@ -106,9 +106,10 @@ x-range {
   --elapsed-color: #ddd;
   --remaining-color: transparent;
   --radius: calc(var(--track-size)/2);
+  display: inline-block;
+  position: relative;
   width: 192px;
   height: 16px;
-  position: relative;
 }
 x-range .-track,
 x-range .-elapsed,
