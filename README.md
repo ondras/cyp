@@ -28,6 +28,16 @@ node .
 
 Point your browser to http://localhost:8080 to open the interface. Specify a custom MPD address via a `server` querystring argument (`?server=localhost:6655`).
 
+## Instalation - Docker
+
+Alternatively, you can use Docker to run CYP.
+
+```sh
+git clone https://github.com/ondras/cyp.git && cd cyp
+docker build -t cyp .
+docker run --network=host cyp
+```
+
 
 ## Technology
   - Connected to MPD via WebSockets (using the [ws2mpd](https://github.com/ondras/ws2mpd/) bridge)
