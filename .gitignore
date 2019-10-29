@@ -1,3 +1,4 @@
 node_modules
-_youtube
+_youtube/*
+!_youtube/.empty
 cyp.service

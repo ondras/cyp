@@ -27,4 +27,10 @@ watch: all
 clean:
 	rm -f $(SERVICE) $(CSS)
 
+docker-image:
+	docker build -t cyp .
+
+docker-run:
+	docker run --network=host -v "$$(pwd)"/_youtube:/cyp/_youtube cyp
+
 .PHONY: all watch icons service clean

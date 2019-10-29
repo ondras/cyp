@@ -38,6 +38,25 @@ docker build -t cyp .
 docker run --network=host cyp
 ```
 
+## Youtube-dl integration
+
+You will need a working [youtube-dl](https://ytdl-org.github.io/youtube-dl/index.html) installation. Audio files are downloaded into the `_youtube` directory, so make sure it is available to your MPD library (use a symlink).
+
+If you use Docker, you need to mount the `_youtube` directory into the image:
+
+```sh
+docker run --network=host -v "$(pwd)"/_youtube:/cyp/_youtube cyp
+```
+
+
+## Changing the port
+
+...is done via the `PORT` environment variable. If you use Docker, the `-e` switch does the trick:
+
+```sh
+docker run --network=host -e PORT=12345 cyp
+```
+
 
 ## Technology
   - Connected to MPD via WebSockets (using the [ws2mpd](https://github.com/ondras/ws2mpd/) bridge)
@@ -53,5 +72,5 @@ docker run --network=host cyp
 ## TODO
 
   - [ ] Bundling
-  - [ ] Range styling
+  - [X] Range styling
   - [ ] Browser testing

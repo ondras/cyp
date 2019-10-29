@@ -1,6 +1,6 @@
 const static = require("node-static");
 const app = new static.Server("./app");
-const port = Number(process.argv[2]) || 8080;
+const port = Number(process.argv[2]) || process.env.PORT || 8080;
 
 let tickets = [];
 
