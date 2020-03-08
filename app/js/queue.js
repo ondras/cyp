@@ -1,4 +1,5 @@
-import * as mpd from "./lib/mpd.js";
+// import * as mpd from "./lib/mpd.js";
+import * as mpd from "./lib/mpd-mock.js";
 import * as html from "./lib/html.js";
 import * as pubsub from "./lib/pubsub.js";
 import * as ui from "./lib/ui.js";

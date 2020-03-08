@@ -1,8 +1,10 @@
-import * as mpd from "./lib/mpd.js";
+//import * as mpd from "./lib/mpd.js";
+import * as mpd from "./lib/mpd-mock.js";
 import * as art from "./lib/art.js";
 import * as html from "./lib/html.js";
 import * as format from "./lib/format.js";
 import * as pubsub from "./lib/pubsub.js";
+import Component from "./component.js";
 
 const DELAY = 1000;
 const DOM = {};
@@ -130,3 +132,9 @@ export function init(n) {
 
 	update();
 }
+
+class Player extends Component {
+
+}
+
+customElements.define("cyp-player", Player);

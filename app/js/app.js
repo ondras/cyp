@@ -65,3 +65,9 @@ async function init() {
 
 
 init();
+
+class App extends HTMLElement {
+	get mpd() { return mpd; }
+}
+
+customElements.define("cyp-app", App);
