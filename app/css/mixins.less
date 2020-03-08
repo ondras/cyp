@@ -1,11 +1,11 @@
 .flex-row {
-	display: flex;
+	&:not([hidden]) { display: flex; }
 	flex-direction: row;
 	align-items: center;
 }
 
 .flex-column {
-	display: flex;
+	&:not([hidden]) { display: flex; }
 	flex-direction: column;
 }
 

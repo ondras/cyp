@@ -7,8 +7,9 @@
 		<link rel="stylesheet" href="app.css" />
 	</head>
 	<body>
+		<cyp-app component="queue" theme="dark" color="dodgerblue">
 		<header>
-			<section id="player">
+			<cyp-player>
 				<span class="art"></span>
 				<div class="info">
 					<h2 class="title"></h2>
@@ -35,16 +36,16 @@
 					<button class="repeat" data-icon="repeat"></button>
 					<button class="random" data-icon="shuffle"></button>
 				</div>
-			</section>
+			</cyp-player>
 		</header>
 		<main>
-			<section id="queue">
+			<cyp-queue>
 				<header>
 					<button class="clear" data-icon="close" title="Clear the queue"></button>
 					<button class="save" data-icon="content-save" title="Save the queue"></button>
 				</header>
 				<ul></ul>
-			</section>
+			</cyp-queue>
 			<section id="playlists">
 				<ul></ul>
 			</section>
@@ -64,11 +65,12 @@
 				</header>
 				<pre></pre>
 			</section>
-			<section id="settings">
+			<cyp-settings>
 				<dl>
 					<dt>Theme</dt>
 					<dd>
 						<select name="theme">
+							<option value="auto">Auto</option>
 							<option value="dark">Dark</option>
 							<option value="light">Light</option>
 						</select>
@@ -89,25 +91,24 @@
 						</label>
 					</dd>
 				</dl>
-			</section>
+			</cyp-settings>
 		</main>
 		<footer>
-			<nav>
-				<ul>
-					<li data-for="queue" data-icon="music">
-						<div>
-							<span>Queue</span>
-							<span id="queue-length"></span>
-						</div>
-					</li>
-					<li data-for="playlists" data-icon="playlist-music"><span>Playlists</span></li>
-					<li data-for="library" data-icon="library-music"><span>Library</span></li>
-					<li data-for="fs" data-icon="folder"><span>Files</span></li>
-					<li data-for="yt" data-icon="download"><span>YouTube</span></li>
-					<li data-for="settings" data-icon="settings"><span>Settings</span></li>
-				</ul>
-			</nav>
-		</footer>		
+			<cyp-menu>
+				<button data-for="queue" data-icon="music">
+					<div>
+						<span>Queue</span>
+						<span id="queue-length"></span>
+					</div>
+				</button>
+				<button data-for="playlists" data-icon="playlist-music"><span>Playlists</span></button>
+				<button data-for="library" data-icon="library-music"><span>Library</span></button>
+				<button data-for="fs" data-icon="folder"><span>Files</span></button>
+				<button data-for="yt" data-icon="download"><span>YouTube</span></button>
+				<button data-for="settings" data-icon="settings"><span>Settings</span></button>
+			</cyp-menu>
+		</footer>
+		</cyp-app>
 		<script type="module" src="js/app.js"></script>
 	</body>
 </html>

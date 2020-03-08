@@ -1,52 +1,70 @@
-import * as mpd from "./lib/mpd.js";
+import Component from "./component.js";
 
-let node;
-let inputs = {};
 const prefix = "cyp";
 
-function loadFromStorage(key, def) {
-	return localStorage.getItem(`${prefix}-${key}`) || def;
+function loadFromStorage(key) {
+	return localStorage.getItem(`${prefix}-${key}`);
 }
 
 function saveToStorage(key, value) {
 	return localStorage.setItem(`${prefix}-${key}`, value);
 }
 
-function load() {
-	let theme = loadFromStorage("theme", "dark");
-	inputs.theme.value = theme;
-	setTheme(theme);
+class Settings extends Component {
+	constructor() {
+		super();
+		this._inputs = {
+			theme: this.querySelector("[name=theme]"),
+			color: Array.from(this.querySelectorAll("[name=color]"))
+		};
 
-	let color = loadFromStorage("color", "dodgerblue");
-	inputs.color.forEach(input => {
-		input.checked = (input.value == color);
-		input.parentNode.style.color = input.value;
-	});
-	setColor(color);
+		this._load();
+
+		this._inputs.theme.addEventListener("change", e => this._setTheme(e.target.value));
+		this._inputs.color.forEach(input => {
+			input.addEventListener("click", e => this._setColor(e.target.value));
+		});
+	}
+
+	_onAppAttributeChange(mr) {
+		if (mr.attributeName == "theme") { this._syncTheme(); }
+		if (mr.attributeName == "color") { this._syncColor(); }
+	}
+
+	async _syncTheme() {
+		const app = await this._app;
+		this._inputs.theme.value = app.getAttribute("theme");
+	}
+
+	async _syncColor() {
+		const app = await this._app;
+		this._inputs.color.forEach(input => {
+			input.checked = (input.value == app.getAttribute("color"));
+			input.parentNode.style.color = input.value;
+		});
+	}
+
+	async _load() {
+		const app = await this._app;
+
+		const theme = loadFromStorage("theme");
+		(theme ? app.setAttribute("theme", theme) : this._syncTheme());
+
+		const color = loadFromStorage("color");
+		(color ? app.setAttribute("color", color) : this._syncColor());
+	}
+
+	async _setTheme(theme) {
+		const app = await this._app;
+		saveToStorage("theme", theme);
+		app.setAttribute("theme", theme);
+	}
+
+	async _setColor(color) {
+		const app = await this._app;
+		saveToStorage("color", color);
+		app.setAttribute("color", color);
+	}
 }
 
-function setTheme(theme) {
-	saveToStorage("theme", theme);
-	document.documentElement.dataset.theme = theme;
-}
-
-function setColor(color) {
-	saveToStorage("color", color);
-	document.documentElement.dataset.color = color;
-}
-
-export async function activate() {}
-
-export function init(n) {
-	node = n;
-
-	inputs.theme = n.querySelector("[name=theme]");
-	inputs.color = Array.from(n.querySelectorAll("[name=color]"));
-
-	load();
-
-	inputs.theme.addEventListener("change", e => setTheme(e.target.value));
-	inputs.color.forEach(input => {
-		input.addEventListener("click", e => setColor(e.target.value));
-	});
-}
+customElements.define("cyp-settings", Settings);

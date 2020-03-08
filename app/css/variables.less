@@ -1,4 +1,4 @@
-:root {
+cyp-app {
 	--font-size-large: 112.5%;
 	--icon-spacing: 4px;
 	--primary: rgb(var(--primary-raw));
@@ -6,29 +6,40 @@
 	--box-shadow: 0 0 3px #000;
 }
 
-:root[data-theme=light] {
+.light() {
 	--fg: #333;
 	--bg: #f0f0f0;
 	--bg-alt: #e0e0e0;
 	--text-shadow: none;
 }
 
-:root[data-theme=dark] {
+.dark() {
 	--fg: #f0f0f0;
 	--bg: #333;
 	--bg-alt: #555;
 	--text-shadow: 0 1px 1px rgba(0, 0, 0, 0.8);
 }
 
-:root[data-color=dodgerblue] {
+cyp-app[theme=light] { .light(); }
+cyp-app[theme=dark] { .dark(); }
+
+@media (prefers-color-scheme: dark) {
+	cyp-app[theme=auto] { .dark(); }
+}
+
+@media (prefers-color-scheme: light) {
+	cyp-app[theme=auto] { .light(); }
+}
+
+cyp-app[color=dodgerblue] {
 	--primary-raw: 30, 144, 255;
 }
 
-:root[data-color=darkorange] {
+cyp-app[color=darkorange] {
 	--primary-raw: 255, 140, 0;
 }
 
-:root[data-color=limegreen] {
+cyp-app[color=limegreen] {
 	--primary-raw: 50, 205, 50;
 }
 

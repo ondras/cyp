@@ -1,61 +1,76 @@
-// import * as mpd from "./lib/mpd.js";
-import * as mpd from "./lib/mpd-mock.js";
 import * as html from "./lib/html.js";
-import * as pubsub from "./lib/pubsub.js";
 import * as ui from "./lib/ui.js";
 
-let node;
-let currentId;
+import Component from "./component.js";
 
-function updateCurrent() {
-	let all = Array.from(node.querySelectorAll("[data-song-id]"));
-	all.forEach(node => {
-		node.classList.toggle("current", node.dataset.songId == currentId);
-	});
+class Queue extends Component {
+	constructor() {
+		super();
+		this._currentId = null;
+
+		this.querySelector(".clear").addEventListener("click", async _ => {
+			const mpd = await this._mpd;
+			await mpd.command("clear");
+			this._sync();
+		});
+
+		this.querySelector(".save").addEventListener("click", async _ => {
+			let name = prompt("Save current queue as a playlist?", "name");
+			if (name === null) { return; }
+			const mpd = await this._mpd;
+			mpd.command(`save "${mpd.escape(name)}"`);
+		});
+
+		this._app.then(app => {
+			app.addEventListener("song-change", this);
+			app.addEventListener("queue-change", this);
+		})
+		this._sync();
+	}
+
+	handleEvent(e) {
+		switch (e.type) {
+			case "song-change":
+				this._currentId = e.detail["Id"];
+				this._updateCurrent();
+			break;
+
+			case "queue-change":
+				this._sync();
+			break;
+		}
+	}
+
+	_onComponentChange(c, isThis) {
+		this.hidden = !isThis;
+
+		isThis && this._sync();
+	}
+
+	async _sync() {
+		const mpd = await this._mpd;
+		let songs = await mpd.listQueue();
+		this._buildSongs(songs);
+
+		// FIXME pubsub?
+		document.querySelector("#queue-length").textContent = `(${songs.length})`;
+	}
+
+	_updateCurrent() {
+		let all = Array.from(this.querySelectorAll("[data-song-id]"));
+		all.forEach(node => {
+			node.classList.toggle("current", node.dataset.songId == this._currentId);
+		});
+	}
+
+	_buildSongs(songs) {
+		let ul = this.querySelector("ul");
+		html.clear(ul);
+
+		songs.map(song => ui.song(ui.CTX_QUEUE, song, ul));
+
+		this._updateCurrent();
+	}
 }
 
-function buildSongs(songs) {
-	let ul = node.querySelector("ul");
-	html.clear(ul);
-
-	songs.map(song => ui.song(ui.CTX_QUEUE, song, ul));
-
-	updateCurrent();
-}
-
-function onSongChange(message, publisher, data) {
-	currentId = data["Id"];
-	updateCurrent();
-}
-
-function onQueueChange(message, publisher, data) {
-	syncQueue();
-}
-
-async function syncQueue() {
-	let songs = await mpd.listQueue();
-	buildSongs(songs);
-	document.querySelector("#queue-length").textContent = `(${songs.length})`;
-}
-
-export async function activate() {
-	syncQueue();
-}
-
-export function init(n) {
-	node = n;
-	syncQueue();
-	pubsub.subscribe("song-change", onSongChange);
-	pubsub.subscribe("queue-change", onQueueChange);
-
-	node.querySelector(".clear").addEventListener("click", async e => {
-		await mpd.command("clear");
-		syncQueue();
-	});
-
-	node.querySelector(".save").addEventListener("click", e => {
-		let name = prompt("Save current queue as a playlist?", "name");
-		if (name === null) { return; }
-		mpd.command(`save "${mpd.escape(name)}"`);
-	});
-}
+customElements.define("cyp-queue", Queue);

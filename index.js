@@ -9,7 +9,6 @@ const cmd = "youtube-dl";
 
 function downloadYoutube(q, response) {
 	response.setHeader("Content-Type", "text/plain"); // necessary for firefox to read by chunks
-//	response.setHeader("Content-Type", "text/plain; charset=utf-8");
 
 	console.log("YouTube downloading", q);
 	let args = [
