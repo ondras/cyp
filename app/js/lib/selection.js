@@ -3,7 +3,7 @@ import * as html from "./html.js";
 export default class Selection {
 	constructor(component) {
 		this._component = component;
-		this._items = new Set();
+		this._items = []; // FIXME ukladat skutecne HTML? co kdyz nastane refresh?
 		this._node = html.node("cyp-commands", {hidden:true});
 
 		const button = this.addCommand(_ => this.clear(), {icon:"close", label:"Clear"});
@@ -11,12 +11,11 @@ export default class Selection {
 	}
 
 	clear() {
-		const nodes = Array.from(this._items);
-		while (nodes.length) { this._remove(nodes.pop()); }
+		while (this._items.length) { this._remove(this._items[0]); }
 	}
 
 	toggle(node) {
-		if (this._items.has(node)) {
+		if (this._items.includes(node)) {
 			this._remove(node);
 		} else {
 			this._add(node);
@@ -31,17 +30,17 @@ export default class Selection {
 	}
 
 	_add(node) {
-		const size = this._items.size;
-		this._items.add(node);
+		const length = this._items.length;
+		this._items.push(node);
 		node.classList.add("selected");
-		if (size == 0) { this._show(); }
+		if (length == 0) { this._show(); }
 	}
 
 	_remove(node) {
-		this._items.delete(node);
+		const index = this._items.indexOf(node);
+		this._items.splice(index, 1);
 		node.classList.remove("selected");
-		if (this._items.size == 0) { this._hide(); }
-
+		if (this._items.length == 0) { this._hide(); }
 	}
 
 	_show() {

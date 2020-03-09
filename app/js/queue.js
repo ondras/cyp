@@ -10,15 +10,24 @@ class Queue extends Component {
 /*
 		this.querySelector(".clear").addEventListener("click", async _ => {
 			await this._mpd.command("clear");
-			this._sync();
-		});
-
-		this.querySelector(".save").addEventListener("click", _ => {
-			let name = prompt("Save current queue as a playlist?", "name");
-			if (name === null) { return; }
-			this._mpd.command(`save "${this._mpd.escape(name)}"`);
+			this._sync(); FIXME!
 		});
 */
+		this.selection.addCommand(_ => {
+		}, {label:"Select all", icon:"plus"});
+
+		this.selection.addCommand(async items => {
+			let name = prompt("Save selected songs as a playlist?", "name");
+			if (name === null) { return; }
+
+			name = this._mpd.escape(name);
+			const commands = items.map(item => {
+				return `playlistadd "${name}" "${this._mpd.escape(item.data["file"])}"`;
+			});
+
+			await this._mpd.command(commands);
+			// FIXME notify?
+		}, {label:"Save", icon:"content-save"});
 	}
 
 	handleEvent(e) {
@@ -81,14 +90,14 @@ class Item extends HasApp {
 class Song extends Item {
 	constructor(data) {
 		super();
-		this._data = data;
+		this.data = data;
 		this.dataset.songId = data["Id"];
 	}
 
 	connectedCallback() {
 		let info = html.node("div", {className:"info"}, "", this);
 
-		let lines = formatSongInfo(this._data);
+		let lines = formatSongInfo(this.data);
 		html.node("h2", {}, lines.shift(), info);
 		lines.length && html.node("div", {}, lines.shift(), info);
 

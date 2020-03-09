@@ -7,7 +7,7 @@ process_svg () {
     NAME=$1
     ID=$(basename $NAME | sed -e 's/.svg//')
 
-    DATA=$(cat $NAME | xmlstarlet fo -D -N | xmlstarlet $ARGS $DELETE)
+    DATA=$(cat $NAME | xmlstarlet fo -D -N | xmlstarlet $ARGS $DELETE | sed -e 's+xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" ++')
     printf "ICONS[\"$ID\"] = \`$DATA\`;\n"
 }
 
