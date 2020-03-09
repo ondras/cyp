@@ -1,33 +1,56 @@
-cyp-menu {
+cyp-menu, cyp-commands {
 	.flex-row;
-	height: 56px;
+	height: 100%;
 
 	button {
-		flex: 1 0 0;
 		height: 100%;
 
 		.flex-column;
 		align-items: center;
-		padding-top: 4px;
-
-		border-top: 4px solid transparent;
-
-		.icon {
-			margin-right: var(--icon-spacing);
-		}
-
-		&.active {
-			border-top-color: var(--primary);
-			color: var(--primary);
-			background-color: rgb(var(--primary-raw), 0.1);
-		}
+		justify-content: center;
 
 		@media (max-width: 480px) {
 			flex-direction: row;
-			justify-content: center;
-
-			&:not([data-for=queue]) .icon { margin-right: 0; }
 			span:not([id]) { display: none; }
+		}
+	}
+}
+
+cyp-menu button {
+	flex: 1 0 0;
+	border-top: 4px solid transparent;
+	border-bottom: 4px solid transparent;
+
+	.icon {
+		margin-right: var(--icon-spacing);
+	}
+
+	&.active {
+		border-top-color: var(--primary);
+		color: var(--primary);
+		background-color: rgb(var(--primary-raw), 0.1);
+	}
+}
+
+cyp-commands {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	transition: top 300ms;
+
+	background-color: var(--bg);
+
+	&[hidden] {
+		display: flex;
+		top: 100%;
+	}
+
+	button {
+		flex: 0 0 80px;
+		&.last {
+			order: 1;
+			margin-left: auto;
 		}
 	}
 }

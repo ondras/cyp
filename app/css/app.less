@@ -8,6 +8,11 @@ body {
 	margin: 0;
 }
 
+main {
+	flex-grow: 1;
+	overflow: auto;
+}
+
 cyp-app {
 	.flex-column;
 
@@ -24,8 +29,17 @@ cyp-app {
 }
 
 header, footer {
+	flex-shrink: 0;
 	z-index: 1;
 	box-shadow: var(--box-shadow);
+}
+
+footer {
+	position: relative;
+	height: 56px;
+	@media (max-width: 480px) {
+		height: 40px;
+	}
 }
 
 input, select, button {
@@ -60,8 +74,6 @@ select {
 @import "icons.less";
 @import "mixins.less";
 @import "range.less";
-@import "main.less";
-@import "menu.less";
 @import "player.less";
 @import "component.less";
 @import "queue.less";
@@ -73,3 +85,6 @@ select {
 @import "search.less";
 @import "art.less";
 @import "variables.less";
+
+@import "song.less";
+@import "menu.less";

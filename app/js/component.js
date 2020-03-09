@@ -1,4 +1,4 @@
-const APP = "cyp-app";
+import Selection from "./lib/selection.js";
 
 export class HasApp extends HTMLElement {
 	get _app() { return this.closest("cyp-app"); }
@@ -8,7 +8,10 @@ export class HasApp extends HTMLElement {
 export default class Component extends HasApp {
 	constructor() {
 		super();
+		this.selection = new Selection(this);
+	}
 
+	connectedCallback() {
 		this._app.addEventListener("load", _ => this._onAppLoad());
 		this._app.addEventListener("component-change", _ => {
 			const component = this._app.getAttribute("component");

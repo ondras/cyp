@@ -1,8 +1,5 @@
-import * as app from "./app.js";
 import * as mpd from "./lib/mpd.js";
 import * as html from "./lib/html.js";
-import * as player from "./player.js";
-import * as format from "./lib/format.js";
 import * as ui from "./lib/ui.js";
 
 import Search from "./lib/search.js";

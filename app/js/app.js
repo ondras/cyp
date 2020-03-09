@@ -20,6 +20,16 @@ function initIcons() {
 	});
 }
 
+async function initMpd() {
+	try {
+		await mpd.init();
+		return mpd;
+	} catch (e) {
+		console.error(e);
+		return mpdMock;
+	}
+}
+
 class App extends HTMLElement {
 	static get observedAttributes() { return ["component"]; }
 
@@ -28,43 +38,33 @@ class App extends HTMLElement {
 
 		initIcons();
 
-		this._load();
+		this._mpdPromise = initMpd().then(mpd => this.mpd = mpd);
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
-		switch (name) {
-			case "component":
-				const e = new CustomEvent("component-change");
-				this.dispatchEvent(e);
-			break;
-		}
-	}
-
-	async _load() {
-		try {
-			await mpd.init();
-			this.mpd = mpd;
-		} catch (e) {
-			console.error(e);
-			this.mpd = mpdMock;
-		}
-
+	async connectedCallback() {
 		const promises = ["cyp-player"].map(name => customElements.whenDefined(name));
+		promises.push(this._mpdPromise);
+
 		await Promise.all(promises);
 
 		this.dispatchEvent(new CustomEvent("load"));
 
 		const onHashChange = () => {
 			const hash = location.hash.substring(1);
-			this._activate(hash || "queue");
+			this.setAttribute("component", hash || "queue");
 		}
 		window.addEventListener("hashchange", onHashChange);
 		onHashChange();
 	}
 
-	_activate(what) {
-		location.hash = what;
-		this.setAttribute("component", what);
+	attributeChangedCallback(name, oldValue, newValue) {
+		switch (name) {
+			case "component":
+				location.hash = newValue;
+				const e = new CustomEvent("component-change");
+				this.dispatchEvent(e);
+			break;
+		}
 	}
 }
 

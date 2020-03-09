@@ -14,8 +14,15 @@ class Player extends Component {
 		this._dom = this._initDOM();
 	}
 
+	async update() {
+		this._clearIdle();
+		const data = await this._mpd.status();
+		this._sync(data);
+		this._idle();
+	}
+
 	_onAppLoad() {
-		this._update();
+		this.update();
 	}
 
 	_initDOM() {
@@ -50,19 +57,12 @@ class Player extends Component {
 	}
 
 	_idle() {
-		this._idleTimeout = setTimeout(() => this._update(), DELAY);
+		this._idleTimeout = setTimeout(() => this.update(), DELAY);
 	}
 
 	_clearIdle() {
 		this._idleTimeout && clearTimeout(this._idleTimeout);
 		this._idleTimeout = null;
-	}
-
-	async _update() {
-		this._clearIdle();
-		const data = await this._mpd.status();
-		this._sync(data);
-		this._idle();
 	}
 
 	_sync(data) {

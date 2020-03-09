@@ -86,11 +86,10 @@ function playButton(type, what, parent) {
 			await mpd.command("play");
 			pubsub.publish("queue-change");
 		}
-		player.update();
+		button.closest("cyp-app").querySelector("cyp-player").update(); // FIXME nejde to lepe?
 	});
 
 	return button;
-
 }
 
 function deleteButton(type, id, parent) {
@@ -108,7 +107,7 @@ function deleteButton(type, id, parent) {
 				await mpd.command(`deleteid ${id}`);
 				pubsub.publish("queue-change");
 			return;
-			case TYPE_PLAYLIST: 
+			case TYPE_PLAYLIST:
 				let ok = confirm(`Really delete playlist '${id}'?`);
 				if (!ok) { return; }
 				await mpd.command(`rm "${mpd.escape(id)}"`);

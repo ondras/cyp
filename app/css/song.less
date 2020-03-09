@@ -1,0 +1,30 @@
+cyp-song {
+	.selectable;
+	.flex-row;
+
+	.info {
+		flex-grow: 1;
+		overflow: hidden;
+
+		.icon {
+			color: var(--primary);
+			margin-right: var(--icon-spacing);
+			filter: drop-shadow(var(--text-shadow));
+		}
+
+		h2 {
+			font-size: var(--font-size-large);
+			margin: 0;
+		}
+
+		h2, div { .long-line; }
+	}
+
+	&:nth-child(odd) {
+		background-color: var(--bg-alt);
+	}
+
+	&:not(.has-art) {
+		padding: 8px;
+	}
+}
