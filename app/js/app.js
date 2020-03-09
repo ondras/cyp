@@ -14,44 +14,50 @@ import * as yt from "./yt.js";
 import * as settings from "./settings.js";
 
 function initIcons() {
-	Array.from(document.querySelectorAll("[data-icon]")).forEach(node => {
+	Array.from(document.querySelectorAll("[data-icon]")).forEach(/** @param {HTMLElement} node */ node => {
 		let icon = html.icon(node.dataset.icon);
 		node.insertBefore(icon, node.firstChild);
 	});
 }
 
-async function mpdExecutor(resolve, reject) {
-	try {
-		await mpd.init();
-		resolve(mpd);
-	} catch (e) {
-		resolve(mpdMock);
-		console.error(e);
-		reject(e);
-	}
-}
-
 class App extends HTMLElement {
+	static get observedAttributes() { return ["component"]; }
+
 	constructor() {
 		super();
-		initIcons();
 
-		this._mpd = new Promise(mpdExecutor);
+		initIcons();
 
 		this._load();
 	}
 
-	get mpd() { return this._mpd; }
+	attributeChangedCallback(name, oldValue, newValue) {
+		switch (name) {
+			case "component":
+				const e = new CustomEvent("component-change");
+				this.dispatchEvent(e);
+			break;
+		}
+	}
 
 	async _load() {
+		try {
+			await mpd.init();
+			this.mpd = mpd;
+		} catch (e) {
+			console.error(e);
+			this.mpd = mpdMock;
+		}
+
 		const promises = ["cyp-player"].map(name => customElements.whenDefined(name));
 		await Promise.all(promises);
+
+		this.dispatchEvent(new CustomEvent("load"));
 
 		const onHashChange = () => {
 			const hash = location.hash.substring(1);
 			this._activate(hash || "queue");
 		}
-
 		window.addEventListener("hashchange", onHashChange);
 		onHashChange();
 	}
@@ -59,9 +65,6 @@ class App extends HTMLElement {
 	_activate(what) {
 		location.hash = what;
 		this.setAttribute("component", what);
-
-		const component = this.querySelector(`cyp-${what}`);
-	//	component.activate();
 	}
 }
 

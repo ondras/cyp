@@ -17,13 +17,24 @@ class Settings extends Component {
 			theme: this.querySelector("[name=theme]"),
 			color: Array.from(this.querySelectorAll("[name=color]"))
 		};
+	}
 
-		this._load();
+	_onAppLoad() {
+		let mo = new MutationObserver(mrs => {
+			mrs.forEach(mr => this._onAppAttributeChange(mr));
+		});
+		mo.observe(this._app, {attributes:true});
 
 		this._inputs.theme.addEventListener("change", e => this._setTheme(e.target.value));
 		this._inputs.color.forEach(input => {
 			input.addEventListener("click", e => this._setColor(e.target.value));
 		});
+
+		const theme = loadFromStorage("theme");
+		(theme ? this._app.setAttribute("theme", theme) : this._syncTheme());
+
+		const color = loadFromStorage("color");
+		(color ? this._app.setAttribute("color", color) : this._syncColor());
 	}
 
 	_onAppAttributeChange(mr) {
@@ -31,39 +42,29 @@ class Settings extends Component {
 		if (mr.attributeName == "color") { this._syncColor(); }
 	}
 
-	async _syncTheme() {
-		const app = await this._app;
-		this._inputs.theme.value = app.getAttribute("theme");
+	_syncTheme() {
+		this._inputs.theme.value = this._app.getAttribute("theme");
 	}
 
-	async _syncColor() {
-		const app = await this._app;
+	_syncColor() {
 		this._inputs.color.forEach(input => {
-			input.checked = (input.value == app.getAttribute("color"));
+			input.checked = (input.value == this._app.getAttribute("color"));
 			input.parentNode.style.color = input.value;
 		});
 	}
 
-	async _load() {
-		const app = await this._app;
-
-		const theme = loadFromStorage("theme");
-		(theme ? app.setAttribute("theme", theme) : this._syncTheme());
-
-		const color = loadFromStorage("color");
-		(color ? app.setAttribute("color", color) : this._syncColor());
-	}
-
-	async _setTheme(theme) {
-		const app = await this._app;
+	_setTheme(theme) {
 		saveToStorage("theme", theme);
-		app.setAttribute("theme", theme);
+		this._app.setAttribute("theme", theme);
 	}
 
-	async _setColor(color) {
-		const app = await this._app;
+	_setColor(color) {
 		saveToStorage("color", color);
-		app.setAttribute("color", color);
+		this._app.setAttribute("color", color);
+	}
+
+	_onComponentChange(c, isThis) {
+		this.hidden = !isThis;
 	}
 }
 

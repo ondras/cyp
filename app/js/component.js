@@ -1,32 +1,22 @@
 const APP = "cyp-app";
 
-export default class Component extends HTMLElement {
+export class HasApp extends HTMLElement {
+	get _app() { return this.closest("cyp-app"); }
+	get _mpd() { return this._app.mpd; }
+}
+
+export default class Component extends HasApp {
 	constructor() {
 		super();
 
-		this._app.then(app => {
-			let mo = new MutationObserver(mrs => {
-				mrs.forEach(mr => this._onAppAttributeChange(mr));
-			});
-			mo.observe(app, {attributes:true});
+		this._app.addEventListener("load", _ => this._onAppLoad());
+		this._app.addEventListener("component-change", _ => {
+			const component = this._app.getAttribute("component");
+			const isThis = (this.nodeName.toLowerCase() == `cyp-${component}`);
+			this._onComponentChange(component, isThis);
 		});
 	}
 
-	_onAppAttributeChange(mr) {
-		if (mr.attributeName != "component") { return; }
-		const component = mr.target.getAttribute(mr.attributeName);
-		const isThis = (this.nodeName.toLowerCase() == `cyp-${component}`);
-		this._onComponentChange(component, isThis);
-	}
-
-	get _app() {
-		return customElements.whenDefined(APP)
-			.then(() => this.closest(APP));
-	}
-
-	get _mpd() {
-		return this._app.then(app => app.mpd);
-	}
-
-	_onComponentChange(component) {}
+	_onComponentChange(_component, _isThis) {}
+	_onAppLoad() {}
 }

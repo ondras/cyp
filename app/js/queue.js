@@ -9,23 +9,15 @@ class Queue extends Component {
 		this._currentId = null;
 
 		this.querySelector(".clear").addEventListener("click", async _ => {
-			const mpd = await this._mpd;
-			await mpd.command("clear");
+			await this._mpd.command("clear");
 			this._sync();
 		});
 
-		this.querySelector(".save").addEventListener("click", async _ => {
+		this.querySelector(".save").addEventListener("click", _ => {
 			let name = prompt("Save current queue as a playlist?", "name");
 			if (name === null) { return; }
-			const mpd = await this._mpd;
-			mpd.command(`save "${mpd.escape(name)}"`);
+			this._mpd.command(`save "${this._mpd.escape(name)}"`);
 		});
-
-		this._app.then(app => {
-			app.addEventListener("song-change", this);
-			app.addEventListener("queue-change", this);
-		})
-		this._sync();
 	}
 
 	handleEvent(e) {
@@ -41,6 +33,12 @@ class Queue extends Component {
 		}
 	}
 
+	_onAppLoad() {
+		this._app.addEventListener("song-change", this);
+		this._app.addEventListener("queue-change", this);
+		this._sync();
+	}
+
 	_onComponentChange(c, isThis) {
 		this.hidden = !isThis;
 
@@ -48,8 +46,7 @@ class Queue extends Component {
 	}
 
 	async _sync() {
-		const mpd = await this._mpd;
-		let songs = await mpd.listQueue();
+		let songs = await this._mpd.listQueue();
 		this._buildSongs(songs);
 
 		// FIXME pubsub?
@@ -57,8 +54,7 @@ class Queue extends Component {
 	}
 
 	_updateCurrent() {
-		let all = Array.from(this.querySelectorAll("[data-song-id]"));
-		all.forEach(node => {
+		Array.from(this.querySelectorAll("[data-song-id]")).forEach(/** @param {HTMLElement} node */ node => {
 			node.classList.toggle("current", node.dataset.songId == this._currentId);
 		});
 	}

@@ -625,72 +625,72 @@ cyp-queue .current {
 #fs .info h2 {
   font-weight: normal;
 }
-#playlists header {
+cyp-playlists header {
   flex-direction: row;
   align-items: center;
   padding: var(--spacing);
 }
-#playlists header:not([hidden]) {
+cyp-playlists header:not([hidden]) {
   display: flex;
 }
-#playlists header button {
+cyp-playlists header button {
   font-size: var(--font-size-large);
   font-weight: bold;
   overflow: hidden;
 }
-#playlists header button .icon {
+cyp-playlists header button .icon {
   margin-right: var(--icon-spacing);
 }
-#playlists ul {
+cyp-playlists ul {
   flex-grow: 1;
   overflow: auto;
   list-style: none;
   margin: 0;
   padding: 0;
 }
-#playlists li {
+cyp-playlists li {
   flex-direction: row;
   align-items: center;
 }
-#playlists li:not([hidden]) {
+cyp-playlists li:not([hidden]) {
   display: flex;
 }
-#playlists li .info {
+cyp-playlists li .info {
   flex-grow: 1;
   overflow: hidden;
 }
-#playlists li .info .icon {
+cyp-playlists li .info .icon {
   color: var(--primary);
   margin-right: var(--icon-spacing);
   filter: drop-shadow(var(--text-shadow));
 }
-#playlists li .info h2 {
+cyp-playlists li .info h2 {
   font-size: var(--font-size-large);
   margin: 0;
 }
-#playlists li .info h2,
-#playlists li .info div {
+cyp-playlists li .info h2,
+cyp-playlists li .info div {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#playlists li:not(.has-art) {
+cyp-playlists li:not(.has-art) {
   padding: 8px;
 }
-#playlists li button .icon {
+cyp-playlists li button .icon {
   width: 32px;
 }
-#playlists li:nth-child(odd) {
+cyp-playlists li:nth-child(odd) {
   background-color: var(--bg-alt);
 }
-#playlists .info {
+cyp-playlists .info {
   flex-direction: row;
   align-items: center;
 }
-#playlists .info:not([hidden]) {
+cyp-playlists .info:not([hidden]) {
   display: flex;
 }
-#playlists .info h2 {
+cyp-playlists .info h2 {
   font-weight: normal;
 }
 #yt header {

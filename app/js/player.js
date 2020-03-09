@@ -12,6 +12,9 @@ class Player extends Component {
 		this._toggledVolume = 0;
 		this._idleTimeout = null;
 		this._dom = this._initDOM();
+	}
+
+	_onAppLoad() {
 		this._update();
 	}
 
@@ -40,9 +43,8 @@ class Player extends Component {
 	}
 
 	async _command(cmd) {
-		const mpd = await this._mpd;
 		this._clearIdle();
-		const data = await mpd.commandAndStatus(cmd);
+		const data = await this._mpd.commandAndStatus(cmd);
 		this._sync(data);
 		this._idle();
 	}
@@ -57,9 +59,8 @@ class Player extends Component {
 	}
 
 	async _update() {
-		const mpd = await this._mpd;
 		this._clearIdle();
-		const data = await mpd.status();
+		const data = await this._mpd.status();
 		this._sync(data);
 		this._idle();
 	}
@@ -136,10 +137,9 @@ class Player extends Component {
 		this._current = data;
 	}
 
-	async _dispatchSongChange(detail) {
-		const app = await this._app;
+	_dispatchSongChange(detail) {
 		const e = new CustomEvent("song-change", {detail});
-		app.dispatchEvent(e);
+		this._app.dispatchEvent(e);
 	}
 }
 

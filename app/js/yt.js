@@ -1,7 +1,5 @@
 import * as mpd from "./lib/mpd.js";
 import * as html from "./lib/html.js";
-import * as pubsub from "./lib/pubsub.js";
-import * as ui from "./lib/ui.js";
 import * as conf from "./conf.js";
 
 let node;
