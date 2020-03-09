@@ -1,7 +1,6 @@
 import * as mpd from "./mpd.js";
-import * as parser from "./parser.js";
 import * as html from "./html.js";
-import * as conf from "../conf.js";
+import * as conf from "./conf.js";
 
 let cache = {};
 const MIME = "image/jpeg";

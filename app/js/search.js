@@ -1,5 +1,5 @@
 import * as html from "./html.js";
-import * as conf from "../conf.js";
+import * as conf from "./conf.js";
 
 const OPEN = "open";
 const collator = new Intl.Collator(conf.locale, {usage:"search", sensitivity:"base"});
@@ -16,7 +16,7 @@ export default class Search extends EventTarget {
 			if (e.target == this._input) { return; }
 			if (this._node.classList.contains(OPEN)) {
 				this.reset();
-				this.dispatchEvent(new Event("input"));	
+				this.dispatchEvent(new Event("input"));
 			} else {
 				this._node.classList.add(OPEN);
 			}

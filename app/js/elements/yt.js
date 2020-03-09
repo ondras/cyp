@@ -1,7 +1,7 @@
-import * as html from "./lib/html.js";
-import * as conf from "./conf.js";
+import * as html from "../html.js";
+import * as conf from "../conf.js";
 
-import Component from "./component.js";
+import Component from "../component.js";
 
 
 const decoder = new TextDecoder("utf-8");

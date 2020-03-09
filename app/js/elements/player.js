@@ -1,7 +1,8 @@
-import * as art from "./lib/art.js";
-import * as html from "./lib/html.js";
-import * as format from "./lib/format.js";
-import Component from "./component.js";
+import * as art from "../art.js";
+import * as html from "../html.js";
+import * as format from "../format.js";
+
+import Component from "../component.js";
 
 const DELAY = 1000;
 

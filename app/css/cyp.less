@@ -13,21 +13,6 @@ main {
 	overflow: auto;
 }
 
-cyp-app {
-	.flex-column;
-
-	box-sizing: border-box;
-	font-family: lato, sans-serif;
-	line-height: 1.25;
-	background-color: var(--bg);
-	color: var(--fg);
-	text-shadow: var(--text-shadow);
-	max-width: 800px;
-	margin: 0 auto;
-	overflow: hidden;
-	height: 100vh;
-}
-
 header, footer {
 	flex-shrink: 0;
 	z-index: 1;
@@ -73,18 +58,20 @@ select {
 @import "font.less";
 @import "icons.less";
 @import "mixins.less";
-@import "range.less";
-@import "player.less";
 @import "component.less";
-@import "queue.less";
 @import "library.less";
 @import "fs.less";
-@import "playlists.less";
-@import "yt.less";
-@import "settings.less";
 @import "search.less";
 @import "art.less";
 @import "variables.less";
 
-@import "song.less";
-@import "menu.less";
+@import "elements/app.less";
+@import "elements/menu.less";
+@import "elements/song.less";
+@import "elements/player.less";
+@import "elements/playlists.less";
+@import "elements/queue.less";
+@import "elements/settings.less";
+@import "elements/yt.less";
+@import "elements/range.less";
+@import "elements/playlist.less";

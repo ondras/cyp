@@ -1,17 +1,9 @@
-import "./lib/range.js";
-import "./menu.js";
-import "./player.js";
-import "./queue.js";
+import * as mpd from "../mpd.js";
+import * as mpdMock from "../mpd-mock.js";
+import * as html from "../html.js";
 
-import * as mpd from "./lib/mpd.js";
-import * as mpdMock from "./lib/mpd-mock.js";
-import * as html from "./lib/html.js";
-
-import * as library from "./library.js";
-import * as fs from "./fs.js";
-import * as playlists from "./playlists.js";
-import * as yt from "./yt.js";
-import * as settings from "./settings.js";
+// import * as library from "./library.js";
+// import * as fs from "./fs.js";
 
 function initIcons() {
 	Array.from(document.querySelectorAll("[data-icon]")).forEach(/** @param {HTMLElement} node */ node => {
@@ -37,13 +29,12 @@ class App extends HTMLElement {
 		super();
 
 		initIcons();
-
-		this._mpdPromise = initMpd().then(mpd => this.mpd = mpd);
 	}
 
 	async connectedCallback() {
+		this.mpd = await initMpd();
+
 		const promises = ["cyp-player"].map(name => customElements.whenDefined(name));
-		promises.push(this._mpdPromise);
 
 		await Promise.all(promises);
 

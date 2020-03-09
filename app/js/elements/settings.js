@@ -1,4 +1,4 @@
-import Component from "./component.js";
+import Component from "../component.js";
 
 const prefix = "cyp";
 

@@ -1,7 +1,8 @@
-import * as html from "./lib/html.js";
-import * as ui from "./lib/ui.js";
+import * as html from "../html.js";
+import * as ui from "../ui.js";
 
-import Component from "./component.js";
+import Component from "../component.js";
+import Playlist from "./playlist.js";
 
 
 class Playlists extends Component {
@@ -28,10 +29,9 @@ class Playlists extends Component {
 	}
 
 	_buildLists(lists) {
-		let ul = this.querySelector("ul");
-		html.clear(ul);
+		html.clear(this);
 
-		lists.map(list => ui.playlist(list, ul));
+		lists.forEach(name => this.appendChild(new Playlist(name)));
 	}
 }
 

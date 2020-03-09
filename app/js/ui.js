@@ -1,9 +1,7 @@
 import * as mpd from "./mpd.js";
 import * as html from "./html.js";
-import * as pubsub from "./pubsub.js";
 import * as format from "./format.js";
 import * as art from "./art.js";
-import * as player from "../player.js";
 
 export const CTX_FS = 1;
 export const CTX_QUEUE = 2;

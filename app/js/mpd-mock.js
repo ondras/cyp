@@ -28,19 +28,18 @@ export function status() {
 
 export function listQueue() {
 	return [
-		{id:1, Track:5, Title:"Title 1", Artist:"AAA", Album:"BBB", duration:30},
+		{Id:1, Track:5, Title:"Title 1", Artist:"AAA", Album:"BBB", duration:30},
 		status(),
-		{id:3, Track:7, Title:"Title 3", Artist:"CCC", Album:"DDD", duration:230},
+		{Id:3, Track:7, Title:"Title 3", Artist:"CCC", Album:"DDD", duration:230},
 	];
 }
 
 export async function listPlaylists() {
-	let lines = await command("listplaylists");
-	let parsed = parser.linesToStruct(lines);
-
-	let list = parsed["playlist"];
-	if (!list) { return []; }
-	return (list instanceof Array ? list : [list]);
+	return [
+		"Playlist 1",
+		"Playlist 2",
+		"Playlist 3"
+	];
 }
 
 export async function enqueueByFilter(filter, sort = null) {
