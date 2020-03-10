@@ -25,6 +25,7 @@
 
 .selectable {
 	border-left: 4px solid transparent;
+	cursor: pointer;
 
 	&.selected {
 		border-left-color: var(--primary);
@@ -34,9 +35,9 @@
 .item {
 	.flex-row;
 	.selectable;
-	padding: 8px;
+	padding: 8px 4px;
 
-	&:nth-child(odd) {
+	&:nth-child(odd) { // FIXME nutno poresit lepe s ohledem na search
 		background-color: var(--bg-alt);
 	}
 }

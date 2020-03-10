@@ -3,6 +3,18 @@ import Component from "../component.js";
 import Song from "./song.js";
 
 
+function generateMoveCommands(items, diff, all) {
+	const COMPARE = (a, b) => all.indexOf(a) - all.indexOf(b);
+
+	return items.sort(COMPARE)
+		.map(item => {
+			let index = all.indexOf(item) + diff;
+			if (index < 0 || index >= all.length) { return null; } // this does not move
+			return `moveid ${item.data["Id"]} ${index}`;
+		})
+		.filter(command => command);
+}
+
 class Queue extends Component {
 	constructor() {
 		super({selection:"multi"});
@@ -64,6 +76,18 @@ class Queue extends Component {
 		sel.addCommandAll();
 
 		sel.addCommand(async items => {
+			const commands = generateMoveCommands(items, -1, Array.from(this.children));
+			await this._mpd.command(commands);
+			this._sync();
+		}, {label:"Up", icon:"arrow-up-bold"});
+
+		sel.addCommand(async items => {
+			const commands = generateMoveCommands(items, +1, Array.from(this.children));
+			await this._mpd.command(commands.reverse()); // move last first
+			this._sync();
+		}, {label:"Down", icon:"arrow-down-bold"});
+
+		sel.addCommand(async items => {
 			let name = prompt("Save selected songs as a playlist?", "name");
 			if (name === null) { return; }
 
@@ -72,8 +96,7 @@ class Queue extends Component {
 				return `playlistadd "${name}" "${this._mpd.escape(item.data["file"])}"`;
 			});
 
-			await this._mpd.command(commands);
-			// FIXME notify?
+			await this._mpd.command(commands); // FIXME notify?
 		}, {label:"Save", icon:"content-save"});
 
 		sel.addCommand(async items => {

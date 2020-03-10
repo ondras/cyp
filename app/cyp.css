@@ -109,6 +109,7 @@ select {
 */
 .selectable {
   border-left: 4px solid transparent;
+  cursor: pointer;
 }
 .selectable.selected {
   border-left-color: var(--primary);
@@ -117,7 +118,8 @@ select {
   flex-direction: row;
   align-items: center;
   border-left: 4px solid transparent;
-  padding: 8px;
+  cursor: pointer;
+  padding: 8px 4px;
 }
 .item:not([hidden]) {
   display: flex;
@@ -490,7 +492,7 @@ cyp-commands[hidden] {
   top: 100%;
 }
 cyp-commands button {
-  flex: 0 0 80px;
+  flex: 0 1 80px;
 }
 cyp-commands button.last {
   order: 1;
@@ -500,7 +502,8 @@ cyp-song {
   flex-direction: row;
   align-items: center;
   border-left: 4px solid transparent;
-  padding: 8px;
+  cursor: pointer;
+  padding: 8px 4px;
 }
 cyp-song:not([hidden]) {
   display: flex;
@@ -824,7 +827,8 @@ cyp-playlist {
   flex-direction: row;
   align-items: center;
   border-left: 4px solid transparent;
-  padding: 8px;
+  cursor: pointer;
+  padding: 8px 4px;
 }
 cyp-playlist:not([hidden]) {
   display: flex;
