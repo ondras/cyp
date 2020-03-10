@@ -1,3 +1,5 @@
+@breakpoint-menu: 480px;
+
 cyp-app {
 	--font-size-large: 112.5%;
 	--icon-spacing: 4px;
@@ -43,7 +45,7 @@ cyp-app[color=limegreen] {
 	--primary-raw: 50, 205, 50;
 }
 
-@media (max-width: 480px) {
+@media (max-width: @breakpoint-menu) {
 	:root {
 		--spacing: var(--icon-spacing);
 	}

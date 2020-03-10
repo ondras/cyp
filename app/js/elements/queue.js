@@ -2,9 +2,10 @@ import * as html from "../html.js";
 import Component from "../component.js";
 import Song from "./song.js";
 
+
 class Queue extends Component {
 	constructor() {
-		super();
+		super({selection:"multi"});
 		this._currentId = null;
 		this._initCommands();
 	}
@@ -35,7 +36,6 @@ class Queue extends Component {
 	}
 
 	async _sync() {
-		this.selection.clear();
 		let songs = await this._mpd.listQueue();
 		this._buildSongs(songs);
 
@@ -51,6 +51,7 @@ class Queue extends Component {
 
 	_buildSongs(songs) {
 		html.clear(this);
+		this.selection.clear();
 
 		songs.forEach(song => this.appendChild(new Song(song)));
 
@@ -84,7 +85,7 @@ class Queue extends Component {
 			this._sync();
 		}, {label:"Remove", icon:"delete"});
 
-		sel.addCommandClear();
+		sel.addCommandCancel();
 	}
 }
 

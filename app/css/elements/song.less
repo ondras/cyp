@@ -1,6 +1,5 @@
 cyp-song {
-	.selectable;
-	.flex-row;
+	.item;
 
 	.info { // FIXME zrevidovat
 		flex-grow: 1;
@@ -17,14 +16,6 @@ cyp-song {
 			margin: 0;
 		}
 
-		h2, div { .long-line; }
-	}
-
-	&:nth-child(odd) {
-		background-color: var(--bg-alt);
-	}
-
-	&:not(.has-art) {
-		padding: 8px;
+//		h2, div { .long-line; } FIXME vyresit zalamovani/vypustku
 	}
 }

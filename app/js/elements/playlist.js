@@ -10,12 +10,6 @@ export default class Playlist extends Item {
 	connectedCallback() {
 		html.icon("playlist-music", this)
 		html.node("h2", {}, this.name, this);
-
-/*
-	playButton(TYPE_PLAYLIST, name, node);
-	addButton(TYPE_PLAYLIST, name, node);
-	deleteButton(TYPE_PLAYLIST, name, node);
-*/
 	}
 }
 

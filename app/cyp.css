@@ -91,26 +91,38 @@ select {
 .flex-column:not([hidden]) {
   display: flex;
 }
-.long-line {
+.no-wrap {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/*
 .multiline {
-  flex-direction: row;
-  align-items: center;
+	.flex-row;
+
+	h2 { font-weight: normal; }
 }
-.multiline:not([hidden]) {
-  display: flex;
-}
-.multiline h2 {
-  font-weight: normal;
-}
+*/
 .selectable {
   border-left: 4px solid transparent;
 }
 .selectable.selected {
   border-left-color: var(--primary);
+}
+.item {
+  flex-direction: row;
+  align-items: center;
+  border-left: 4px solid transparent;
+  padding: 8px;
+}
+.item:not([hidden]) {
+  display: flex;
+}
+.item.selected {
+  border-left-color: var(--primary);
+}
+.item:nth-child(odd) {
+  background-color: var(--bg-alt);
 }
 .component header {
   flex-direction: row;
@@ -154,12 +166,6 @@ select {
 .component li .info h2 {
   font-size: var(--font-size-large);
   margin: 0;
-}
-.component li .info h2,
-.component li .info div {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .component li:not(.has-art) {
   padding: 8px;
@@ -212,12 +218,6 @@ select {
 #library li .info h2 {
   font-size: var(--font-size-large);
   margin: 0;
-}
-#library li .info h2,
-#library li .info div {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 #library li:not(.has-art) {
   padding: 8px;
@@ -308,12 +308,6 @@ select {
   font-size: var(--font-size-large);
   margin: 0;
 }
-#fs li .info h2,
-#fs li .info div {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 #fs li:not(.has-art) {
   padding: 8px;
 }
@@ -334,16 +328,6 @@ select {
 }
 #fs .group {
   cursor: pointer;
-}
-#fs .info {
-  flex-direction: row;
-  align-items: center;
-}
-#fs .info:not([hidden]) {
-  display: flex;
-}
-#fs .info h2 {
-  font-weight: normal;
 }
 .search {
   flex-direction: row;
@@ -509,15 +493,19 @@ cyp-commands button.last {
   margin-left: auto;
 }
 cyp-song {
-  border-left: 4px solid transparent;
   flex-direction: row;
   align-items: center;
+  border-left: 4px solid transparent;
+  padding: 8px;
+}
+cyp-song:not([hidden]) {
+  display: flex;
 }
 cyp-song.selected {
   border-left-color: var(--primary);
 }
-cyp-song:not([hidden]) {
-  display: flex;
+cyp-song:nth-child(odd) {
+  background-color: var(--bg-alt);
 }
 cyp-song .info {
   flex-grow: 1;
@@ -531,18 +519,6 @@ cyp-song .info .icon {
 cyp-song .info h2 {
   font-size: var(--font-size-large);
   margin: 0;
-}
-cyp-song .info h2,
-cyp-song .info div {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-cyp-song:nth-child(odd) {
-  background-color: var(--bg-alt);
-}
-cyp-song:not(.has-art) {
-  padding: 8px;
 }
 cyp-player {
   flex-direction: row;
@@ -662,74 +638,6 @@ cyp-player .misc .icon {
     height: 96px;
   }
 }
-cyp-playlists header {
-  flex-direction: row;
-  align-items: center;
-  padding: var(--spacing);
-}
-cyp-playlists header:not([hidden]) {
-  display: flex;
-}
-cyp-playlists header button {
-  font-size: var(--font-size-large);
-  font-weight: bold;
-  overflow: hidden;
-}
-cyp-playlists header button .icon {
-  margin-right: var(--icon-spacing);
-}
-cyp-playlists ul {
-  flex-grow: 1;
-  overflow: auto;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-cyp-playlists li {
-  flex-direction: row;
-  align-items: center;
-}
-cyp-playlists li:not([hidden]) {
-  display: flex;
-}
-cyp-playlists li .info {
-  flex-grow: 1;
-  overflow: hidden;
-}
-cyp-playlists li .info .icon {
-  color: var(--primary);
-  margin-right: var(--icon-spacing);
-  filter: drop-shadow(var(--text-shadow));
-}
-cyp-playlists li .info h2 {
-  font-size: var(--font-size-large);
-  margin: 0;
-}
-cyp-playlists li .info h2,
-cyp-playlists li .info div {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-cyp-playlists li:not(.has-art) {
-  padding: 8px;
-}
-cyp-playlists li button .icon {
-  width: 32px;
-}
-cyp-playlists li:nth-child(odd) {
-  background-color: var(--bg-alt);
-}
-cyp-playlists .info {
-  flex-direction: row;
-  align-items: center;
-}
-cyp-playlists .info:not([hidden]) {
-  display: flex;
-}
-cyp-playlists .info h2 {
-  font-weight: normal;
-}
 cyp-queue .current {
   color: var(--primary);
 }
@@ -807,12 +715,6 @@ cyp-yt li .info .icon {
 cyp-yt li .info h2 {
   font-size: var(--font-size-large);
   margin: 0;
-}
-cyp-yt li .info h2,
-cyp-yt li .info div {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 cyp-yt li:not(.has-art) {
   padding: 8px;
@@ -917,10 +819,17 @@ x-range:not([disabled]) .-thumb:hover {
 cyp-playlist {
   flex-direction: row;
   align-items: center;
+  border-left: 4px solid transparent;
   padding: 8px;
 }
 cyp-playlist:not([hidden]) {
   display: flex;
+}
+cyp-playlist.selected {
+  border-left-color: var(--primary);
+}
+cyp-playlist:nth-child(odd) {
+  background-color: var(--bg-alt);
 }
 cyp-playlist:nth-child(odd) {
   background-color: var(--bg-alt);

@@ -9,7 +9,7 @@ cyp-menu, cyp-commands {
 		align-items: center;
 		justify-content: center;
 
-		@media (max-width: 480px) {
+		@media (max-width: @breakpoint-menu) {
 			flex-direction: row;
 			span:not([id]) { display: none; }
 		}
@@ -47,7 +47,7 @@ cyp-commands {
 	}
 
 	button {
-		flex: 0 0 80px;
+		flex: 0 0 @breakpoint-menu/6;
 		&.last {
 			order: 1;
 			margin-left: auto;

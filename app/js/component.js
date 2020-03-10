@@ -13,9 +13,9 @@ export class Item extends HasApp {
 }
 
 export default class Component extends HasApp {
-	constructor() {
+	constructor(options) {
 		super();
-		this.selection = new Selection(this);
+		if (options.selection) { this.selection = new Selection(this, options.selection); }
 	}
 
 	connectedCallback() {

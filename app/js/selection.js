@@ -1,8 +1,10 @@
 import * as html from "./html.js";
 
 export default class Selection {
-	constructor(component) {
+	constructor(component, mode) {
 		this._component = component;
+		/** @type {"single" | "multi"} */
+		this._mode = mode;
 		this._items = []; // FIXME ukladat skutecne HTML? co kdyz nastane refresh?
 		this._node = html.node("cyp-commands", {hidden:true});
 	}
@@ -14,18 +16,21 @@ export default class Selection {
 	addCommand(cb, options) {
 		const button = html.button({icon:options.icon}, "", this._node);
 		html.node("span", {}, options.label, button);
-		button.addEventListener("click", _ => cb(this._items));
+		button.addEventListener("click", _ => {
+			const arg = (this._mode == "single" ? this._items[0] : this._items);
+			cb(arg);
+		});
 		return button;
 	}
 
-	addCommandAll(items) {
+	addCommandAll() {
 		this.addCommand(_ => {
 			Array.from(this._component.children).forEach(node => this.add(node));
 		}, {label:"Select all", icon:"plus"});
 	}
 
-	addCommandClear() {
-		const button = this.addCommand(_ => this.clear(), {icon:"close", label:"Clear"});
+	addCommandCancel() {
+		const button = this.addCommand(_ => this.clear(), {icon:"cancel", label:"Cancel"});
 		button.classList.add("last");
 		return button;
 	}
@@ -43,6 +48,9 @@ export default class Selection {
 		const length = this._items.length;
 		this._items.push(node);
 		node.classList.add("selected");
+
+		if (this._mode == "single" && length > 0) { this.remove(this._items[0]); }
+
 		if (length == 0) { this._show(); }
 	}
 
@@ -54,7 +62,7 @@ export default class Selection {
 	}
 
 	_show() {
-		const parent = this._component.closest("cyp-app").querySelector("footer");
+		const parent = this._component.closest("cyp-app").querySelector("footer"); // FIXME jde lepe?
 		parent.appendChild(this._node);
 		this._node.offsetWidth; // FIXME jde lepe?
 		this._node.hidden = false;

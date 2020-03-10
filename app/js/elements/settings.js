@@ -12,7 +12,7 @@ function saveToStorage(key, value) {
 
 class Settings extends Component {
 	constructor() {
-		super();
+		super({selection:null});
 		this._inputs = {
 			theme: this.querySelector("[name=theme]"),
 			color: Array.from(this.querySelectorAll("[name=color]"))

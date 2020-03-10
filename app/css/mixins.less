@@ -9,22 +9,34 @@
 	flex-direction: column;
 }
 
-.long-line {
+.no-wrap {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
+/*
 .multiline {
 	.flex-row;
 
 	h2 { font-weight: normal; }
 }
+*/
 
 .selectable {
 	border-left: 4px solid transparent;
 
 	&.selected {
 		border-left-color: var(--primary);
+	}
+}
+
+.item {
+	.flex-row;
+	.selectable;
+	padding: 8px;
+
+	&:nth-child(odd) {
+		background-color: var(--bg-alt);
 	}
 }

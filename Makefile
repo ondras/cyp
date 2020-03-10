@@ -1,7 +1,7 @@
 LESS := $(shell npm bin)/lessc
 APP := app
 CSS := $(APP)/cyp.css
-ICONS := $(APP)/js/lib/icons.js
+ICONS := $(APP)/js/icons.js
 SYSD_USER := ~/.config/systemd/user
 SERVICE := cyp.service
 
