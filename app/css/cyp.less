@@ -39,13 +39,16 @@ button {
 
 	.flex-row;
 	display: inline-flex;
-	white-space: nowrap;
 
 	background-color: transparent;
 	padding: 0;
 	border: none;
 	line-height: 1;
 	cursor: pointer;
+
+	@media (hover: hover) {
+		&:not(:disabled):not(:hover):not(.-thumb) { opacity: 0.9; }
+	}
 }
 
 select {

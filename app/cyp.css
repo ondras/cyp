@@ -41,7 +41,6 @@ button {
   flex-direction: row;
   align-items: center;
   display: inline-flex;
-  white-space: nowrap;
   background-color: transparent;
   padding: 0;
   border: none;
@@ -50,6 +49,11 @@ button {
 }
 button:not([hidden]) {
   display: flex;
+}
+@media (hover: hover) {
+  button:not(:disabled):not(:hover):not(.-thumb) {
+    opacity: 0.9;
+  }
 }
 select {
   background-color: transparent;
@@ -756,9 +760,9 @@ cyp-yt.pending header {
 }
 x-range {
   --thumb-size: 8px;
-  --thumb-color: #fff;
+  --thumb-color: #ddd;
   --thumb-shadow: #000;
-  --thumb-hover-color: #ddd;
+  --thumb-hover-color: #fff;
   --track-size: 4px;
   --track-color: #888;
   --track-shadow: #000;
