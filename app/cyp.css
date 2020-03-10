@@ -524,7 +524,7 @@ cyp-song button .icon {
 }
 cyp-song .info {
   flex-grow: 1;
-  overflow: hidden;
+  min-width: 0;
 }
 cyp-song .info .icon {
   color: var(--primary);
