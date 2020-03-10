@@ -8,8 +8,8 @@ export default class Playlist extends Item {
 	}
 
 	connectedCallback() {
-		html.icon("playlist-music", this)
-		html.node("h2", {}, this.name, this);
+		html.icon("playlist-music", this);
+		this._buildTitle(this.name);
 	}
 }
 

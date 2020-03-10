@@ -15,11 +15,6 @@ export default class Song extends Item {
 		let lines = formatSongInfo(this.data);
 		html.node("h2", {}, lines.shift(), info);
 		lines.length && html.node("div", {}, lines.shift(), info);
-
-		html.button({icon:"play"}, "", this).addEventListener("click", async e => {
-			e.stopPropagation(); // do not select
-			await this._mpd.command(`playid ${this.data["Id"]}`);
-		});
 	}
 }
 

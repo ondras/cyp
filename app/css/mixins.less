@@ -34,11 +34,20 @@
 .item {
 	.flex-row;
 	.selectable;
+
 	padding: 8px;
 	padding-left: calc(8px - var(--border-width));
 
 	&:nth-child(odd) { // FIXME nutno poresit lepe s ohledem na search
 		background-color: var(--bg-alt);
+	}
+
+	> .icon { margin-right: var(--icon-spacing); }
+
+	.title {
+		font-size: var(--font-size-large);
+		flex-grow: 1;
+		min-width: 0; // bez tohoto se odmita zmensit
 	}
 
 	button .icon { width: 32px; }

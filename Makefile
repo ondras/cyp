@@ -13,7 +13,7 @@ $(ICONS): $(APP)/icons/*
 	$(APP)/svg2js.sh $(APP)/icons > $@
 
 $(CSS): $(APP)/css/* $(APP)/css/elements/*
-	$(LESS) $(APP)/css/cyp.less > $@
+	$(LESS) -x $(APP)/css/cyp.less > $@
 
 service: $(SERVICE)
 	systemctl --user enable $(PWD)/$(SERVICE)

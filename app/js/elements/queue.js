@@ -65,7 +65,15 @@ class Queue extends Component {
 		html.clear(this);
 		this.selection.clear();
 
-		songs.forEach(song => this.appendChild(new Song(song)));
+		songs.forEach(song => {
+			const node = new Song(song);
+			this.appendChild(node);
+
+			html.button({icon:"play"}, "", node).addEventListener("click", async e => {
+				e.stopPropagation(); // do not select
+				await this._mpd.command(`playid ${song["Id"]}`);
+			});
+		});
 
 		this._updateCurrent();
 	}

@@ -1,3 +1,4 @@
+import * as html from "./html.js";
 import Selection from "./selection.js";
 
 export class HasApp extends HTMLElement {
@@ -9,6 +10,10 @@ export class Item extends HasApp {
 	constructor() {
 		super();
 		this.addEventListener("click", _ => this.parentNode.selection.toggle(this));
+	}
+
+	_buildTitle(title) {
+		return html.node("span", {className:"title"}, title, this);
 	}
 }
 

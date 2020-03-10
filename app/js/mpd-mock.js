@@ -3,7 +3,7 @@ import * as mpd from "./mpd.js";
 export const escape = mpd.escape;
 
 export function command(cmd) {
-	console.warn(`MOCK does not know "${cmd}"`);
+	console.warn(`mpd-mock does not know "${cmd}"`);
 }
 
 export function commandAndStatus(cmd) {
