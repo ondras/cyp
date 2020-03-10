@@ -9,18 +9,6 @@ class Playlists extends Component {
 		this._initCommands();
 	}
 
-	handleEvent(e) {
-		switch (e.type) {
-			case "playlists-change":
-				this._sync();
-			break;
-		}
-	}
-
-	_onAppLoad() {
-		this._app.addEventListener("playlists-change", this);
-	}
-
 	_onComponentChange(c, isThis) {
 		this.hidden = !isThis;
 		if (isThis) { this._sync(); }
@@ -41,13 +29,27 @@ class Playlists extends Component {
 	_initCommands() {
 		const sel = this.selection;
 
-		sel.addCommand(async items => {
+		sel.addCommand(async item => {
+			const name = item.name;
+			const commands = ["clear", `load "${this._mpd.escape(name)}"`, "play"];
+			await this._mpd.command(commands);
+			this.selection.clear();
+			this._app.dispatchEvent(new CustomEvent("queue-change")); // fixme notification?
 		}, {label:"Play", icon:"play"});
 
-		sel.addCommand(async items => {
+		sel.addCommand(async item => {
+			const name = item.name;
+			await this._mpd.command(`load "${this._mpd.escape(name)}"`);
+			this.selection.clear();
+			this._app.dispatchEvent(new CustomEvent("queue-change")); // fixme notification?
 		}, {label:"Enqueue", icon:"plus"});
 
-		sel.addCommand(async items => {
+		sel.addCommand(async item => {
+			const name = item.name;
+			if (!confirm(`Really delete playlist '${name}'?`)) { return; }
+
+			await this._mpd.command(`rm "${this._mpd.escape(name)}"`);
+			this._sync();
 		}, {label:"Delete", icon:"delete"});
 
 		sel.addCommandCancel();

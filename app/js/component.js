@@ -13,7 +13,7 @@ export class Item extends HasApp {
 }
 
 export default class Component extends HasApp {
-	constructor(options) {
+	constructor(options = {}) {
 		super();
 		if (options.selection) { this.selection = new Selection(this, options.selection); }
 	}

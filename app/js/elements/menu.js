@@ -2,7 +2,7 @@ import Component from "../component.js";
 
 class Menu extends Component {
 	constructor() {
-		super({selection:null});
+		super();
 
 		this._tabs = Array.from(this.querySelectorAll("[data-for]"));
 		this._tabs.forEach(tab => {

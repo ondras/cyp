@@ -8,7 +8,7 @@ const DELAY = 1000;
 
 class Player extends Component {
 	constructor() {
-		super({selection:null});
+		super();
 		this._current = {};
 		this._toggledVolume = 0;
 		this._idleTimeout = null;
