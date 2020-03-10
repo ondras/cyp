@@ -16,10 +16,11 @@ export default class Song extends Item {
 		html.node("h2", {}, lines.shift(), info);
 		lines.length && html.node("div", {}, lines.shift(), info);
 
-/*
-				playButton(TYPE_ID, id, node);
-*/
-		}
+		html.button({icon:"play"}, "", this).addEventListener("click", async e => {
+			e.stopPropagation(); // do not select
+			await this._mpd.command(`playid ${this.data["Id"]}`);
+		});
+	}
 }
 
 customElements.define("cyp-song", Song);

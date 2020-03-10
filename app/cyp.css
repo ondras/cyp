@@ -41,6 +41,7 @@ button {
   flex-direction: row;
   align-items: center;
   display: inline-flex;
+  flex-shrink: 0;
   background-color: transparent;
   padding: 0;
   border: none;
@@ -75,7 +76,6 @@ select {
 }
 .icon {
   width: 24px;
-  flex-shrink: 0;
 }
 .icon path:not([fill]),
 .icon polygon:not([fill]),
@@ -95,8 +95,7 @@ select {
 .flex-column:not([hidden]) {
   display: flex;
 }
-.no-wrap {
-  white-space: nowrap;
+.ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -108,7 +107,7 @@ select {
 }
 */
 .selectable {
-  border-left: 4px solid transparent;
+  border-left: var(--border-width) solid transparent;
   cursor: pointer;
 }
 .selectable.selected {
@@ -117,9 +116,10 @@ select {
 .item {
   flex-direction: row;
   align-items: center;
-  border-left: 4px solid transparent;
+  border-left: var(--border-width) solid transparent;
   cursor: pointer;
-  padding: 8px 4px;
+  padding: 8px;
+  padding-left: calc(8px - var(--border-width));
 }
 .item:not([hidden]) {
   display: flex;
@@ -129,6 +129,9 @@ select {
 }
 .item:nth-child(odd) {
   background-color: var(--bg-alt);
+}
+.item button .icon {
+  width: 32px;
 }
 .component header {
   flex-direction: row;
@@ -376,6 +379,7 @@ cyp-app {
   --primary: rgb(var(--primary-raw));
   --spacing: 8px;
   --box-shadow: 0 0 3px #000;
+  --border-width: 4px;
 }
 cyp-app[theme=light] {
   --fg: #333;
@@ -422,15 +426,15 @@ cyp-app[color=limegreen] {
 cyp-app {
   flex-direction: column;
   box-sizing: border-box;
+  margin: 0 auto;
+  max-width: 800px;
+  height: 100vh;
   font-family: lato, sans-serif;
   line-height: 1.25;
   background-color: var(--bg);
   color: var(--fg);
   text-shadow: var(--text-shadow);
-  max-width: 800px;
-  margin: 0 auto;
-  overflow: hidden;
-  height: 100vh;
+  white-space: nowrap;
 }
 cyp-app:not([hidden]) {
   display: flex;
@@ -468,8 +472,8 @@ cyp-commands button:not([hidden]) {
 }
 cyp-menu button {
   flex: 1 0 0;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
+  border-top: var(--border-width) solid transparent;
+  border-bottom: var(--border-width) solid transparent;
 }
 cyp-menu button .icon {
   margin-right: var(--icon-spacing);
@@ -501,9 +505,10 @@ cyp-commands button.last {
 cyp-song {
   flex-direction: row;
   align-items: center;
-  border-left: 4px solid transparent;
+  border-left: var(--border-width) solid transparent;
   cursor: pointer;
-  padding: 8px 4px;
+  padding: 8px;
+  padding-left: calc(8px - var(--border-width));
 }
 cyp-song:not([hidden]) {
   display: flex;
@@ -513,6 +518,9 @@ cyp-song.selected {
 }
 cyp-song:nth-child(odd) {
   background-color: var(--bg-alt);
+}
+cyp-song button .icon {
+  width: 32px;
 }
 cyp-song .info {
   flex-grow: 1;
@@ -526,6 +534,11 @@ cyp-song .info .icon {
 cyp-song .info h2 {
   font-size: var(--font-size-large);
   margin: 0;
+}
+cyp-song .info h2,
+cyp-song .info div {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 cyp-player {
   flex-direction: row;
@@ -574,7 +587,6 @@ cyp-player .info h2 {
 }
 cyp-player .info .title,
 cyp-player .info .subtitle {
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -826,9 +838,10 @@ x-range:not([disabled]) .-thumb:hover {
 cyp-playlist {
   flex-direction: row;
   align-items: center;
-  border-left: 4px solid transparent;
+  border-left: var(--border-width) solid transparent;
   cursor: pointer;
-  padding: 8px 4px;
+  padding: 8px;
+  padding-left: calc(8px - var(--border-width));
 }
 cyp-playlist:not([hidden]) {
   display: flex;
@@ -838,6 +851,9 @@ cyp-playlist.selected {
 }
 cyp-playlist:nth-child(odd) {
   background-color: var(--bg-alt);
+}
+cyp-playlist button .icon {
+  width: 32px;
 }
 cyp-playlist:nth-child(odd) {
   background-color: var(--bg-alt);

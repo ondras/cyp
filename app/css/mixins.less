@@ -9,8 +9,7 @@
 	flex-direction: column;
 }
 
-.no-wrap {
-	white-space: nowrap;
+.ellipsis {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
@@ -24,7 +23,7 @@
 */
 
 .selectable {
-	border-left: 4px solid transparent;
+	border-left: var(--border-width) solid transparent;
 	cursor: pointer;
 
 	&.selected {
@@ -35,9 +34,12 @@
 .item {
 	.flex-row;
 	.selectable;
-	padding: 8px 4px;
+	padding: 8px;
+	padding-left: calc(8px - var(--border-width));
 
 	&:nth-child(odd) { // FIXME nutno poresit lepe s ohledem na search
 		background-color: var(--bg-alt);
 	}
+
+	button .icon { width: 32px; }
 }

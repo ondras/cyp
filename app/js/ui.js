@@ -90,32 +90,6 @@ function playButton(type, what, parent) {
 	return button;
 }
 
-function deleteButton(type, id, parent) {
-	let title;
-
-	switch (type) {
-		case TYPE_ID: title = "Delete from queue"; break;
-		case TYPE_PLAYLIST: title = "Delete playlist"; break;
-	}
-
-	let button = html.button({icon:"close", title}, "", parent);
-	button.addEventListener("click", async e => {
-		switch (type) {
-			case TYPE_ID:
-				await mpd.command(`deleteid ${id}`);
-				pubsub.publish("queue-change");
-			return;
-			case TYPE_PLAYLIST:
-				let ok = confirm(`Really delete playlist '${id}'?`);
-				if (!ok) { return; }
-				await mpd.command(`rm "${mpd.escape(id)}"`);
-				pubsub.publish("playlists-change");
-			return;
-		}
-	});
-	return button;
-}
-
 function addButton(type, what, parent) {
 	let button = html.button({icon:"plus", title:"Add to queue"}, "", parent);
 	button.addEventListener("click", async e => {
@@ -174,20 +148,6 @@ export function group(ctx, label, urlOrFilter, parent) {
 
 	playButton(type, urlOrFilter, node);
 	addButton(type, urlOrFilter, node);
-
-	return node;
-}
-
-export function playlist(name, parent) {
-	let node = html.node("li", {}, "", parent);
-
-	let info = html.node("span", {className:"info"}, "", node);
-	html.icon("playlist-music", info)
-	html.node("h2", {}, name, info);
-
-	playButton(TYPE_PLAYLIST, name, node);
-	addButton(TYPE_PLAYLIST, name, node);
-	deleteButton(TYPE_PLAYLIST, name, node);
 
 	return node;
 }
