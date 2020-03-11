@@ -1,21 +1,20 @@
 cyp-song {
 	.item;
 
-	.info { // FIXME zrevidovat
+	.info {
 		flex-grow: 1;
 		min-width: 0; // bez tohoto se odmita zmensit
+		.flex-column;
 
+		/* FIXME toto je relikt z .component
 		.icon {
 			color: var(--primary);
 			margin-right: var(--icon-spacing);
 			filter: drop-shadow(var(--text-shadow));
 		}
+		*/
 
-		h2 {
-			font-size: var(--font-size-large);
-			margin: 0;
-		}
-
-		h2, div { .ellipsis; } // FIXME vyresit zalamovani/vypustku
+		.subtitle { .ellipsis; }
 	}
 }
+

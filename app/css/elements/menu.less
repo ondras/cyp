@@ -13,6 +13,8 @@ cyp-menu, cyp-commands {
 			flex-direction: row;
 			span:not([id]) { display: none; }
 		}
+
+		.icon + * { margin-top: 2px; }
 	}
 }
 
@@ -28,7 +30,7 @@ cyp-menu button {
 	&.active {
 		border-top-color: var(--primary);
 		color: var(--primary);
-		background-color: rgb(var(--primary-raw), 0.1);
+		background-color: var(--primary-tint);
 	}
 }
 

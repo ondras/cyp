@@ -28,6 +28,7 @@
 
 	&.selected {
 		border-left-color: var(--primary);
+		background-color: var(--primary-tint);
 	}
 }
 
@@ -42,7 +43,10 @@
 		background-color: var(--bg-alt);
 	}
 
-	> .icon { margin-right: var(--icon-spacing); }
+	> .icon {
+		margin-right: var(--icon-spacing);
+		filter: drop-shadow(var(--text-shadow));
+	}
 
 	.title {
 		font-size: var(--font-size-large);

@@ -13,8 +13,9 @@ export default class Song extends Item {
 		let info = html.node("div", {className:"info"}, "", this);
 
 		let lines = formatSongInfo(this.data);
-		html.node("h2", {}, lines.shift(), info);
-		lines.length && html.node("div", {}, lines.shift(), info);
+		info.appendChild(this._buildTitle(lines.shift()));
+
+		lines.length && html.node("span", {className:"subtitle"}, lines.shift(), info);
 	}
 }
 
@@ -24,11 +25,9 @@ customElements.define("cyp-song", Song);
 // FIXME vyfaktorovat nekam do haje
 function formatSongInfo(data) {
 	let lines = [];
-	let tokens = [];
 
 	if (data["Title"]) {
-		tokens.push(data["Title"]);
-		lines.push(tokens.join(" "));
+		lines.push(data["Title"]);
 		lines.push(format.subtitle(data));
 	} else {
 		lines.push(fileName(data));
