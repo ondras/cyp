@@ -26,7 +26,7 @@ export default class Selection {
 	addCommandAll() {
 		this.addCommand(_ => {
 			Array.from(this._component.children).forEach(node => this.add(node));
-		}, {label:"Select all", icon:"plus"});
+		}, {label:"Select all", icon:"checkbox-marked-outline"});
 	}
 
 	addCommandCancel() {

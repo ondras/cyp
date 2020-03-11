@@ -1,16 +1,17 @@
 import * as html from "../html.js";
 import Item from "../item.js";
 
-export default class Playlist extends Item {
+
+export default class Artist extends Item {
 	constructor(name) {
 		super();
 		this.name = name;
 	}
 
 	connectedCallback() {
-		html.icon("playlist-music", this);
+		html.icon("artist", this);
 		this._buildTitle(this.name);
 	}
 }
 
-customElements.define("cyp-playlist", Playlist);
+customElements.define("cyp-artist", Artist);

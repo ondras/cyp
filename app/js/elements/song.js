@@ -1,6 +1,6 @@
 import * as format from "../format.js";
 import * as html from "../html.js";
-import { Item } from "../component.js";
+import Item from "../item.js";
 
 export default class Song extends Item {
 	constructor(data) {

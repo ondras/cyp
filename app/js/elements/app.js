@@ -2,9 +2,6 @@ import * as mpd from "../mpd.js";
 import * as mpdMock from "../mpd-mock.js";
 import * as html from "../html.js";
 
-// import * as library from "./library.js";
-// import * as fs from "./fs.js";
-
 function initIcons() {
 	Array.from(document.querySelectorAll("[data-icon]")).forEach(/** @param {HTMLElement} node */ node => {
 		let icon = html.icon(node.dataset.icon);
@@ -34,8 +31,12 @@ class App extends HTMLElement {
 	async connectedCallback() {
 		this.mpd = await initMpd();
 
-		const promises = ["cyp-player"].map(name => customElements.whenDefined(name));
+		const children = Array.from(this.querySelectorAll("*"));
+		const names = children.map(node => node.nodeName.toLowerCase())
+			.filter(name => name.startsWith("cyp-"));
+		const unique = new Set(names);
 
+		const promises = [...unique].map(name => customElements.whenDefined(name));
 		await Promise.all(promises);
 
 		this.dispatchEvent(new CustomEvent("load"));

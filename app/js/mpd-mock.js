@@ -55,16 +55,10 @@ export async function listPath(path) {
 }
 
 export async function listTags(tag, filter = null) {
-	let tokens = ["list", tag];
-	if (filter) {
-		tokens.push(serializeFilter(filter));
-
-		let fakeGroup = Object.keys(filter)[0]; // FIXME hack for MPD < 0.21.6
-		tokens.push("group", fakeGroup);
+	switch (tag) {
+		case "AlbumArtist": return ["Artist 1", "Artist 2", "Artist 3"];
+		case "Album": return ["Album 1", "Album 2", "Album 3"];
 	}
-	let lines = await command(tokens.join(" "));
-	let parsed = parser.linesToStruct(lines);
-	return [].concat(tag in parsed ? parsed[tag] : []);
 }
 
 export async function listSongs(filter, window = null) {
