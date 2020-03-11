@@ -9,12 +9,12 @@ body {
 }
 
 main {
-	flex-grow: 1;
+	flex: auto;
 	overflow: auto;
 }
 
 header, footer {
-	flex-shrink: 0;
+	flex: none;
 	z-index: 1;
 	box-shadow: var(--box-shadow);
 }
@@ -38,9 +38,11 @@ button {
 	-moz-appearance: none;
 	appearance: none;
 
-	.flex-row;
-	display: inline-flex;
-	flex-shrink: 0;
+	&:not([hidden]) { display: flex; }
+	flex-direction: row;
+	align-items: center;
+
+	flex: none;
 
 	background-color: transparent;
 	padding: 0;

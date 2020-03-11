@@ -10,12 +10,12 @@ export default class Song extends Item {
 	}
 
 	connectedCallback() {
-		let info = html.node("div", {className:"info"}, "", this);
+		let block = html.node("div", {className:"multiline"}, "", this);
 
 		let lines = formatSongInfo(this.data);
-		info.appendChild(this._buildTitle(lines.shift()));
+		block.appendChild(this._buildTitle(lines.shift()));
 
-		lines.length && html.node("span", {className:"subtitle"}, lines.shift(), info);
+		lines.length && html.node("span", {className:"subtitle"}, lines.shift(), block);
 	}
 }
 
