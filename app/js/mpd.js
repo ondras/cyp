@@ -37,7 +37,7 @@ function processQueue() {
 	ws.send(current.cmd);
 }
 
-function serializeFilter(filter) {
+export function serializeFilter(filter) {
 	let tokens = ["("];
 	Object.entries(filter).forEach(([key, value], index) => {
 		index && tokens.push(" AND ");
@@ -88,13 +88,6 @@ export async function listPlaylists() {
 	let list = parsed["playlist"];
 	if (!list) { return []; }
 	return (list instanceof Array ? list : [list]);
-}
-
-export async function enqueueByFilter(filter, sort = null) {
-	let tokens = ["findadd"];
-	tokens.push(serializeFilter(filter));
-//	sort && tokens.push("sort", sort);  FIXME not implemented in MPD
-	return command(tokens.join(" "));
 }
 
 export async function listPath(path) {

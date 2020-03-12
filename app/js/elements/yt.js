@@ -1,6 +1,6 @@
 import * as html from "../html.js";
 import * as conf from "../conf.js";
-
+import { escape } from "../mpd.js";
 import Component from "../component.js";
 
 
@@ -58,7 +58,7 @@ class YT extends Component {
 		this.classList.remove("pending");
 
 		if (response.status == 200) {
-			this._mpd.command(`update ${this._mpd.escape(conf.ytPath)}`);
+			this._mpd.command(`update ${escape(conf.ytPath)}`);
 		}
 	}
 

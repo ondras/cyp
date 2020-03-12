@@ -1,7 +1,3 @@
-import * as mpd from "./mpd.js";
-
-export const escape = mpd.escape;
-
 export function command(cmd) {
 	console.warn(`mpd-mock does not know "${cmd}"`);
 }
@@ -34,7 +30,7 @@ export function listQueue() {
 	];
 }
 
-export async function listPlaylists() {
+export function listPlaylists() {
 	return [
 		"Playlist 1",
 		"Playlist 2",
@@ -42,34 +38,33 @@ export async function listPlaylists() {
 	];
 }
 
-export async function enqueueByFilter(filter, sort = null) {
-	let tokens = ["findadd"];
-	tokens.push(serializeFilter(filter));
-//	sort && tokens.push("sort", sort);  FIXME not implemented in MPD
-	return command(tokens.join(" "));
+export function listPath(path) {
+	return {
+		"directory": [
+			{"directory": "Dir 1"},
+			{"directory": "Dir 2"},
+			{"directory": "Dir 3"}
+		],
+		"file": [
+			{"file": "File 1"},
+			{"file": "File 2"},
+			{"file": "File 3"}
+		]
+	}
 }
 
-export async function listPath(path) {
-	let lines = await command(`lsinfo "${escape(path)}"`);
-	return parser.pathContents(lines);
-}
-
-export async function listTags(tag, filter = null) {
+export function listTags(tag, filter = null) {
 	switch (tag) {
 		case "AlbumArtist": return ["Artist 1", "Artist 2", "Artist 3"];
 		case "Album": return ["Album 1", "Album 2", "Album 3"];
 	}
 }
 
-export async function listSongs(filter, window = null) {
-	let tokens = ["find"];
-	tokens.push(serializeFilter(filter));
-	if (window) { tokens.push("window", window.join(":")); }
-	let lines = await command(tokens.join(" "));
-	return parser.songList(lines);
+export function listSongs(filter, window = null) {
+	return listQueue();
 }
 
-export async function albumArt(songUrl) {
+export function albumArt(songUrl) {
 	return null;
 }
 

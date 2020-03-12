@@ -1,7 +1,7 @@
 import * as html from "../html.js";
 import Component from "../component.js";
 import Playlist from "./playlist.js";
-
+import { escape } from "../mpd.js";
 
 class Playlists extends Component {
 	constructor() {
@@ -31,7 +31,7 @@ class Playlists extends Component {
 
 		sel.addCommand(async item => {
 			const name = item.name;
-			const commands = ["clear", `load "${this._mpd.escape(name)}"`, "play"];
+			const commands = ["clear", `load "${escape(name)}"`, "play"];
 			await this._mpd.command(commands);
 			this.selection.clear();
 			this._app.dispatchEvent(new CustomEvent("queue-change")); // fixme notification?
@@ -39,7 +39,7 @@ class Playlists extends Component {
 
 		sel.addCommand(async item => {
 			const name = item.name;
-			await this._mpd.command(`load "${this._mpd.escape(name)}"`);
+			await this._mpd.command(`load "${escape(name)}"`);
 			this.selection.clear();
 			this._app.dispatchEvent(new CustomEvent("queue-change")); // fixme notification?
 		}, {label:"Enqueue", icon:"plus"});
@@ -48,7 +48,7 @@ class Playlists extends Component {
 			const name = item.name;
 			if (!confirm(`Really delete playlist '${name}'?`)) { return; }
 
-			await this._mpd.command(`rm "${this._mpd.escape(name)}"`);
+			await this._mpd.command(`rm "${escape(name)}"`);
 			this._sync();
 		}, {label:"Delete", icon:"delete"});
 

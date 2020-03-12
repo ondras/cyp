@@ -6,6 +6,13 @@ export default class Item extends HTMLElement {
 		this.addEventListener("click", _ => this.onClick());
 	}
 
+	addButton(icon, cb) {
+		html.button({icon}, "", this).addEventListener("click", e => {
+			e.stopPropagation(); // do not select
+			cb();
+		});
+	}
+
 	onClick() { this.parentNode.selection.toggle(this); }
 
 	_buildTitle(title) {

@@ -1,6 +1,7 @@
 import * as html from "../html.js";
 import Component from "../component.js";
 import Song from "./song.js";
+import { escape } from "../mpd.js";
 
 
 function generateMoveCommands(items, diff, all) {
@@ -69,8 +70,7 @@ class Queue extends Component {
 			const node = new Song(song);
 			this.appendChild(node);
 
-			html.button({icon:"play"}, "", node).addEventListener("click", async e => {
-				e.stopPropagation(); // do not select
+			node.addButton("play", async _ => {
 				await this._mpd.command(`playid ${song["Id"]}`);
 			});
 		});
@@ -99,9 +99,9 @@ class Queue extends Component {
 			let name = prompt("Save selected songs as a playlist?", "name");
 			if (name === null) { return; }
 
-			name = this._mpd.escape(name);
+			name = escape(name);
 			const commands = items.map(item => {
-				return `playlistadd "${name}" "${this._mpd.escape(item.data["file"])}"`;
+				return `playlistadd "${name}" "${escape(item.data["file"])}"`;
 			});
 
 			await this._mpd.command(commands); // FIXME notify?
