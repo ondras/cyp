@@ -95,9 +95,9 @@ export async function listPath(path) {
 	return parser.pathContents(lines);
 }
 
-export async function listTags(tag, filter = null) {
+export async function listTags(tag, filter = {}) {
 	let tokens = ["list", tag];
-	if (filter) {
+	if (Object.keys(filter).length) {
 		tokens.push(serializeFilter(filter));
 
 		let fakeGroup = Object.keys(filter)[0]; // FIXME hack for MPD < 0.21.6

@@ -19,7 +19,7 @@ function createEnqueueCommand(node) {
 			`sort ${SORT}`
 		].join(" ");
 	} else {
-		throw new Exception(`Cannot create enqueue command for "${node.nodeName}"`);
+		throw new Error(`Cannot create enqueue command for "${node.nodeName}"`);
 	}
 }
 

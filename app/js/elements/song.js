@@ -5,37 +5,35 @@ import Item from "../item.js";
 export default class Song extends Item {
 	constructor(data) {
 		super();
-		this.data = data;
-		this.dataset.songId = data["Id"];
+		this.data = data; // FIXME verejne?
+		this.dataset.songId = data["Id"]; // FIXME toto maji jen ve fronte
 	}
 
 	connectedCallback() {
-		let block = html.node("div", {className:"multiline"}, "", this);
+		const data = this.data;
 
-		let lines = formatSongInfo(this.data);
-		block.appendChild(this._buildTitle(lines.shift()));
+		const block = html.node("div", {className:"multiline"}, "", this);
 
-		lines.length && html.node("span", {className:"subtitle"}, lines.shift(), block);
+		const title = this._buildTitle(data);
+		block.appendChild(title);
+		if (data["Track"]) {
+			const track = html.node("span", {className:"track"}, data["Track"].padStart(2, "0"));
+			title.insertBefore(html.text(" "), title.firstChild);
+			title.insertBefore(track, title.firstChild);
+		}
+
+		if (data["Title"]) {
+			const subtitle = format.subtitle(data);
+			html.node("span", {className:"subtitle"}, subtitle, block);
+		}
+	}
+
+	_buildTitle(data) {
+		return super._buildTitle(data["Title"] || fileName(data));
 	}
 }
 
 customElements.define("cyp-song", Song);
-
-
-// FIXME vyfaktorovat nekam do haje
-function formatSongInfo(data) {
-	let lines = [];
-
-	if (data["Title"]) {
-		lines.push(data["Title"]);
-		lines.push(format.subtitle(data));
-	} else {
-		lines.push(fileName(data));
-		lines.push("\u00A0");
-	}
-
-	return lines;
-}
 
 // FIXME vyfaktorovat nekam do haje
 function fileName(data) {
