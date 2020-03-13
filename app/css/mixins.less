@@ -14,6 +14,11 @@
 	text-overflow: ellipsis;
 }
 
+.font-large {
+	font-size: 18px;
+	line-height: 24px;
+}
+
 .selectable {
 	cursor: pointer;
 	position: relative; // kotva pro selected::before
@@ -59,11 +64,11 @@
 	}
 
 	.title {
-		font-weight: bold;
-		// FIXME take line-height, at vychazi celociselne
-		font-size: var(--font-size-large);
-		min-width: 0;
+		.font-large;
 		.ellipsis;
+
+		font-weight: bold;
+		min-width: 0;
 	}
 
 	button {

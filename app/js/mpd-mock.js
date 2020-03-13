@@ -16,7 +16,7 @@ export function status() {
 		Title: "Title of song",
 		Artist: "Artist of song",
 		Album: "Album of song",
-		Track: 6,
+		Track: "6",
 		state: "play",
 		Id: 2
 	}
@@ -24,9 +24,9 @@ export function status() {
 
 export function listQueue() {
 	return [
-		{Id:1, Track:5, Title:"Title 1", Artist:"AAA", Album:"BBB", duration:30},
+		{Id:1, Track:"5", Title:"Title 1", Artist:"AAA", Album:"BBB", duration:30},
 		status(),
-		{Id:3, Track:7, Title:"Title 3", Artist:"CCC", Album:"DDD", duration:230},
+		{Id:3, Track:"7", Title:"Title 3", Artist:"CCC", Album:"DDD", duration:230},
 	];
 }
 
@@ -61,6 +61,10 @@ export function listTags(tag, filter = null) {
 }
 
 export function listSongs(filter, window = null) {
+	return listQueue();
+}
+
+export function searchSongs(filter) {
 	return listQueue();
 }
 

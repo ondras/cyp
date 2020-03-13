@@ -11,7 +11,7 @@ function generateMoveCommands(items, diff, all) {
 		.map(item => {
 			let index = all.indexOf(item) + diff;
 			if (index < 0 || index >= all.length) { return null; } // this does not move
-			return `moveid ${item.data["Id"]} ${index}`;
+			return `moveid ${item.songId} ${index}`;
 		})
 		.filter(command => command);
 }
@@ -58,7 +58,7 @@ class Queue extends Component {
 
 	_updateCurrent() {
 		Array.from(this.children).forEach(/** @param {HTMLElement} node */ node => {
-			node.classList.toggle("current", node.dataset.songId == this._currentId);
+			node.classList.toggle("current", node.songId == this._currentId);
 		});
 	}
 
@@ -71,7 +71,7 @@ class Queue extends Component {
 			this.appendChild(node);
 
 			node.addButton("play", async _ => {
-				await this._mpd.command(`playid ${song["Id"]}`);
+				await this._mpd.command(`playid ${node.songId}`);
 			});
 		});
 
@@ -101,7 +101,7 @@ class Queue extends Component {
 
 			name = escape(name);
 			const commands = items.map(item => {
-				return `playlistadd "${name}" "${escape(item.data["file"])}"`;
+				return `playlistadd "${name}" "${escape(item.file)}"`;
 			});
 
 			await this._mpd.command(commands); // FIXME notify?
@@ -110,7 +110,7 @@ class Queue extends Component {
 		sel.addCommand(async items => {
 			if (!confirm(`Remove these ${items.length} songs from the queue?`)) { return; }
 
-			const commands = items.map(item => `deleteid ${item.data["Id"]}`);
+			const commands = items.map(item => `deleteid ${item.songId}`);
 			await this._mpd.command(commands);
 
 			this._sync();

@@ -5,12 +5,14 @@ import Item from "../item.js";
 export default class Song extends Item {
 	constructor(data) {
 		super();
-		this.data = data; // FIXME verejne?
-		this.dataset.songId = data["Id"]; // FIXME toto maji jen ve fronte
+		this._data = data;
 	}
 
+	get file() { return this._data["file"]; }
+	get songId() { return this._data["Id"]; }
+
 	connectedCallback() {
-		const data = this.data;
+		const data = this._data;
 
 		const block = html.node("div", {className:"multiline"}, "", this);
 
@@ -29,13 +31,8 @@ export default class Song extends Item {
 	}
 
 	_buildTitle(data) {
-		return super._buildTitle(data["Title"] || fileName(data));
+		return super._buildTitle(data["Title"] || format.fileName(this.file));
 	}
 }
 
 customElements.define("cyp-song", Song);
-
-// FIXME vyfaktorovat nekam do haje
-function fileName(data) {
-	return data["file"].split("/").pop();
-}

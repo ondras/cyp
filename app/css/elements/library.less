@@ -1,2 +1,27 @@
 cyp-library {
+	nav {
+		.flex-column;
+		align-items: center;
+
+		button {
+			.font-large;
+			width: 200px;
+			margin-top: 2em;
+			text-decoration: underline;
+
+			.icon {
+				width: 32px;
+				margin-right: var(--icon-spacing);
+			}
+		}
+	}
+
+	form {
+		.item;
+		.flex-row;
+
+		button:first-of-type {
+			margin-left: 8px;
+		}
+	}
 }

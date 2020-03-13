@@ -1,29 +1,20 @@
 import Item from "../item.js";
 import * as html from "../html.js";
+import * as format from "../format.js";
 
-
-function baseName(path) {
-	return path.split("/").pop();
-}
 
 export default class Path extends Item {
 	constructor(data) {
 		super();
 		this._data = data;
-
-		if ("directory" in this._data) {
-			this.file = data["directory"];
-		} else {
-			this.file = data["file"];
-		}
+		this._isDirectory = ("directory" in this._data);
 	}
+
+	get file() { return (this._isDirectory ? this._data["directory"] : this._data["file"]); }
+
 	connectedCallback() {
-		if ("directory" in this._data) {
-			this.appendChild(html.icon("folder"));
-		} else {
-			this.appendChild(html.icon("music"));
-		}
-		this._buildTitle(baseName(this.file));
+		this.appendChild(html.icon(this._isDirectory ? "folder" : "music"));
+		this._buildTitle(format.fileName(this.file));
 	}
 }
 

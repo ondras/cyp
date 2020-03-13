@@ -37,11 +37,11 @@ function processQueue() {
 	ws.send(current.cmd);
 }
 
-export function serializeFilter(filter) {
+export function serializeFilter(filter, operator = "==") {
 	let tokens = ["("];
 	Object.entries(filter).forEach(([key, value], index) => {
 		index && tokens.push(" AND ");
-		tokens.push(`(${key} == "${escape(value)}")`);
+		tokens.push(`(${key} ${operator} "${escape(value)}")`);
 	});
 	tokens.push(")");
 
@@ -109,23 +109,33 @@ export async function listTags(tag, filter = {}) {
 }
 
 export async function listSongs(filter, window = null) {
-	let tokens = ["find"];
-	tokens.push(serializeFilter(filter));
-	if (window) { tokens.push("window", window.join(":")); }
+	let tokens = ["find", ...serializeFilter(filter)];
+	window && tokens.push("window", window.join(":"));
 	let lines = await command(tokens.join(" "));
 	return parser.songList(lines);
+}
+
+export async function searchSongs(filter) {
+	let tokens = ["find", ...serializeFilter(filter, "contains")];
+	let lines = await command(tokens.join(" "));
+	return parser.songList(lines);
+
 }
 
 export async function albumArt(songUrl) {
 	let data = [];
 	let offset = 0;
+	let params = ["albumart", `"${escape(songUrl)}"`, offset];
+
 	while (1) {
-		let params = ["albumart", `"${escape(songUrl)}"`, offset];
-		let lines = await command(params.join(" "));
-		data = data.concat(lines[2]);
-		let metadata = parser.linesToStruct(lines.slice(0, 2));
-		if (data.length >= Number(metadata["size"])) { return data; }
-		offset += Number(metadata["binary"]);
+		params[2] = offset;
+		try {
+			let lines = await command(params.join(" "));
+			data = data.concat(lines[2]);
+			let metadata = parser.linesToStruct(lines.slice(0, 2));
+			if (data.length >= Number(metadata["size"])) { return data; }
+			offset += Number(metadata["binary"]);
+		} catch (e) { return null; }
 	}
 	return null;
 }

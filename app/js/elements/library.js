@@ -47,13 +47,15 @@ class Library extends Component {
 	_showRoot() {
 		html.clear(this);
 
-		html.button({icon:"artist"}, "Artists and albums", this)
+		const nav = html.node("nav", {}, "", this);
+
+		html.button({icon:"artist"}, "Artists and albums", nav)
 			.addEventListener("click", _ => this._listTags("AlbumArtist"));
 
-		html.button({icon:"folder"}, "Files and directories", this)
+		html.button({icon:"folder"}, "Files and directories", nav)
 			.addEventListener("click", _ => this._listPath(""));
 
-		html.button({icon:"magnify"}, "Search", this)
+		html.button({icon:"magnify"}, "Search", nav)
 			.addEventListener("click", _ => this._showSearch());
 	}
 
@@ -72,7 +74,7 @@ class Library extends Component {
 		path && this._buildBack(path);
 		paths["directory"].forEach(path => this._buildPath(path));
 		paths["file"].forEach(path => this._buildPath(path));
-}
+	}
 
 	async _listSongs(filter) {
 		const songs = await this._mpd.listSongs(filter);
@@ -82,7 +84,50 @@ class Library extends Component {
 	}
 
 	_showSearch() {
+		html.clear(this);
 
+		const form = html.node("form", {}, "", this);
+		const input = html.node("input", {type:"text"}, "", form);
+		html.button({icon:"magnify"}, "", form);
+		form.addEventListener("submit", e => {
+			e.preventDefault();
+			const q = input.value.trim();
+			if (q.length < 3) { return; }
+			this._doSearch(q, form);
+		});
+
+		input.focus();
+	}
+
+	async _doSearch(q, form) {
+		const songs1 = await this._mpd.searchSongs({"AlbumArtist": q});
+		const songs2 = await this._mpd.searchSongs({"Album": q});
+		const songs3 = await this._mpd.searchSongs({"Title": q});
+		html.clear(this);
+		this.appendChild(form);
+
+		this._aggregateSearch(songs1, "AlbumArtist");
+		this._aggregateSearch(songs2, "Album");
+		songs3.forEach(song => this.appendChild(new Song(song)));
+	}
+
+	_aggregateSearch(songs, tag) {
+		let results = new Map();
+		songs.forEach(song => {
+			let filter = {}, value;
+			const artist = song["AlbumArtist"] || song["Artist"]
+
+			if (tag == "Album") {
+				value = song[tag];
+				if (artist) { filter["AlbumArtist"] = artist; }
+			}
+
+			if (tag == "AlbumArtist") { value = artist; }
+
+			results.set(value, filter);
+		});
+
+		results.forEach((filter, value) => this._buildTag(tag, value, filter));
 	}
 
 	_buildTag(tag, value, filter) {
@@ -150,11 +195,7 @@ class Library extends Component {
 		sel.addCommandAll();
 
 		sel.addCommand(async items => {
-			const commands = [
-				"clear",
-				...items.map(createEnqueueCommand),
-				"play"
-			];
+			const commands = ["clear",...items.map(createEnqueueCommand), "play"];
 			await this._mpd.command(commands);
 			this.selection.clear();
 			this._app.dispatchEvent(new CustomEvent("queue-change")); // fixme notification?

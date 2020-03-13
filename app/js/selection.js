@@ -25,7 +25,9 @@ export default class Selection {
 
 	addCommandAll() {
 		this.addCommand(_ => {
-			Array.from(this._component.children).forEach(node => this.add(node));
+			Array.from(this._component.children)
+				.filter(node => node.tagName.toLowerCase().startsWith("cyp-"))
+				.forEach(node => this.add(node));
 		}, {label:"Select all", icon:"checkbox-marked-outline"});
 	}
 

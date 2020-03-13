@@ -1,8 +1,8 @@
 import * as art from "../art.js";
 import * as html from "../html.js";
 import * as format from "../format.js";
-
 import Component from "../component.js";
+
 
 const DELAY = 1000;
 
@@ -104,7 +104,7 @@ class Player extends Component {
 				DOM.duration.textContent = format.time(duration);
 				DOM.progress.max = duration;
 				DOM.progress.disabled = false;
-				DOM.title.textContent = data["Title"] || data["file"].split("/").pop();
+				DOM.title.textContent = data["Title"] || format.fileName(data["file"]);
 				DOM.subtitle.textContent = format.subtitle(data, {duration:false});
 			} else {
 				DOM.title.textContent = "";
@@ -118,6 +118,7 @@ class Player extends Component {
 
 		let artistNew = data["AlbumArtist"] || data["Artist"];
 		let artistOld = this._current["AlbumArtist"] || this._current["Artist"];
+
 		if (artistNew != artistOld || data["Album"] != this._current["Album"]) { // changed album (art)
 			html.clear(DOM.art);
 			art.get(this._mpd, artistNew, data["Album"], data["file"]).then(src => {

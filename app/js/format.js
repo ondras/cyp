@@ -14,3 +14,7 @@ export function subtitle(data, options = {duration:true}) {
 	options.duration && data["duration"] && tokens.push(time(Number(data["duration"])));
 	return tokens.join(SEPARATOR);
 }
+
+export function fileName(file) {
+	return file.split("/").pop();
+}
