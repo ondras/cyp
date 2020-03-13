@@ -1,6 +1,7 @@
 import * as html from "./html.js";
+import { HasApp } from "./component.js";
 
-export default class Item extends HTMLElement {
+export default class Item extends HasApp {
 	constructor() {
 		super();
 		this.addEventListener("click", _ => this.onClick());

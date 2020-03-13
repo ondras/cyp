@@ -1,4 +1,3 @@
-import * as mpd from "./mpd.js";
 import * as html from "./html.js";
 import * as conf from "./conf.js";
 
@@ -30,7 +29,7 @@ function resize(image) {
 	return canvas;
 }
 
-export async function get(artist, album, songUrl = null) {
+export async function get(mpd, artist, album, songUrl = null) {
 	let key = `${artist}-${album}`;
 	if (key in cache) { return cache[key]; }
 
