@@ -21,7 +21,7 @@ export default class Path extends Item {
 			this.appendChild(html.icon("music"));
 			path = this.data["file"];
 		}
-		this._buildTitle(path);
+		this._buildTitle(baseName(path));
 	}
 }
 
