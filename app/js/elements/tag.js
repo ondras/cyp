@@ -8,7 +8,6 @@ const ICONS = {
 	"Album": "album"
 }
 
-
 export default class Tag extends Item {
 	constructor(type, value, filter) {
 		super();

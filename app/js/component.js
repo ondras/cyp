@@ -14,7 +14,7 @@ export default class Component extends HasApp {
 	connectedCallback() {
 		this._app.addEventListener("load", _ => this._onAppLoad());
 		this._app.addEventListener("component-change", _ => {
-			const component = this._app.getAttribute("component");
+			const component = this._app.component;
 			const isThis = (this.nodeName.toLowerCase() == `cyp-${component}`);
 			this._onComponentChange(component, isThis);
 		});

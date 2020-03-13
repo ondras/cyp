@@ -42,8 +42,8 @@ class App extends HTMLElement {
 		this.dispatchEvent(new CustomEvent("load"));
 
 		const onHashChange = () => {
-			const hash = location.hash.substring(1);
-			this.setAttribute("component", hash || "queue");
+			const component = location.hash.substring(1) || "queue";
+			if (component != this.component) { this.component = component; }
 		}
 		window.addEventListener("hashchange", onHashChange);
 		onHashChange();
@@ -58,6 +58,9 @@ class App extends HTMLElement {
 			break;
 		}
 	}
+
+	get component() { return this.getAttribute("component"); }
+	set component(component) { return this.setAttribute("component", component); }
 }
 
 customElements.define("cyp-app", App);

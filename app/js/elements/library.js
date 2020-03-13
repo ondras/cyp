@@ -9,14 +9,18 @@ import { escape, serializeFilter } from "../mpd.js";
 
 const SORT = "-Track";
 
+function nonempty(str) { return (str.length > 0); }
+
 function createEnqueueCommand(node) {
 	if (node instanceof Song) {
 		return `add "${escape(node.data["file"])}"`;
+	} else if (node instanceof Path) {
+		return `add "${escape(node.file)}"`;
 	} else if (node instanceof Tag) {
 		return [
 			"findadd",
 			serializeFilter(node.createChildFilter()),
-			`sort ${SORT}`
+			// `sort ${SORT}` // MPD >= 0.22, not yet released
 		].join(" ");
 	} else {
 		throw new Error(`Cannot create enqueue command for "${node.nodeName}"`);
@@ -37,7 +41,7 @@ class Library extends Component {
 		const wasHidden = this.hidden;
 		this.hidden = !isThis;
 
-		if (!wasHidden) { this._showRoot(); }
+		if (!wasHidden && isThis) { this._showRoot(); }
 	}
 
 	_showRoot() {
@@ -58,7 +62,7 @@ class Library extends Component {
 		html.clear(this);
 
 		if ("AlbumArtist" in filter) { this._buildBack(filter); }
-		values.forEach(value => this._buildTag(tag, value, filter));
+		values.filter(nonempty).forEach(value => this._buildTag(tag, value, filter));
 	}
 
 	async _listPath(path) {

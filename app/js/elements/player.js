@@ -120,7 +120,7 @@ class Player extends Component {
 		let artistOld = this._current["AlbumArtist"] || this._current["Artist"];
 		if (artistNew != artistOld || data["Album"] != this._current["Album"]) { // changed album (art)
 			html.clear(DOM.art);
-			art.get(artistNew, data["Album"], data["file"]).then(src => {
+			art.get(this._mpd, artistNew, data["Album"], data["file"]).then(src => {
 				if (src) {
 					html.node("img", {src}, "", DOM.art);
 				} else {

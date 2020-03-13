@@ -9,19 +9,21 @@ function baseName(path) {
 export default class Path extends Item {
 	constructor(data) {
 		super();
-		this.data = data;
-		// FIXME spis ._data a .url
+		this._data = data;
+
+		if ("directory" in this._data) {
+			this.file = data["directory"];
+		} else {
+			this.file = data["file"];
+		}
 	}
 	connectedCallback() {
-		let path;
-		if ("directory" in this.data) {
+		if ("directory" in this._data) {
 			this.appendChild(html.icon("folder"));
-			path = this.data["directory"];
 		} else {
 			this.appendChild(html.icon("music"));
-			path = this.data["file"];
 		}
-		this._buildTitle(baseName(path));
+		this._buildTitle(baseName(this.file));
 	}
 }
 
