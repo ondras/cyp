@@ -17,9 +17,7 @@ export default class Tag extends Item {
 	}
 
 	connectedCallback() {
-		const art = html.node("span", {className:"art"}, "", this);
-		this._fillArt(art);
-
+		html.node("span", {className:"art"}, "", this);
 		this._buildTitle(this._value);
 	}
 
@@ -27,7 +25,8 @@ export default class Tag extends Item {
 		return Object.assign({[this._type]:this._value}, this._filter);
 	}
 
-	async _fillArt(parent) {
+	async fillArt(mpd) {
+		const parent = this.firstChild;
 		const filter = this.createChildFilter();
 
 		let artist = filter["AlbumArtist"];
@@ -35,9 +34,9 @@ export default class Tag extends Item {
 		let src = null;
 
 		if (artist && album) {
-			src = await art.get(this._mpd, artist, album);
+			src = await art.get(mpd, artist, album);
 			if (!src) {
-				let songs = await this._mpd.listSongs(filter, [0,1]);
+				let songs = await mpd.listSongs(filter, [0,1]);
 				if (songs.length) {
 					src = await art.get(artist, album, songs[0]["file"]);
 				}

@@ -1,5 +1,6 @@
 cyp-player {
 	@art-size: 96px;
+
 	.flex-row;
 	align-items: stretch;
 
@@ -8,7 +9,7 @@ cyp-player {
 	&:not([data-flags~=random]) .random, &:not([data-flags~=repeat]) .repeat { opacity: 0.5; }
 
 	x-range {
-		flex-grow: 1;
+		flex: auto;
 		--elapsed-color: var(--primary);
 	}
 
@@ -21,60 +22,66 @@ cyp-player {
 	}
 
 	.info {
-		flex-grow: 2;
-		flex-basis: 0;
-		padding: 0 var(--icon-spacing);
-		overflow: hidden; // FIXME asi tu ma byt min-width
+		flex: auto;
+		min-width: 0;
 
 		.flex-column;
-		justify-content: space-around;
+		justify-content: space-between;
 
-		h2 {
-			font-size: 125%;
-			margin: 0;
+		padding: 0 var(--icon-spacing);
+
+		.title {
+			margin-top: 8px;
+			.font-large;
+			font-weight: bold;
 		}
-
 		.title, .subtitle { .ellipsis; }
 	}
 
 	.timeline {
+		flex: none;
+		height: 24px;
+		margin-bottom: 4px;
 		.flex-row;
 
 		.duration, .elapsed {
-			flex-basis: 5ch;
+			flex: none;
+			width: 5ch;
 			text-align: center;
 		}
 	}
 
 	.controls {
-		flex-grow: 1;
-		flex-basis: 0;
-		max-width: 220px;
+		width: 220px;
+		min-width: 0;
 
 		.flex-column;
-		justify-content: space-around;
 
 		.playback {
+			flex: auto;
+
 			.flex-row;
 			justify-content: space-around;
 
 			.icon { width: 40px; }
-
 			.icon-play, .icon-pause { width: 64px; }
 		}
 
 		.volume {
-			.flex-row;
+			flex: none;
+			margin-bottom: 4px;
 
-			.mute { margin-right: 4px; }
+			.flex-row;
+			.mute { margin-right: var(--icon-spacing); }
 		}
 	}
 
 	.misc {
-		display: flex;
-		flex-direction: column;
-		align-self: stretch;
+		flex: none;
+
+		.flex-column;
 		justify-content: space-around;
+
 		.icon { width: 32px; }
 	}
 

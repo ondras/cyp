@@ -181,6 +181,7 @@ class Library extends Component {
 				node.addButton("chevron-double-right", _ => this._pushState({type:"songs", filter:node.createChildFilter()}));
 			break;
 		}
+		node.fillArt(this._mpd);
 	}
 
 	_buildBack() {
