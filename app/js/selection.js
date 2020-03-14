@@ -1,5 +1,8 @@
 import * as html from "./html.js";
 
+
+const TAGS = ["cyp-song", "cyp-tag", "cyp-path"];
+
 export default class Selection {
 	constructor(component, mode) {
 		this._component = component;
@@ -25,8 +28,7 @@ export default class Selection {
 
 	addCommandAll() {
 		this.addCommand(_ => {
-			Array.from(this._component.children)
-				.filter(node => node.tagName.toLowerCase().startsWith("cyp-"))
+			Array.from(this._component.querySelectorAll(TAGS.join(", ")))
 				.forEach(node => this.add(node));
 		}, {label:"Select all", icon:"checkbox-marked-outline"});
 	}

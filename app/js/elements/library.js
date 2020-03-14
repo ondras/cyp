@@ -8,6 +8,10 @@ import { escape, serializeFilter } from "../mpd.js";
 
 
 const SORT = "-Track";
+const TAGS = {
+	"Album": "Albums",
+	"AlbumArtist": "Artists"
+}
 
 function nonempty(str) { return (str.length > 0); }
 
@@ -30,7 +34,20 @@ function createEnqueueCommand(node) {
 class Library extends Component {
 	constructor() {
 		super({selection:"multi"});
+		this._stateStack = [];
 		this._initCommands();
+	}
+
+	_popState() {
+		this.selection.clear();
+
+		this._stateStack.pop();
+		if (this._stateStack.length > 0) {
+			let state = this._stateStack[this._stateStack.length-1];
+			this._showState(state);
+		} else {
+			this._showRoot();
+		}
 	}
 
 	_onAppLoad() {
@@ -45,25 +62,40 @@ class Library extends Component {
 	}
 
 	_showRoot() {
+		this._stateStack = [];
 		html.clear(this);
 
 		const nav = html.node("nav", {}, "", this);
 
 		html.button({icon:"artist"}, "Artists and albums", nav)
-			.addEventListener("click", _ => this._listTags("AlbumArtist"));
+			.addEventListener("click", _ => this._pushState({type:"tags", tag:"AlbumArtist"}));
 
 		html.button({icon:"folder"}, "Files and directories", nav)
-			.addEventListener("click", _ => this._listPath(""));
+			.addEventListener("click", _ => this._pushState({type:"path", path:""}));
 
 		html.button({icon:"magnify"}, "Search", nav)
-			.addEventListener("click", _ => this._showSearch());
+			.addEventListener("click", _ => this._pushState({type:"search"}));
+	}
+
+	_pushState(state) {
+		this._stateStack.push(state);
+		this._showState(state);
+	}
+
+	_showState(state) {
+		switch (state.type) {
+			case "tags": this._listTags(state.tag, state.filter); break;
+			case "songs": this._listSongs(state.filter); break;
+			case "path": this._listPath(state.path); break;
+			case "search": this._showSearch(state.query); break;
+		}
 	}
 
 	async _listTags(tag, filter = {}) {
 		const values = await this._mpd.listTags(tag, filter);
 		html.clear(this);
 
-		if ("AlbumArtist" in filter) { this._buildBack(filter); }
+		if ("AlbumArtist" in filter) { this._buildBack(); }
 		values.filter(nonempty).forEach(value => this._buildTag(tag, value, filter));
 	}
 
@@ -71,7 +103,7 @@ class Library extends Component {
 		let paths = await this._mpd.listPath(path);
 		html.clear(this);
 
-		path && this._buildBack(path);
+		path && this._buildBack();
 		paths["directory"].forEach(path => this._buildPath(path));
 		paths["file"].forEach(path => this._buildPath(path));
 	}
@@ -79,30 +111,34 @@ class Library extends Component {
 	async _listSongs(filter) {
 		const songs = await this._mpd.listSongs(filter);
 		html.clear(this);
-		this._buildBack(filter);
+		this._buildBack();
 		songs.forEach(song => this.appendChild(new Song(song)));
 	}
 
-	_showSearch() {
+	_showSearch(query = "") {
 		html.clear(this);
 
 		const form = html.node("form", {}, "", this);
-		const input = html.node("input", {type:"text"}, "", form);
+		const input = html.node("input", {type:"text", value:query}, "", form);
 		html.button({icon:"magnify"}, "", form);
 		form.addEventListener("submit", e => {
 			e.preventDefault();
-			const q = input.value.trim();
-			if (q.length < 3) { return; }
-			this._doSearch(q, form);
+			const query = input.value.trim();
+			if (query.length < 3) { return; }
+			this._doSearch(query, form);
 		});
 
 		input.focus();
+		if (query) { this._doSearch(query, form); }
 	}
 
-	async _doSearch(q, form) {
-		const songs1 = await this._mpd.searchSongs({"AlbumArtist": q});
-		const songs2 = await this._mpd.searchSongs({"Album": q});
-		const songs3 = await this._mpd.searchSongs({"Title": q});
+	async _doSearch(query, form) {
+		let state = this._stateStack[this._stateStack.length-1];
+		state.query = query;
+
+		const songs1 = await this._mpd.searchSongs({"AlbumArtist": query});
+		const songs2 = await this._mpd.searchSongs({"Album": query});
+		const songs3 = await this._mpd.searchSongs({"Title": query});
 		html.clear(this);
 		this.appendChild(form);
 
@@ -136,47 +172,29 @@ class Library extends Component {
 			case "AlbumArtist":
 				node = new Tag(tag, value, filter);
 				this.appendChild(node);
-				node.onClick = () => this._listTags("Album", node.createChildFilter());
+				node.onClick = () => this._pushState({type:"tags", tag:"Album", filter:node.createChildFilter()});
 			break;
 
 			case "Album":
 				node = new Tag(tag, value, filter);
 				this.appendChild(node);
-				node.addButton("chevron-double-right", _ => this._listSongs(node.createChildFilter()));
+				node.addButton("chevron-double-right", _ => this._pushState({type:"songs", filter:node.createChildFilter()}));
 			break;
 		}
 	}
 
-	_buildBack(filterOrPath) {
-		if (typeof(filterOrPath) == "string") {
-			const path = filterOrPath.split("/").slice(0, -1).join("");
-			const node = new Back("..");
-			this.appendChild(node);
-			node.onClick = () => {
-				this.selection.clear();
-				this._listPath(path);
-			}
-			return;
+	_buildBack() {
+		const backState = this._stateStack[this._stateStack.length-2];
+		let title;
+		switch (backState.type) {
+			case "path": title = ".."; break;
+			case "search": title = "Search"; break;
+			case "tags": title = TAGS[backState.tag]; break;
 		}
 
-		const filter = Object.assign({}, filterOrPath)
-		let tag, title;
-
-		if ("Album" in filter) {
-			tag = "Album";
-			title = filter["AlbumArtist"];
-		} else if ("AlbumArtist" in filter) {
-			tag = "AlbumArtist";
-			title = "Artists";
-		}
-
-		delete filter[tag];
 		const node = new Back(title);
 		this.appendChild(node);
-		node.onClick = () => {
-			this.selection.clear();
-			this._listTags(tag, filter);
-		}
+		node.onClick = () => this._popState();
 	}
 
 	_buildPath(data) {
@@ -185,7 +203,7 @@ class Library extends Component {
 
 		if ("directory" in data) {
 			const path = data["directory"];
-			node.addButton("chevron-double-right", _ => this._listPath(path));
+			node.addButton("chevron-double-right", _ => this._pushState({type:"path", path}));
 		}
 	}
 

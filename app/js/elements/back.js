@@ -7,6 +7,7 @@ export default class Back extends Item {
 		super();
 		this._title = title;
 	}
+
 	connectedCallback() {
 		this.appendChild(html.icon("keyboard-backspace"));
 		this._buildTitle(this._title);
