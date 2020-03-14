@@ -38,7 +38,7 @@ export default class Tag extends Item {
 			if (!src) {
 				let songs = await mpd.listSongs(filter, [0,1]);
 				if (songs.length) {
-					src = await art.get(artist, album, songs[0]["file"]);
+					src = await art.get(mpd, artist, album, songs[0]["file"]);
 				}
 			}
 		}

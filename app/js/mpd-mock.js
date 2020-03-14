@@ -24,9 +24,9 @@ export function status() {
 
 export function listQueue() {
 	return [
-		{Id:1, Track:"5", Title:"Title 1", Artist:"AAA", Album:"BBB", duration:30},
+		{Id:1, Track:"5", Title:"Title 1", Artist:"AAA", Album:"BBB", duration:30, file:"a.mp3"},
 		status(),
-		{Id:3, Track:"7", Title:"Title 3", Artist:"CCC", Album:"DDD", duration:230},
+		{Id:3, Track:"7", Title:"Title 3", Artist:"CCC", Album:"DDD", duration:230, file:"c.mp3"},
 	];
 }
 
@@ -69,6 +69,7 @@ export function searchSongs(filter) {
 }
 
 export function albumArt(songUrl) {
+	return new Promise(resolve => setTimeout(resolve, 3000));
 	return null;
 }
 
