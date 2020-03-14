@@ -1,16 +1,21 @@
 LESS := $(shell npm bin)/lessc
+ROLLUP := $(shell npm bin)/rollup
 APP := app
 CSS := $(APP)/cyp.css
+JS := $(APP)/cyp.js
 ICONS := $(APP)/js/icons.js
 SYSD_USER := ~/.config/systemd/user
 SERVICE := cyp.service
 
-all: $(CSS)
+all: $(CSS) $(JS)
 
 icons: $(ICONS)
 
 $(ICONS): $(APP)/icons/*
 	$(APP)/svg2js.sh $(APP)/icons > $@
+
+$(JS): $(APP)/js/* $(APP)/js/elements/*
+	$(ROLLUP) -i $(APP)/js/cyp.js > $@
 
 $(CSS): $(APP)/css/* $(APP)/css/elements/*
 	$(LESS) -x $(APP)/css/cyp.less > $@
@@ -25,7 +30,7 @@ watch: all
 	while inotifywait -e MODIFY -r $(APP)/css $(APP)/js ; do make $^ ; done
 
 clean:
-	rm -f $(SERVICE) $(CSS)
+	rm -f $(SERVICE) $(CSS) $(JS)
 
 docker-image:
 	docker build -t cyp .
