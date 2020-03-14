@@ -483,7 +483,7 @@ function searchSongs$1(filter) {
 }
 
 function albumArt$1(songUrl) {
-	return new Promise(resolve => setTimeout(resolve, 3000));
+	return new Promise(resolve => setTimeout(resolve, 1000));
 }
 
 function init$1() {}

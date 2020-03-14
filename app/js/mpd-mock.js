@@ -69,7 +69,7 @@ export function searchSongs(filter) {
 }
 
 export function albumArt(songUrl) {
-	return new Promise(resolve => setTimeout(resolve, 3000));
+	return new Promise(resolve => setTimeout(resolve, 1000));
 	return null;
 }
 
