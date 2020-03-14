@@ -109,14 +109,14 @@ export async function listTags(tag, filter = {}) {
 }
 
 export async function listSongs(filter, window = null) {
-	let tokens = ["find", ...serializeFilter(filter)];
+	let tokens = ["find", serializeFilter(filter)];
 	window && tokens.push("window", window.join(":"));
 	let lines = await command(tokens.join(" "));
 	return parser.songList(lines);
 }
 
 export async function searchSongs(filter) {
-	let tokens = ["find", ...serializeFilter(filter, "contains")];
+	let tokens = ["search", serializeFilter(filter, "contains")];
 	let lines = await command(tokens.join(" "));
 	return parser.songList(lines);
 
