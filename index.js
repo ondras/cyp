@@ -6,6 +6,27 @@ let tickets = [];
 
 const cmd = "youtube-dl";
 
+function escape(arg) {
+    return `'${arg.replace(/'/g, `'\\''`)}'`;
+}
+
+function searchYoutube(q, response) {
+	response.setHeader("Content-Type", "text/plain"); // necessary for firefox to read by chunks
+
+	console.log("YouTube searching", q);
+	q = escape(`ytsearch10:${q}`);
+	const command = `${cmd} -j ${q} | jq "{id,title}" | jq -s .`;
+	require("child_process").exec(command, {}, (error, stdout, stderr) => {
+		if (error) {
+			console.log("error", error);
+			response.writeHead(500);
+			response.end(error.message);
+		} else {
+			response.end(stdout);
+		}
+	});
+}
+
 
 function downloadYoutube(q, response) {
 	response.setHeader("Content-Type", "text/plain"); // necessary for firefox to read by chunks
@@ -34,12 +55,22 @@ function downloadYoutube(q, response) {
 	});
 }
 
-function handleYoutube(request, response) {
+function handleYoutubeSearch(url, response) {
+	let q = url.searchParams.get("q");
+	if (q) {
+		searchYoutube(q, response);
+	} else {
+		response.writeHead(404);
+		response.end();
+	}
+}
+
+function handleYoutubeDownload(request, response) {
 	let str = "";
 	request.setEncoding("utf8");
 	request.on("data", chunk => str += chunk);
 	request.on("end", () => {
-		let q = require("querystring").parse(str)["q"];
+		let q = require("querystring").parse(str)["id"];
 		if (q) {
 			downloadYoutube(q, response);
 		} else {
@@ -62,11 +93,16 @@ function handleTicket(request, response) {
 }
 
 function onRequest(request, response) {
-	switch (true) {
-		case request.method == "POST" && request.url == "/youtube":
-			return handleYoutube(request, response);
+	const url = new URL(request.url, "http://localhost");
 
-		case request.method == "POST" && request.url == "/ticket":
+	switch (true) {
+		case request.method == "GET" && url.pathname == "/youtube":
+			return handleYoutubeSearch(url, response);
+
+		case request.method == "POST" && url.pathname == "/youtube":
+			return handleYoutubeDownload(request, response);
+
+		case request.method == "POST" && url.pathname == "/ticket":
 			return handleTicket(request, response);
 
 		default:

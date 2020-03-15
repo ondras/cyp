@@ -12,11 +12,30 @@ function decodeChunk(byteArray) {
 }
 
 class YT extends Component {
-	_onAppLoad() {
-		this.querySelector(".download").addEventListener("click", _ => this._download());
-		this.querySelector(".search-download").addEventListener("click", _ => this._search());
-		this.querySelector(".clear").addEventListener("click", _ => this._clear());
+	connectedCallback() {
+		super.connectedCallback();
+
+		const form = html.node("form", {}, "", this);
+		const input = html.node("input", {type:"text"}, "", form);
+		html.button({icon:"magnify"}, "", form);
+		form.addEventListener("submit", e => {
+			e.preventDefault();
+			const query = input.value.trim();
+			if (!query.length) { return; }
+			this._doSearch(query, form);
+		});
 	}
+
+	async _doSearch(query, form) {
+		let response = await fetch(`/youtube?q=${encodeURIComponent(query)}`);
+		let data = await response.json();
+
+		html.clear(this);
+		this.appendChild(form);
+
+		console.log(data);
+	}
+
 
 	_download() {
 		let url = prompt("Please enter a YouTube URL:");

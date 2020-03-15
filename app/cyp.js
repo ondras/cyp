@@ -782,12 +782,7 @@ class Selection {
 	}
 }
 
-class HasApp extends HTMLElement {
-	get _app() { return this.closest("cyp-app"); }
-	get _mpd() { return this._app.mpd; }
-}
-
-class Component extends HasApp {
+class Component extends HTMLElement {
 	constructor(options = {}) {
 		super();
 		if (options.selection) { this.selection = new Selection(this, options.selection); }
@@ -801,6 +796,9 @@ class Component extends HasApp {
 			this._onComponentChange(component, isThis);
 		});
 	}
+
+	get _app() { return this.closest("cyp-app"); }
+	get _mpd() { return this._app.mpd; }
 
 	_onAppLoad() {}
 	_onComponentChange(_component, _isThis) {}
@@ -1056,7 +1054,7 @@ class Player extends Component {
 
 customElements.define("cyp-player", Player);
 
-class Item extends HasApp {
+class Item extends HTMLElement {
 	constructor() {
 		super();
 		this.addEventListener("click", _ => this.onClick());
@@ -1376,11 +1374,30 @@ function decodeChunk(byteArray) {
 }
 
 class YT extends Component {
-	_onAppLoad() {
-		this.querySelector(".download").addEventListener("click", _ => this._download());
-		this.querySelector(".search-download").addEventListener("click", _ => this._search());
-		this.querySelector(".clear").addEventListener("click", _ => this._clear());
+	connectedCallback() {
+		super.connectedCallback();
+
+		const form = node("form", {}, "", this);
+		const input = node("input", {type:"text"}, "", form);
+		button({icon:"magnify"}, "", form);
+		form.addEventListener("submit", e => {
+			e.preventDefault();
+			const query = input.value.trim();
+			if (!query.length) { return; }
+			this._doSearch(query, form);
+		});
 	}
+
+	async _doSearch(query, form) {
+		let response = await fetch(`/youtube?q=${encodeURIComponent(query)}`);
+		let data = await response.json();
+
+		clear(this);
+		this.appendChild(form);
+
+		console.log(data);
+	}
+
 
 	_download() {
 		let url = prompt("Please enter a YouTube URL:");
