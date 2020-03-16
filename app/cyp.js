@@ -654,7 +654,6 @@ async function initMpd() {
 		await init();
 		return mpd;
 	} catch (e) {
-		console.error(e);
 		return mpdMock;
 	}
 }
@@ -675,6 +674,7 @@ class App extends HTMLElement {
 		const names = children.map(node => node.nodeName.toLowerCase())
 			.filter(name => name.startsWith("cyp-"));
 		const unique = new Set(names);
+		console.log(unique);
 
 		const promises = [...unique].map(name => customElements.whenDefined(name));
 		await Promise.all(promises);
@@ -712,9 +712,11 @@ class Selection {
 		this._component = component;
 		/** @type {"single" | "multi"} */
 		this._mode = mode;
-		this._items = []; // FIXME ukladat skutecne HTML? co kdyz nastane refresh?
+		this._items = [];
 		this._node = node("cyp-commands", {hidden:true});
 	}
+
+	appendTo(parent) { parent.appendChild(this._node); }
 
 	clear() {
 		while (this._items.length) { this.remove(this._items[0]); }
@@ -770,17 +772,15 @@ class Selection {
 	}
 
 	_show() {
-		const parent = this._component.closest("cyp-app").querySelector("footer"); // FIXME jde lepe?
-		parent.appendChild(this._node);
-		this._node.offsetWidth; // FIXME jde lepe?
 		this._node.hidden = false;
 	}
 
 	_hide() {
 		this._node.hidden = true;
-		this._node.remove();
 	}
 }
+
+customElements.define("cyp-commands", class extends HTMLElement {});
 
 class Component extends HTMLElement {
 	constructor(options = {}) {
@@ -789,6 +789,10 @@ class Component extends HTMLElement {
 	}
 
 	connectedCallback() {
+		if (this.selection) {
+			const parent = this._app.querySelector("footer");
+			this.selection.appendTo(parent);
+		}
 		this._app.addEventListener("load", _ => this._onAppLoad());
 		this._app.addEventListener("component-change", _ => {
 			const component = this._app.component;
@@ -812,6 +816,13 @@ class Menu extends Component {
 		this._tabs.forEach(tab => {
 			tab.addEventListener("click", _ => this._activate(tab.dataset.for));
 		});
+	}
+
+	_onAppLoad() {
+		this._app.addEventListener("queue-length-change", e => {
+			this.querySelector(".queue-length").textContent = `(${e.detail})`;
+		});
+
 	}
 
 	async _activate(component) {
@@ -1157,8 +1168,8 @@ class Queue extends Component {
 		let songs = await this._mpd.listQueue();
 		this._buildSongs(songs);
 
-		// FIXME pubsub?
-		document.querySelector("#queue-length").textContent = `(${songs.length})`;
+		let e = new CustomEvent("queue-length-change", {detail:songs.length});
+		this._app.dispatchEvent(e);
 	}
 
 	_updateCurrent() {
@@ -1366,6 +1377,54 @@ class Settings extends Component {
 
 customElements.define("cyp-settings", Settings);
 
+class Search extends HTMLElement {
+	constructor() {
+		super();
+		this._built = false;
+	}
+
+	get value() { return this._input.value.trim(); }
+	set value(value) { this._input.value = value; }
+	get _input() { return this.querySelector("input"); }
+
+	onSubmit() {}
+	focus() { this._input.focus(); }
+	pending(pending) { this.classList.toggle("pending", pending); }
+
+	connectedCallback() {
+		if (this._built) { return; }
+
+		const form = node("form", {}, "", this);
+		node("input", {type:"text"}, "", form);
+		button({icon:"magnify"}, "", form);
+
+		form.addEventListener("submit", e => {
+			e.preventDefault();
+			this.onSubmit();
+		});
+
+		this._built = true;
+	}
+}
+
+customElements.define("cyp-search", Search);
+
+class YtResult extends Item {
+	constructor(title) {
+		super();
+		this._title = title;
+	}
+
+	connectedCallback() {
+		this.appendChild(icon("magnify"));
+		this._buildTitle(this._title);
+	}
+
+	onClick() {}
+}
+
+customElements.define("cyp-yt-result", YtResult);
+
 const decoder = new TextDecoder("utf-8");
 
 function decodeChunk(byteArray) {
@@ -1374,57 +1433,52 @@ function decodeChunk(byteArray) {
 }
 
 class YT extends Component {
+	constructor() {
+		super();
+		this._search = new Search();
+
+		this._search.onSubmit = _ => {
+			let query = this._search.value;
+			query && this._doSearch(query);
+		};
+	}
+
 	connectedCallback() {
 		super.connectedCallback();
 
-		const form = node("form", {}, "", this);
-		const input = node("input", {type:"text"}, "", form);
-		button({icon:"magnify"}, "", form);
-		form.addEventListener("submit", e => {
-			e.preventDefault();
-			const query = input.value.trim();
-			if (!query.length) { return; }
-			this._doSearch(query, form);
-		});
-	}
-
-	async _doSearch(query, form) {
-		let response = await fetch(`/youtube?q=${encodeURIComponent(query)}`);
-		let data = await response.json();
-
-		clear(this);
-		this.appendChild(form);
-
-		console.log(data);
-	}
-
-
-	_download() {
-		let url = prompt("Please enter a YouTube URL:");
-		if (!url) { return; }
-
-		this._post(url);
-	}
-
-	_search() {
-		let q = prompt("Please enter a search string:");
-		if (!q) { return; }
-
-		this._post(`ytsearch:${q}`);
+		this._clear();
 	}
 
 	_clear() {
-		clear(this.querySelector("pre"));
+		clear(this);
+		this.appendChild(this._search);
 	}
 
-	async _post(q) {
-		let pre = this.querySelector("pre");
-		clear(pre);
+	async _doSearch(query) {
+		this._clear();
+		this._search.pending(true);
 
-		this.classList.add("pending");
+		let response = await fetch(`/youtube?q=${encodeURIComponent(query)}`);
+		let results = await response.json();
+
+		this._search.pending(false);
+
+		results.forEach(result => {
+			let node = new YtResult(result.title);
+			this.appendChild(node);
+			node.addButton("download", () => this._download(result.id));
+		});
+	}
+
+
+	async _download(id) {
+		this._clear();
+
+		let pre = node("pre", {}, "", this);
+		this._search.pending(true);
 
 		let body = new URLSearchParams();
-		body.set("q", q);
+		body.set("id", id);
 		let response = await fetch("/youtube", {method:"POST", body});
 
 		let reader = response.body.getReader();
@@ -1436,7 +1490,7 @@ class YT extends Component {
 		}
 		reader.releaseLock();
 
-		this.classList.remove("pending");
+		this._search.pending(false);
 
 		if (response.status == 200) {
 			this._mpd.command(`update ${escape(ytPath)}`);
@@ -1444,7 +1498,10 @@ class YT extends Component {
 	}
 
 	_onComponentChange(c, isThis) {
+		const wasHidden = this.hidden;
 		this.hidden = !isThis;
+
+		if (!wasHidden && isThis) { this._showRoot(); }
 	}
 }
 
@@ -1560,6 +1617,13 @@ class Library extends Component {
 		super({selection:"multi"});
 		this._stateStack = [];
 		this._initCommands();
+
+		this._search = new Search();
+		this._search.onSubmit = _ => {
+			let query = this._search.value;
+			if (query.length < 3) { return; }
+			this._doSearch(query);
+		};
 	}
 
 	_popState() {
@@ -1642,29 +1706,26 @@ class Library extends Component {
 	_showSearch(query = "") {
 		clear(this);
 
-		const form = node("form", {}, "", this);
-		const input = node("input", {type:"text", value:query}, "", form);
-		button({icon:"magnify"}, "", form);
-		form.addEventListener("submit", e => {
-			e.preventDefault();
-			const query = input.value.trim();
-			if (query.length < 3) { return; }
-			this._doSearch(query, form);
-		});
+		this.appendChild(this._search);
+		this._search.value = query;
+		this._search.focus();
 
-		input.focus();
-		if (query) { this._doSearch(query, form); }
+		query && this._search.onSubmit();
 	}
 
-	async _doSearch(query, form) {
+	async _doSearch(query) {
 		let state = this._stateStack[this._stateStack.length-1];
 		state.query = query;
+
+		clear(this);
+		this.appendChild(this._search);
+		this._search.pending(true);
 
 		const songs1 = await this._mpd.searchSongs({"AlbumArtist": query});
 		const songs2 = await this._mpd.searchSongs({"Album": query});
 		const songs3 = await this._mpd.searchSongs({"Title": query});
-		clear(this);
-		this.appendChild(form);
+
+		this._search.pending(false);
 
 		this._aggregateSearch(songs1, "AlbumArtist");
 		this._aggregateSearch(songs2, "Album");

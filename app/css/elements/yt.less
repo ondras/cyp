@@ -1,32 +1,8 @@
 cyp-yt {
-	header {
-		border-bottom: 1px solid var(--fg);
-
-		button + button {
-			margin-left: 16px;
-		}
-	}
-
-	.clear {
-		margin-left: auto;
-	}
-
 	pre {
 		margin: 0.5em 0.5ch;
 		flex-grow: 1;
 		overflow: auto;
 		white-space: pre-wrap;
 	}
-
-	&.pending header {
-		background-image: linear-gradient(var(--primary), var(--primary));
-		background-repeat: no-repeat;
-		background-size: 25% 4px;
-		animation: bar ease-in-out 3s alternate infinite;
-	}
-}
-
-@keyframes bar {
-	0% { background-position: 0 100%; }
-	100% { background-position: 100% 100%; }
 }

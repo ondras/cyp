@@ -1,0 +1,23 @@
+cyp-search {
+	form {
+		.item;
+		align-items: stretch;
+
+		button:first-of-type {
+			margin-left: var(--icon-spacing);
+		}
+	}
+
+	&.pending form {
+		background-image: linear-gradient(var(--primary), var(--primary));
+		background-repeat: no-repeat;
+		background-size: 25% var(--border-width);
+		animation: bar ease-in-out 3s alternate infinite;
+	}
+}
+
+
+@keyframes bar {
+	0% { background-position: 0 100%; }
+	100% { background-position: 100% 100%; }
+}

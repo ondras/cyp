@@ -14,7 +14,6 @@ async function initMpd() {
 		await mpd.init();
 		return mpd;
 	} catch (e) {
-		console.error(e);
 		return mpdMock;
 	}
 }
@@ -35,6 +34,7 @@ class App extends HTMLElement {
 		const names = children.map(node => node.nodeName.toLowerCase())
 			.filter(name => name.startsWith("cyp-"));
 		const unique = new Set(names);
+		console.log(unique);
 
 		const promises = [...unique].map(name => customElements.whenDefined(name));
 		await Promise.all(promises);

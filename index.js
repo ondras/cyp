@@ -14,8 +14,9 @@ function searchYoutube(q, response) {
 	response.setHeader("Content-Type", "text/plain"); // necessary for firefox to read by chunks
 
 	console.log("YouTube searching", q);
-	q = escape(`ytsearch10:${q}`);
+	q = escape(`ytsearch3:${q}`);
 	const command = `${cmd} -j ${q} | jq "{id,title}" | jq -s .`;
+
 	require("child_process").exec(command, {}, (error, stdout, stderr) => {
 		if (error) {
 			console.log("error", error);
@@ -28,14 +29,14 @@ function searchYoutube(q, response) {
 }
 
 
-function downloadYoutube(q, response) {
+function downloadYoutube(id, response) {
 	response.setHeader("Content-Type", "text/plain"); // necessary for firefox to read by chunks
 
-	console.log("YouTube downloading", q);
+	console.log("YouTube downloading", id);
 	let args = [
 		"-f", "bestaudio",
 		"-o", `${__dirname}/_youtube/%(title)s-%(id)s.%(ext)s`,
-		q
+		id
 	]
 	let child = require("child_process").spawn(cmd, args);
 
@@ -70,9 +71,9 @@ function handleYoutubeDownload(request, response) {
 	request.setEncoding("utf8");
 	request.on("data", chunk => str += chunk);
 	request.on("end", () => {
-		let q = require("querystring").parse(str)["id"];
-		if (q) {
-			downloadYoutube(q, response);
+		let id = require("querystring").parse(str)["id"];
+		if (id) {
+			downloadYoutube(id, response);
 		} else {
 			response.writeHead(404);
 			response.end();

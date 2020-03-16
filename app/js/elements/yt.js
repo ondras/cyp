@@ -2,6 +2,8 @@ import * as html from "../html.js";
 import * as conf from "../conf.js";
 import { escape } from "../mpd.js";
 import Component from "../component.js";
+import Search from "./search.js";
+import Result from "./yt-result.js";
 
 
 const decoder = new TextDecoder("utf-8");
@@ -12,57 +14,52 @@ function decodeChunk(byteArray) {
 }
 
 class YT extends Component {
+	constructor() {
+		super();
+		this._search = new Search();
+
+		this._search.onSubmit = _ => {
+			let query = this._search.value;
+			query && this._doSearch(query);
+		}
+	}
+
 	connectedCallback() {
 		super.connectedCallback();
 
-		const form = html.node("form", {}, "", this);
-		const input = html.node("input", {type:"text"}, "", form);
-		html.button({icon:"magnify"}, "", form);
-		form.addEventListener("submit", e => {
-			e.preventDefault();
-			const query = input.value.trim();
-			if (!query.length) { return; }
-			this._doSearch(query, form);
-		});
-	}
-
-	async _doSearch(query, form) {
-		let response = await fetch(`/youtube?q=${encodeURIComponent(query)}`);
-		let data = await response.json();
-
-		html.clear(this);
-		this.appendChild(form);
-
-		console.log(data);
-	}
-
-
-	_download() {
-		let url = prompt("Please enter a YouTube URL:");
-		if (!url) { return; }
-
-		this._post(url);
-	}
-
-	_search() {
-		let q = prompt("Please enter a search string:");
-		if (!q) { return; }
-
-		this._post(`ytsearch:${q}`);
+		this._clear();
 	}
 
 	_clear() {
-		html.clear(this.querySelector("pre"));
+		html.clear(this);
+		this.appendChild(this._search);
 	}
 
-	async _post(q) {
-		let pre = this.querySelector("pre");
-		html.clear(pre);
+	async _doSearch(query) {
+		this._clear();
+		this._search.pending(true);
 
-		this.classList.add("pending");
+		let response = await fetch(`/youtube?q=${encodeURIComponent(query)}`);
+		let results = await response.json();
+
+		this._search.pending(false);
+
+		results.forEach(result => {
+			let node = new Result(result.title);
+			this.appendChild(node);
+			node.addButton("download", () => this._download(result.id));
+		});
+	}
+
+
+	async _download(id) {
+		this._clear();
+
+		let pre = html.node("pre", {}, "", this);
+		this._search.pending(true);
 
 		let body = new URLSearchParams();
-		body.set("q", q);
+		body.set("id", id);
 		let response = await fetch("/youtube", {method:"POST", body});
 
 		let reader = response.body.getReader();
@@ -74,7 +71,7 @@ class YT extends Component {
 		}
 		reader.releaseLock();
 
-		this.classList.remove("pending");
+		this._search.pending(false);
 
 		if (response.status == 200) {
 			this._mpd.command(`update ${escape(conf.ytPath)}`);
@@ -82,7 +79,10 @@ class YT extends Component {
 	}
 
 	_onComponentChange(c, isThis) {
+		const wasHidden = this.hidden;
 		this.hidden = !isThis;
+
+		if (!wasHidden && isThis) { this._showRoot(); }
 	}
 }
 

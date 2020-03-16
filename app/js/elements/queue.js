@@ -52,8 +52,8 @@ class Queue extends Component {
 		let songs = await this._mpd.listQueue();
 		this._buildSongs(songs);
 
-		// FIXME pubsub?
-		document.querySelector("#queue-length").textContent = `(${songs.length})`;
+		let e = new CustomEvent("queue-length-change", {detail:songs.length});
+		this._app.dispatchEvent(e);
 	}
 
 	_updateCurrent() {

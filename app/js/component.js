@@ -8,6 +8,10 @@ export default class Component extends HTMLElement {
 	}
 
 	connectedCallback() {
+		if (this.selection) {
+			const parent = this._app.querySelector("footer");
+			this.selection.appendTo(parent);
+		}
 		this._app.addEventListener("load", _ => this._onAppLoad());
 		this._app.addEventListener("component-change", _ => {
 			const component = this._app.component;

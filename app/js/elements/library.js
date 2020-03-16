@@ -4,6 +4,7 @@ import Tag from "./tag.js";
 import Path from "./path.js";
 import Back from "./back.js";
 import Song from "./song.js";
+import Search from "./search.js";
 import { escape, serializeFilter } from "../mpd.js";
 
 
@@ -36,6 +37,13 @@ class Library extends Component {
 		super({selection:"multi"});
 		this._stateStack = [];
 		this._initCommands();
+
+		this._search = new Search();
+		this._search.onSubmit = _ => {
+			let query = this._search.value;
+			if (query.length < 3) { return; }
+			this._doSearch(query);
+		}
 	}
 
 	_popState() {
@@ -118,29 +126,26 @@ class Library extends Component {
 	_showSearch(query = "") {
 		html.clear(this);
 
-		const form = html.node("form", {}, "", this);
-		const input = html.node("input", {type:"text", value:query}, "", form);
-		html.button({icon:"magnify"}, "", form);
-		form.addEventListener("submit", e => {
-			e.preventDefault();
-			const query = input.value.trim();
-			if (query.length < 3) { return; }
-			this._doSearch(query, form);
-		});
+		this.appendChild(this._search);
+		this._search.value = query;
+		this._search.focus();
 
-		input.focus();
-		if (query) { this._doSearch(query, form); }
+		query && this._search.onSubmit();
 	}
 
-	async _doSearch(query, form) {
+	async _doSearch(query) {
 		let state = this._stateStack[this._stateStack.length-1];
 		state.query = query;
+
+		html.clear(this);
+		this.appendChild(this._search);
+		this._search.pending(true);
 
 		const songs1 = await this._mpd.searchSongs({"AlbumArtist": query});
 		const songs2 = await this._mpd.searchSongs({"Album": query});
 		const songs3 = await this._mpd.searchSongs({"Title": query});
-		html.clear(this);
-		this.appendChild(form);
+
+		this._search.pending(false);
 
 		this._aggregateSearch(songs1, "AlbumArtist");
 		this._aggregateSearch(songs2, "Album");

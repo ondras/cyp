@@ -10,6 +10,13 @@ class Menu extends Component {
 		});
 	}
 
+	_onAppLoad() {
+		this._app.addEventListener("queue-length-change", e => {
+			this.querySelector(".queue-length").textContent = `(${e.detail})`;
+		});
+
+	}
+
 	async _activate(component) {
 		const app = await this._app;
 		app.setAttribute("component", component);

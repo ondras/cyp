@@ -8,9 +8,11 @@ export default class Selection {
 		this._component = component;
 		/** @type {"single" | "multi"} */
 		this._mode = mode;
-		this._items = []; // FIXME ukladat skutecne HTML? co kdyz nastane refresh?
+		this._items = [];
 		this._node = html.node("cyp-commands", {hidden:true});
 	}
+
+	appendTo(parent) { parent.appendChild(this._node); }
 
 	clear() {
 		while (this._items.length) { this.remove(this._items[0]); }
@@ -66,14 +68,12 @@ export default class Selection {
 	}
 
 	_show() {
-		const parent = this._component.closest("cyp-app").querySelector("footer"); // FIXME jde lepe?
-		parent.appendChild(this._node);
-		this._node.offsetWidth; // FIXME jde lepe?
 		this._node.hidden = false;
 	}
 
 	_hide() {
 		this._node.hidden = true;
-		this._node.remove();
 	}
 }
+
+customElements.define("cyp-commands", class extends HTMLElement {});
