@@ -70,9 +70,9 @@ class Settings extends Component {
 		this._app.setAttribute("color", color);
 	}
 
-	_setYtLimit(limit) {
-		saveToStorage("color", color);
-		conf.setYtLimit(limit);
+	_setYtLimit(ytLimit) {
+		saveToStorage("ytLimit", ytLimit);
+		conf.setYtLimit(ytLimit);
 	}
 
 	_onComponentChange(c, isThis) {
