@@ -10,11 +10,11 @@ function escape(arg) {
     return `'${arg.replace(/'/g, `'\\''`)}'`;
 }
 
-function searchYoutube(q, response) {
+function searchYoutube(q, limit, response) {
 	response.setHeader("Content-Type", "text/plain"); // necessary for firefox to read by chunks
 
-	console.log("YouTube searching", q);
-	q = escape(`ytsearch3:${q}`);
+	console.log("YouTube searching", q, limit);
+	q = escape(`ytsearch${limit}:${q}`);
 	const command = `${cmd} -j ${q} | jq "{id,title}" | jq -s .`;
 
 	require("child_process").exec(command, {}, (error, stdout, stderr) => {
@@ -58,8 +58,9 @@ function downloadYoutube(id, response) {
 
 function handleYoutubeSearch(url, response) {
 	let q = url.searchParams.get("q");
+	let limit = url.searchParams.get("limit") || "";
 	if (q) {
-		searchYoutube(q, response);
+		searchYoutube(q, limit, response);
 	} else {
 		response.writeHead(404);
 		response.end();

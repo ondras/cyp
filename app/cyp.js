@@ -840,6 +840,9 @@ customElements.define("cyp-menu", Menu);
 
 const artSize = 96;
 const ytPath = "_youtube";
+let ytLimit = 3;
+
+function setYtLimit(limit) { ytLimit = limit; }
 
 const cache = {};
 const MIME = "image/jpeg";
@@ -1332,6 +1335,7 @@ class Settings extends Component {
 		super();
 		this._inputs = {
 			theme: this.querySelector("[name=theme]"),
+			ytLimit: this.querySelector("[name=yt-limit]"),
 			color: Array.from(this.querySelectorAll("[name=color]"))
 		};
 	}
@@ -1343,6 +1347,7 @@ class Settings extends Component {
 		mo.observe(this._app, {attributes:true});
 
 		this._inputs.theme.addEventListener("change", e => this._setTheme(e.target.value));
+		this._inputs.ytLimit.addEventListener("change", e => this._setYtLimit(e.target.value));
 		this._inputs.color.forEach(input => {
 			input.addEventListener("click", e => this._setColor(e.target.value));
 		});
@@ -1352,6 +1357,9 @@ class Settings extends Component {
 
 		const color = loadFromStorage("color");
 		(color ? this._app.setAttribute("color", color) : this._syncColor());
+
+		const ytLimit$1 = loadFromStorage("ytLimit") || ytLimit;
+		this._setYtLimit(ytLimit$1);
 	}
 
 	_onAppAttributeChange(mr) {
@@ -1378,6 +1386,11 @@ class Settings extends Component {
 	_setColor(color) {
 		saveToStorage("color", color);
 		this._app.setAttribute("color", color);
+	}
+
+	_setYtLimit(limit) {
+		saveToStorage("color", color);
+		setYtLimit(limit);
 	}
 
 	_onComponentChange(c, isThis) {
@@ -1468,7 +1481,8 @@ class YT extends Component {
 		this._clear();
 		this._search.pending(true);
 
-		let response = await fetch(`/youtube?q=${encodeURIComponent(query)}`);
+		let url = `/youtube?q=${encodeURIComponent(query)}&limit=${encodeURIComponent(ytLimit)}`;
+		let response = await fetch(url);
 		let results = await response.json();
 
 		this._search.pending(false);
