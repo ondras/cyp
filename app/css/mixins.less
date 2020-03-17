@@ -24,7 +24,8 @@
 	position: relative; // kotva pro selected::before
 
 	&.selected {
-		xbackground-color: var(--primary-tint); // FIXME jak zvyraznovat?
+		color: var(--primary);
+		background-color: var(--primary-tint);
 
 		&::before {
 			content: "";
@@ -35,28 +36,20 @@
 			width: var(--border-width);
 			background-color: var(--primary);
 		}
-
-		&::after {
-			content: "";
-			position: absolute;
-			left: 0;
-			top: 0;
-			bottom: 0;
-			right: 0;
-			background-color: var(--primary-tint);
-		}
 	}
 }
 
 .item {
 	.flex-row;
-	.selectable;
-
-	padding: 8px;
 
 	&:nth-child(odd) {
 		background-color: var(--bg-alt);
 	}
+
+	.selectable; // az po nth-child, aby byl vyber pozdeji
+
+	padding: 8px;
+
 
 	> .icon {
 		margin-right: var(--icon-spacing);

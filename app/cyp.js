@@ -674,7 +674,6 @@ class App extends HTMLElement {
 		const names = children.map(node => node.nodeName.toLowerCase())
 			.filter(name => name.startsWith("cyp-"));
 		const unique = new Set(names);
-		console.log(unique);
 
 		const promises = [...unique].map(name => customElements.whenDefined(name));
 		await Promise.all(promises);
@@ -1034,6 +1033,8 @@ class Player extends Component {
 			this._dispatchSongChange(data);
 		}
 
+		this._app.style.setProperty("--progress", DOM.progress.value/DOM.progress.max);
+
 		let artistNew = data["AlbumArtist"] || data["Artist"];
 		let artistOld = this._current["AlbumArtist"] || this._current["Artist"];
 
@@ -1094,8 +1095,15 @@ class Song extends Item {
 	get file() { return this._data["file"]; }
 	get songId() { return this._data["Id"]; }
 
+	set playing(playing) {
+		this.classList.toggle("playing", playing);
+	}
+
 	connectedCallback() {
 		const data = this._data;
+
+		icon("music", this);
+		icon("play", this);
 
 		const block = node("div", {className:"multiline"}, "", this);
 
@@ -1111,6 +1119,8 @@ class Song extends Item {
 			const subtitle$1 = subtitle(data);
 			node("span", {className:"subtitle"}, subtitle$1, block);
 		}
+
+		this.playing = false;
 	}
 
 	_buildTitle(data) {
@@ -1173,8 +1183,8 @@ class Queue extends Component {
 	}
 
 	_updateCurrent() {
-		Array.from(this.children).forEach(/** @param {HTMLElement} node */ node => {
-			node.classList.toggle("current", node.songId == this._currentId);
+		Array.from(this.children).forEach(/** @param {Song} node */ node => {
+			node.playing = (node.songId == this._currentId);
 		});
 	}
 

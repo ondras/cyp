@@ -57,8 +57,8 @@ class Queue extends Component {
 	}
 
 	_updateCurrent() {
-		Array.from(this.children).forEach(/** @param {HTMLElement} node */ node => {
-			node.classList.toggle("current", node.songId == this._currentId);
+		Array.from(this.children).forEach(/** @param {Song} node */ node => {
+			node.playing = (node.songId == this._currentId);
 		});
 	}
 

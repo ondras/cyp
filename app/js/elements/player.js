@@ -116,6 +116,8 @@ class Player extends Component {
 			this._dispatchSongChange(data);
 		}
 
+		this._app.style.setProperty("--progress", DOM.progress.value/DOM.progress.max);
+
 		let artistNew = data["AlbumArtist"] || data["Artist"];
 		let artistOld = this._current["AlbumArtist"] || this._current["Artist"];
 

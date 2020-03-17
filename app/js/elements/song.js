@@ -11,8 +11,15 @@ export default class Song extends Item {
 	get file() { return this._data["file"]; }
 	get songId() { return this._data["Id"]; }
 
+	set playing(playing) {
+		this.classList.toggle("playing", playing);
+	}
+
 	connectedCallback() {
 		const data = this._data;
+
+		html.icon("music", this);
+		html.icon("play", this);
 
 		const block = html.node("div", {className:"multiline"}, "", this);
 
@@ -28,6 +35,8 @@ export default class Song extends Item {
 			const subtitle = format.subtitle(data);
 			html.node("span", {className:"subtitle"}, subtitle, block);
 		}
+
+		this.playing = false;
 	}
 
 	_buildTitle(data) {

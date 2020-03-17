@@ -8,6 +8,42 @@ cyp-song {
 		.subtitle { .ellipsis; }
 	}
 
-	cyp-queue & .track { display: none; }
+	cyp-queue & {
+		> .icon {
+			width: 32px;
+			margin-right: 8px; // fixme variable
+		}
+		.track { display: none; }
+
+		&:not(.playing) > .icon-play, &.playing > .icon-music {
+			display: none;
+		}
+
+		&.playing {
+			> .icon { color: var(--primary) }
+
+			&::after {
+				content: "";
+				position: absolute;
+				left: 0;
+				bottom: 0;
+				background-color: var(--primary);
+				width: calc(100% * var(--progress, 0));
+				height: var(--border-width);
+			}
+		}
+	}
+
+	cyp-library & {
+		padding-left: 0;
+		padding-top: 0;
+		padding-bottom: 0;
+
+		> .icon {
+			width: 64px; // fixme variable
+		}
+
+		> .icon-play { display: none; }
+	}
 }
 
