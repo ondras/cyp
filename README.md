@@ -61,8 +61,7 @@ docker run --network=host -e PORT=12345 cyp
 ## Technology
   - Connected to MPD via WebSockets (using the [ws2mpd](https://github.com/ondras/ws2mpd/) bridge)
   - Token-based access to the WebSocket endpoint (better than an `Origin` check)
-  - Uses *Custom Elements*
-  - Written in TypeScript
+  - Written using [*Custom Elements*](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)
   - Responsive layout via Flexbox
   - CSS Custom Properties
   - SVG icons (Material Design)
