@@ -61,16 +61,10 @@ docker run --network=host -e PORT=12345 cyp
 ## Technology
   - Connected to MPD via WebSockets (using the [ws2mpd](https://github.com/ondras/ws2mpd/) bridge)
   - Token-based access to the WebSocket endpoint (better than an `Origin` check)
-  - Modern ES6+ (modules, async/await)
+  - Uses *Custom Elements*
+  - Written in TypeScript
   - Responsive layout via Flexbox
   - CSS Custom Properties
   - SVG icons (Material Design)
-  - Can spawn Youtube-dl to download audio files
+  - Can spawn Youtube-dl to search/download audio files
   - Album art retrieved directly from MPD (and cached via localStorage)
-
-
-## TODO
-
-  - [ ] Bundling
-  - [X] Range styling
-  - [ ] Browser testing
