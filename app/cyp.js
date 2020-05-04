@@ -1644,8 +1644,8 @@ class Library extends Component {
 
 	_popState() {
 		this.selection.clear();
-
 		this._stateStack.pop();
+
 		if (this._stateStack.length > 0) {
 			let state = this._stateStack[this._stateStack.length-1];
 			this._showState(state);
@@ -1682,7 +1682,9 @@ class Library extends Component {
 	}
 
 	_pushState(state) {
+		this.selection.clear();
 		this._stateStack.push(state);
+
 		this._showState(state);
 	}
 
