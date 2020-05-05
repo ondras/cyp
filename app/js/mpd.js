@@ -3,20 +3,21 @@ import * as parser from "./parser.js";
 let ws;
 let commandQueue = [];
 let current;
+let canTerminateIdle = false;
 
 function onMessage(e) {
-	if (current) {
-		let lines = JSON.parse(e.data);
-		let last = lines.pop();
-		if (last.startsWith("OK")) {
-			current.resolve(lines);
-		} else {
-			console.warn(last);
-			current.reject(last);
-		}
-		current = null;
+	if (!current) { return; }
+
+	let lines = JSON.parse(e.data);
+	let last = lines.pop();
+	if (last.startsWith("OK")) {
+		current.resolve(lines);
+	} else {
+		console.warn(last);
+		current.reject(last);
 	}
-	processQueue();
+	current = null;
+	setTimeout(processQueue, 0); // after other potential commands are enqueued
 }
 
 function onError(e) {
@@ -32,25 +33,30 @@ function onClose(e) {
 }
 
 function processQueue() {
-	if (current || commandQueue.length == 0) { return; }
-	current = commandQueue.shift();
-	ws.send(current.cmd);
+	if (commandQueue.length == 0) {
+		if (!current) { idle(); } // nothing to do
+	} else if (current) { // stuff waiting in queue but there is a command under way
+		if (canTerminateIdle) {
+			ws.send("noidle");
+			canTerminateIdle = false;
+		}
+	} else { // advance to next command
+		current = commandQueue.shift();
+		ws.send(current.cmd);
+	}
 }
 
-export function serializeFilter(filter, operator = "==") {
-	let tokens = ["("];
-	Object.entries(filter).forEach(([key, value], index) => {
-		index && tokens.push(" AND ");
-		tokens.push(`(${key} ${operator} "${escape(value)}")`);
-	});
-	tokens.push(")");
-
-	let filterStr = tokens.join("");
-	return `"${escape(filterStr)}"`;
-}
-
-export function escape(str) {
-	return str.replace(/(['"\\])/g, "\\$1");
+async function idle() {
+	let promise = command("idle stored_playlist playlist player options");
+	canTerminateIdle = true;
+	let lines = await promise;
+	canTerminateIdle = false;
+	let changed = parser.linesToStruct(lines).changed || [];
+	changed = [].concat(changed);
+	if (changed.length > 0) {
+		// FIXME not on window
+		window.dispatchEvent(new CustomEvent("idle-change", {detail:changed}));
+	}
 }
 
 export async function command(cmd) {
@@ -62,18 +68,14 @@ export async function command(cmd) {
 	});
 }
 
-export async function commandAndStatus(cmd) {
-	let lines = await command([cmd, "status", "currentsong"]);
-	let status = parser.linesToStruct(lines);
-	if (status["duration"] instanceof Array) { status["duration"] = status["duration"][0]; }
-	return status;
+export async function status() {
+	let lines = await command("status");
+	return parser.linesToStruct(lines);
 }
 
-export async function status() {
-	let lines = await command(["status", "currentsong"]);
-	let status = parser.linesToStruct(lines);
-	if (status["duration"] instanceof Array) { status["duration"] = status["duration"][0]; }
-	return status;
+export async function currentSong() {
+	let lines = await command("currentsong");
+	return parser.linesToStruct(lines);
 }
 
 export async function listQueue() {
@@ -119,7 +121,6 @@ export async function searchSongs(filter) {
 	let tokens = ["search", serializeFilter(filter, "contains")];
 	let lines = await command(tokens.join(" "));
 	return parser.songList(lines);
-
 }
 
 export async function albumArt(songUrl) {
@@ -140,11 +141,31 @@ export async function albumArt(songUrl) {
 	return null;
 }
 
+export function serializeFilter(filter, operator = "==") {
+	let tokens = ["("];
+	Object.entries(filter).forEach(([key, value], index) => {
+		index && tokens.push(" AND ");
+		tokens.push(`(${key} ${operator} "${escape(value)}")`);
+	});
+	tokens.push(")");
+
+	let filterStr = tokens.join("");
+	return `"${escape(filterStr)}"`;
+}
+
+export function escape(str) {
+	return str.replace(/(['"\\])/g, "\\$1");
+}
+
 export async function init() {
 	let response = await fetch("/ticket", {method:"POST"});
 	let ticket = (await response.json()).ticket;
 
-	return new Promise((resolve, reject) => {
+	let resolve, reject;
+	let promise = new Promise((res, rej) => {
+		resolve = res;
+		reject = rej;
+
 		try {
 			let url = new URL(location.href);
 			url.protocol = "ws";
@@ -152,10 +173,12 @@ export async function init() {
 			url.searchParams.set("ticket", ticket);
 			ws = new WebSocket(url.href);
 		} catch (e) { reject(e); }
-		current = {resolve, reject};
 
 		ws.addEventListener("error", onError);
 		ws.addEventListener("message", onMessage);
 		ws.addEventListener("close", onClose);
 	});
+
+	current = {resolve, reject, promise};
+	return Promise;
 }

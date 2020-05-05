@@ -15,7 +15,7 @@ class Menu extends Component {
 
 	}
 	_onComponentChange(component) {
-		this._tabs.forEach( tab => {
+		this._tabs.forEach(tab => {
 			tab.classList.toggle("active", tab.dataset.for == component);
 		});
 	}

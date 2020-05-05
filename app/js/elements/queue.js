@@ -30,22 +30,22 @@ class Queue extends Component {
 				this._updateCurrent();
 			break;
 
-			case "queue-change":
-				this._sync();
+			case "idle-change":
+				e.detail.includes("playlist") && this._sync();
 			break;
 		}
 	}
 
 	_onAppLoad() {
+		window.addEventListener("idle-change", this);
+
 		this._app.addEventListener("song-change", this);
-		this._app.addEventListener("queue-change", this);
+
 		this._sync();
 	}
 
 	_onComponentChange(c, isThis) {
 		this.hidden = !isThis;
-
-		isThis && this._sync();
 	}
 
 	async _sync() {
@@ -83,19 +83,17 @@ class Queue extends Component {
 
 		sel.addCommandAll();
 
-		sel.addCommand(async items => {
+		sel.addCommand(items => {
 			const commands = generateMoveCommands(items, -1, Array.from(this.children));
-			await this._mpd.command(commands);
-			this._sync();
+			this._mpd.command(commands);
 		}, {label:"Up", icon:"arrow-up-bold"});
 
-		sel.addCommand(async items => {
+		sel.addCommand(items => {
 			const commands = generateMoveCommands(items, +1, Array.from(this.children));
-			await this._mpd.command(commands.reverse()); // move last first
-			this._sync();
+			this._mpd.command(commands.reverse()); // move last first
 		}, {label:"Down", icon:"arrow-down-bold"});
 
-		sel.addCommand(async items => {
+		sel.addCommand(items => {
 			let name = prompt("Save selected songs as a playlist?", "name");
 			if (name === null) { return; }
 
@@ -104,16 +102,14 @@ class Queue extends Component {
 				return `playlistadd "${name}" "${escape(item.file)}"`;
 			});
 
-			await this._mpd.command(commands); // FIXME notify?
+			this._mpd.command(commands); // FIXME notify?
 		}, {label:"Save", icon:"content-save"});
 
 		sel.addCommand(async items => {
 			if (!confirm(`Remove these ${items.length} songs from the queue?`)) { return; }
 
 			const commands = items.map(item => `deleteid ${item.songId}`);
-			await this._mpd.command(commands);
-
-			this._sync();
+			this._mpd.command(commands);
 		}, {label:"Remove", icon:"delete"});
 
 		sel.addCommandCancel();

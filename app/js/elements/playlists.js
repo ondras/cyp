@@ -9,9 +9,21 @@ class Playlists extends Component {
 		this._initCommands();
 	}
 
+	handleEvent(e) {
+		switch (e.type) {
+			case "idle-change":
+				e.detail.includes("stored_playlist") && this._sync();
+			break;
+		}
+	}
+
+	_onAppLoad() {
+		window.addEventListener("idle-change", this);
+		this._sync();
+	}
+
 	_onComponentChange(c, isThis) {
 		this.hidden = !isThis;
-		if (isThis) { this._sync(); }
 	}
 
 	async _sync() {
@@ -33,15 +45,13 @@ class Playlists extends Component {
 			const name = item.name;
 			const commands = ["clear", `load "${escape(name)}"`, "play"];
 			await this._mpd.command(commands);
-			this.selection.clear();
-			this._app.dispatchEvent(new CustomEvent("queue-change")); // fixme notification?
+			this.selection.clear(); // fixme notification?
 		}, {label:"Play", icon:"play"});
 
 		sel.addCommand(async item => {
 			const name = item.name;
 			await this._mpd.command(`load "${escape(name)}"`);
-			this.selection.clear();
-			this._app.dispatchEvent(new CustomEvent("queue-change")); // fixme notification?
+			this.selection.clear(); // fixme notification?
 		}, {label:"Enqueue", icon:"plus"});
 
 		sel.addCommand(async item => {
@@ -49,7 +59,6 @@ class Playlists extends Component {
 			if (!confirm(`Really delete playlist '${name}'?`)) { return; }
 
 			await this._mpd.command(`rm "${escape(name)}"`);
-			this._sync();
 		}, {label:"Delete", icon:"delete"});
 
 		sel.addCommandCancel();

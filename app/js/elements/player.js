@@ -4,141 +4,177 @@ import * as format from "../format.js";
 import Component from "../component.js";
 
 
-const DELAY = 1000;
+const ELAPSED_PERIOD = 500;
 
 class Player extends Component {
 	constructor() {
 		super();
-		this._current = {};
+		this._current = {
+			song: {},
+			elapsed: 0,
+			at: 0,
+			volume: 0
+		};
 		this._toggledVolume = 0;
-		this._idleTimeout = null;
-		this._dom = this._initDOM();
+
+		const DOM = {};
+		const all = this.querySelectorAll("[class]");
+		[...all].forEach(node => DOM[node.className] = node);
+		DOM.progress = DOM.timeline.querySelector("x-range");
+		DOM.progress.step = "0.1"; // FIXME
+		DOM.volume = DOM.volume.querySelector("x-range");
+
+		this._dom = DOM;
 	}
 
-	async update() {
-		this._clearIdle();
-		const data = await this._mpd.status();
-		this._sync(data);
-		this._idle();
+	handleEvent(e) {
+		switch (e.type) {
+			case "idle-change":
+				let hasOptions = e.detail.includes("options");
+				let hasPlayer = e.detail.includes("player");
+				(hasOptions || hasPlayer) && this._updateStatus();
+				hasPlayer && this._updateCurrent();
+			break;
+		}
 	}
 
 	_onAppLoad() {
-		this.update();
+		this._addEvents();
+		this._updateStatus();
+		this._updateCurrent();
+		window.addEventListener("idle-change", this);
+
+		setInterval(() => this._updateElapsed(), ELAPSED_PERIOD);
 	}
 
-	_initDOM() {
-		const DOM = {};
-		const all = this.querySelectorAll("[class]");
-		Array.from(all).forEach(node => DOM[node.className] = node);
-
-		DOM.progress = DOM.timeline.querySelector("x-range");
-		DOM.volume = DOM.volume.querySelector("x-range");
-
-		DOM.play.addEventListener("click", _ => this._command("play"));
-		DOM.pause.addEventListener("click", _ => this._command("pause 1"));
-		DOM.prev.addEventListener("click", _ => this._command("previous"));
-		DOM.next.addEventListener("click", _ => this._command("next"));
-
-		DOM.random.addEventListener("click", _ => this._command(`random ${this._current["random"] == "1" ? "0" : "1"}`));
-		DOM.repeat.addEventListener("click", _ => this._command(`repeat ${this._current["repeat"] == "1" ? "0" : "1"}`));
-
-		DOM.volume.addEventListener("input", e => this._command(`setvol ${e.target.valueAsNumber}`));
-		DOM.progress.addEventListener("input", e => this._command(`seekcur ${e.target.valueAsNumber}`));
-
-		DOM.mute.addEventListener("click", _ => this._command(`setvol ${this._toggledVolume}`));
-
-		return DOM;
-	}
-
-	async _command(cmd) {
-		this._clearIdle();
-		const data = await this._mpd.commandAndStatus(cmd);
-		this._sync(data);
-		this._idle();
-	}
-
-	_idle() {
-		this._idleTimeout = setTimeout(() => this.update(), DELAY);
-	}
-
-	_clearIdle() {
-		this._idleTimeout && clearTimeout(this._idleTimeout);
-		this._idleTimeout = null;
-	}
-
-	_sync(data) {
+	async _updateStatus() {
+		const data = await this._mpd.status();
 		const DOM = this._dom;
-		if ("volume" in data) {
-			data["volume"] = Number(data["volume"]);
 
-			DOM.mute.disabled = false;
-			DOM.volume.disabled = false;
-			DOM.volume.value = data["volume"];
+		this._updateFlags(data);
+		this._updateVolume(data);
 
-			if (data["volume"] == 0 && this._current["volume"] > 0) { // muted
-				this._toggledVolume = this._current["volume"];
-				html.clear(DOM.mute);
-				DOM.mute.appendChild(html.icon("volume-off"));
-			}
-
-			if (data["volume"] > 0 && this._current["volume"] == 0) { // restored
-				this._toggledVolume = 0;
-				html.clear(DOM.mute);
-				DOM.mute.appendChild(html.icon("volume-high"));
-			}
-
-		} else {
-			DOM.mute.disabled = true;
-			DOM.volume.disabled = true;
-			DOM.volume.value = 50;
+		if ("duration" in data) { // play/pause
+			let duration = Number(data["duration"]);
+			DOM.duration.textContent = format.time(duration);
+			DOM.progress.max = duration;
+			DOM.progress.disabled = false;
+		} else { // no song at all
+			DOM.progress.value = 0;
+			DOM.progress.disabled = true;
 		}
 
-		// changed time
-		let elapsed = Number(data["elapsed"] || 0);
-		DOM.progress.value = elapsed;
-		DOM.elapsed.textContent = format.time(elapsed);
+		// rebase the time sync
+		this._current.elapsed = Number(data["elapsed"] || 0);
+		this._current.at = performance.now();
+	}
 
-		if (data["file"] != this._current["file"]) { // changed song
-			if (data["file"]) { // playing at all?
-				let duration = Number(data["duration"]);
-				DOM.duration.textContent = format.time(duration);
-				DOM.progress.max = duration;
-				DOM.progress.disabled = false;
+	async _updateCurrent() {
+		const data = await this._mpd.currentSong();
+		const DOM = this._dom;
+
+		if (data["file"] != this._current.song["file"]) { // changed song
+			if (data["file"]) { // is there a song at all?
 				DOM.title.textContent = data["Title"] || format.fileName(data["file"]);
 				DOM.subtitle.textContent = format.subtitle(data, {duration:false});
 			} else {
 				DOM.title.textContent = "";
 				DOM.subtitle.textContent = "";
-				DOM.progress.value = 0;
-				DOM.progress.disabled = true;
 			}
 
 			this._dispatchSongChange(data);
 		}
 
-		this._app.style.setProperty("--progress", DOM.progress.value/DOM.progress.max);
-
 		let artistNew = data["AlbumArtist"] || data["Artist"];
-		let artistOld = this._current["AlbumArtist"] || this._current["Artist"];
+		let artistOld = this._current.song["AlbumArtist"] || this._current.song["Artist"];
+		let albumNew = data["Album"];
+		let albumOld = this._current.song["Album"];
 
-		if (artistNew != artistOld || data["Album"] != this._current["Album"]) { // changed album (art)
+		Object.assign(this._current.song, data);
+
+		if (artistNew != artistOld || albumNew != albumOld) { // changed album (art)
 			html.clear(DOM.art);
-			art.get(this._mpd, artistNew, data["Album"], data["file"]).then(src => {
-				if (src) {
-					html.node("img", {src}, "", DOM.art);
-				} else {
-					html.icon("music", DOM.art);
-				}
-			});
+			let src = await art.get(this._mpd, artistNew, data["Album"], data["file"]);
+			if (src) {
+				html.node("img", {src}, "", DOM.art);
+			} else {
+				html.icon("music", DOM.art);
+			}
+		}
+	}
+
+	_updateElapsed() {
+		const DOM = this._dom;
+
+		let elapsed = 0;
+		if (this._current.song["file"]) {
+			elapsed = this._current.elapsed;
+			if (this.dataset.state == "play") { elapsed += (performance.now() - this._current.at)/1000; }
 		}
 
+		DOM.progress.value = elapsed;
+		DOM.elapsed.textContent = format.time(elapsed);
+		this._app.style.setProperty("--progress", DOM.progress.value/DOM.progress.max);
+	}
+
+	_updateFlags(data) {
 		let flags = [];
 		if (data["random"] == "1") { flags.push("random"); }
 		if (data["repeat"] == "1") { flags.push("repeat"); }
 		this.dataset.flags = flags.join(" ");
 		this.dataset.state = data["state"];
+	}
 
-		this._current = data;
+	_updateVolume(data) {
+		const DOM = this._dom;
+
+		if ("volume" in data) {
+			let volume = Number(data["volume"]);
+
+			DOM.mute.disabled = false;
+			DOM.volume.disabled = false;
+			DOM.volume.value = volume;
+
+			if (volume == 0 && this._current.volume > 0) { // muted
+				this._toggledVolume = this._current.volume;
+				html.clear(DOM.mute);
+				DOM.mute.appendChild(html.icon("volume-off"));
+			}
+
+			if (volume > 0 && this._current.volume == 0) { // restored
+				this._toggledVolume = 0;
+				html.clear(DOM.mute);
+				DOM.mute.appendChild(html.icon("volume-high"));
+			}
+			this._current.volume = volume;
+		} else {
+			DOM.mute.disabled = true;
+			DOM.volume.disabled = true;
+			DOM.volume.value = 50;
+		}
+	}
+
+	_addEvents() {
+		const DOM = this._dom;
+
+		DOM.play.addEventListener("click", _ => this._app.mpd.command("play"));
+		DOM.pause.addEventListener("click", _ => this._app.mpd.command("pause 1"));
+		DOM.prev.addEventListener("click", _ => this._app.mpd.command("previous"));
+		DOM.next.addEventListener("click", _ => this._app.mpd.command("next"));
+
+		DOM.random.addEventListener("click", _ => {
+			let isRandom = this.dataset.flags.split(" ").includes("random");
+			this._app.mpd.command(`random ${isRandom ? "0" : "1"}`);
+		});
+		DOM.repeat.addEventListener("click", _ => {
+			let isRepeat = this.dataset.flags.split(" ").includes("repeat");
+			this._app.mpd.command(`repeat ${isRepeat ? "0" : "1"}`);
+		});
+
+		DOM.volume.addEventListener("input", e => this._app.mpd.command(`setvol ${e.target.valueAsNumber}`));
+		DOM.progress.addEventListener("input", e => this._app.mpd.command(`seekcur ${e.target.valueAsNumber}`));
+
+		DOM.mute.addEventListener("click", _ => this._app.mpd.command(`setvol ${this._toggledVolume}`));
 	}
 
 	_dispatchSongChange(detail) {

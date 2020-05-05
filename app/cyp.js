@@ -238,20 +238,21 @@ function pathContents(lines) {
 let ws;
 let commandQueue = [];
 let current;
+let canTerminateIdle = false;
 
 function onMessage(e) {
-	if (current) {
-		let lines = JSON.parse(e.data);
-		let last = lines.pop();
-		if (last.startsWith("OK")) {
-			current.resolve(lines);
-		} else {
-			console.warn(last);
-			current.reject(last);
-		}
-		current = null;
+	if (!current) { return; }
+
+	let lines = JSON.parse(e.data);
+	let last = lines.pop();
+	if (last.startsWith("OK")) {
+		current.resolve(lines);
+	} else {
+		console.warn(last);
+		current.reject(last);
 	}
-	processQueue();
+	current = null;
+	setTimeout(processQueue, 0); // after other potential commands are enqueued
 }
 
 function onError(e) {
@@ -267,25 +268,30 @@ function onClose(e) {
 }
 
 function processQueue() {
-	if (current || commandQueue.length == 0) { return; }
-	current = commandQueue.shift();
-	ws.send(current.cmd);
+	if (commandQueue.length == 0) {
+		if (!current) { idle(); } // nothing to do
+	} else if (current) { // stuff waiting in queue but there is a command under way
+		if (canTerminateIdle) {
+			ws.send("noidle");
+			canTerminateIdle = false;
+		}
+	} else { // advance to next command
+		current = commandQueue.shift();
+		ws.send(current.cmd);
+	}
 }
 
-function serializeFilter(filter, operator = "==") {
-	let tokens = ["("];
-	Object.entries(filter).forEach(([key, value], index) => {
-		index && tokens.push(" AND ");
-		tokens.push(`(${key} ${operator} "${escape(value)}")`);
-	});
-	tokens.push(")");
-
-	let filterStr = tokens.join("");
-	return `"${escape(filterStr)}"`;
-}
-
-function escape(str) {
-	return str.replace(/(['"\\])/g, "\\$1");
+async function idle() {
+	let promise = command("idle stored_playlist playlist player options");
+	canTerminateIdle = true;
+	let lines = await promise;
+	canTerminateIdle = false;
+	let changed = linesToStruct(lines).changed || [];
+	changed = [].concat(changed);
+	if (changed.length > 0) {
+		// FIXME not on window
+		window.dispatchEvent(new CustomEvent("idle-change", {detail:changed}));
+	}
 }
 
 async function command(cmd) {
@@ -297,18 +303,14 @@ async function command(cmd) {
 	});
 }
 
-async function commandAndStatus(cmd) {
-	let lines = await command([cmd, "status", "currentsong"]);
-	let status = linesToStruct(lines);
-	if (status["duration"] instanceof Array) { status["duration"] = status["duration"][0]; }
-	return status;
+async function status() {
+	let lines = await command("status");
+	return linesToStruct(lines);
 }
 
-async function status() {
-	let lines = await command(["status", "currentsong"]);
-	let status = linesToStruct(lines);
-	if (status["duration"] instanceof Array) { status["duration"] = status["duration"][0]; }
-	return status;
+async function currentSong() {
+	let lines = await command("currentsong");
+	return linesToStruct(lines);
 }
 
 async function listQueue() {
@@ -354,7 +356,6 @@ async function searchSongs(filter) {
 	let tokens = ["search", serializeFilter(filter, "contains")];
 	let lines = await command(tokens.join(" "));
 	return songList(lines);
-
 }
 
 async function albumArt(songUrl) {
@@ -375,11 +376,31 @@ async function albumArt(songUrl) {
 	return null;
 }
 
+function serializeFilter(filter, operator = "==") {
+	let tokens = ["("];
+	Object.entries(filter).forEach(([key, value], index) => {
+		index && tokens.push(" AND ");
+		tokens.push(`(${key} ${operator} "${escape(value)}")`);
+	});
+	tokens.push(")");
+
+	let filterStr = tokens.join("");
+	return `"${escape(filterStr)}"`;
+}
+
+function escape(str) {
+	return str.replace(/(['"\\])/g, "\\$1");
+}
+
 async function init() {
 	let response = await fetch("/ticket", {method:"POST"});
 	let ticket = (await response.json()).ticket;
 
-	return new Promise((resolve, reject) => {
+	let resolve, reject;
+	let promise = new Promise((res, rej) => {
+		resolve = res;
+		reject = rej;
+
 		try {
 			let url = new URL(location.href);
 			url.protocol = "ws";
@@ -387,21 +408,21 @@ async function init() {
 			url.searchParams.set("ticket", ticket);
 			ws = new WebSocket(url.href);
 		} catch (e) { reject(e); }
-		current = {resolve, reject};
 
 		ws.addEventListener("error", onError);
 		ws.addEventListener("message", onMessage);
 		ws.addEventListener("close", onClose);
 	});
+
+	current = {resolve, reject, promise};
+	return Promise;
 }
 
 var mpd = /*#__PURE__*/Object.freeze({
 	__proto__: null,
-	serializeFilter: serializeFilter,
-	escape: escape,
 	command: command,
-	commandAndStatus: commandAndStatus,
 	status: status,
+	currentSong: currentSong,
 	listQueue: listQueue,
 	listPlaylists: listPlaylists,
 	listPath: listPath,
@@ -409,6 +430,8 @@ var mpd = /*#__PURE__*/Object.freeze({
 	listSongs: listSongs,
 	searchSongs: searchSongs,
 	albumArt: albumArt,
+	serializeFilter: serializeFilter,
+	escape: escape,
 	init: init
 });
 
@@ -416,22 +439,23 @@ function command$1(cmd) {
 	console.warn(`mpd-mock does not know "${cmd}"`);
 }
 
-function commandAndStatus$1(cmd) {
-	command$1(cmd);
-	return status$1();
-}
-
 function status$1() {
 	return {
 		volume: 50,
 		elapsed: 10,
+		duration: 70,
+		state: "play"
+	}
+}
+
+function currentSong$1() {
+	return {
 		duration: 70,
 		file: "name.mp3",
 		Title: "Title of song",
 		Artist: "Artist of song",
 		Album: "Album of song",
 		Track: "6",
-		state: "play",
 		Id: 2
 	}
 }
@@ -439,7 +463,7 @@ function status$1() {
 function listQueue$1() {
 	return [
 		{Id:1, Track:"5", Title:"Title 1", Artist:"AAA", Album:"BBB", duration:30, file:"a.mp3"},
-		status$1(),
+		currentSong$1(),
 		{Id:3, Track:"7", Title:"Title 3", Artist:"CCC", Album:"DDD", duration:230, file:"c.mp3"},
 	];
 }
@@ -491,8 +515,8 @@ function init$1() {}
 var mpdMock = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	command: command$1,
-	commandAndStatus: commandAndStatus$1,
 	status: status$1,
+	currentSong: currentSong$1,
 	listQueue: listQueue$1,
 	listPlaylists: listPlaylists$1,
 	listPath: listPath$1,
@@ -822,7 +846,7 @@ class Menu extends Component {
 
 	}
 	_onComponentChange(component) {
-		this._tabs.forEach( tab => {
+		this._tabs.forEach(tab => {
 			tab.classList.toggle("active", tab.dataset.for == component);
 		});
 	}
@@ -916,141 +940,177 @@ function fileName(file) {
 	return file.split("/").pop();
 }
 
-const DELAY = 1000;
+const ELAPSED_PERIOD = 500;
 
 class Player extends Component {
 	constructor() {
 		super();
-		this._current = {};
+		this._current = {
+			song: {},
+			elapsed: 0,
+			at: 0,
+			volume: 0
+		};
 		this._toggledVolume = 0;
-		this._idleTimeout = null;
-		this._dom = this._initDOM();
+
+		const DOM = {};
+		const all = this.querySelectorAll("[class]");
+		[...all].forEach(node => DOM[node.className] = node);
+		DOM.progress = DOM.timeline.querySelector("x-range");
+		DOM.progress.step = "0.1"; // FIXME
+		DOM.volume = DOM.volume.querySelector("x-range");
+
+		this._dom = DOM;
 	}
 
-	async update() {
-		this._clearIdle();
-		const data = await this._mpd.status();
-		this._sync(data);
-		this._idle();
+	handleEvent(e) {
+		switch (e.type) {
+			case "idle-change":
+				let hasOptions = e.detail.includes("options");
+				let hasPlayer = e.detail.includes("player");
+				(hasOptions || hasPlayer) && this._updateStatus();
+				hasPlayer && this._updateCurrent();
+			break;
+		}
 	}
 
 	_onAppLoad() {
-		this.update();
+		this._addEvents();
+		this._updateStatus();
+		this._updateCurrent();
+		window.addEventListener("idle-change", this);
+
+		setInterval(() => this._updateElapsed(), ELAPSED_PERIOD);
 	}
 
-	_initDOM() {
-		const DOM = {};
-		const all = this.querySelectorAll("[class]");
-		Array.from(all).forEach(node => DOM[node.className] = node);
-
-		DOM.progress = DOM.timeline.querySelector("x-range");
-		DOM.volume = DOM.volume.querySelector("x-range");
-
-		DOM.play.addEventListener("click", _ => this._command("play"));
-		DOM.pause.addEventListener("click", _ => this._command("pause 1"));
-		DOM.prev.addEventListener("click", _ => this._command("previous"));
-		DOM.next.addEventListener("click", _ => this._command("next"));
-
-		DOM.random.addEventListener("click", _ => this._command(`random ${this._current["random"] == "1" ? "0" : "1"}`));
-		DOM.repeat.addEventListener("click", _ => this._command(`repeat ${this._current["repeat"] == "1" ? "0" : "1"}`));
-
-		DOM.volume.addEventListener("input", e => this._command(`setvol ${e.target.valueAsNumber}`));
-		DOM.progress.addEventListener("input", e => this._command(`seekcur ${e.target.valueAsNumber}`));
-
-		DOM.mute.addEventListener("click", _ => this._command(`setvol ${this._toggledVolume}`));
-
-		return DOM;
-	}
-
-	async _command(cmd) {
-		this._clearIdle();
-		const data = await this._mpd.commandAndStatus(cmd);
-		this._sync(data);
-		this._idle();
-	}
-
-	_idle() {
-		this._idleTimeout = setTimeout(() => this.update(), DELAY);
-	}
-
-	_clearIdle() {
-		this._idleTimeout && clearTimeout(this._idleTimeout);
-		this._idleTimeout = null;
-	}
-
-	_sync(data) {
+	async _updateStatus() {
+		const data = await this._mpd.status();
 		const DOM = this._dom;
-		if ("volume" in data) {
-			data["volume"] = Number(data["volume"]);
 
-			DOM.mute.disabled = false;
-			DOM.volume.disabled = false;
-			DOM.volume.value = data["volume"];
+		this._updateFlags(data);
+		this._updateVolume(data);
 
-			if (data["volume"] == 0 && this._current["volume"] > 0) { // muted
-				this._toggledVolume = this._current["volume"];
-				clear(DOM.mute);
-				DOM.mute.appendChild(icon("volume-off"));
-			}
-
-			if (data["volume"] > 0 && this._current["volume"] == 0) { // restored
-				this._toggledVolume = 0;
-				clear(DOM.mute);
-				DOM.mute.appendChild(icon("volume-high"));
-			}
-
-		} else {
-			DOM.mute.disabled = true;
-			DOM.volume.disabled = true;
-			DOM.volume.value = 50;
+		if ("duration" in data) { // play/pause
+			let duration = Number(data["duration"]);
+			DOM.duration.textContent = time(duration);
+			DOM.progress.max = duration;
+			DOM.progress.disabled = false;
+		} else { // no song at all
+			DOM.progress.value = 0;
+			DOM.progress.disabled = true;
 		}
 
-		// changed time
-		let elapsed = Number(data["elapsed"] || 0);
-		DOM.progress.value = elapsed;
-		DOM.elapsed.textContent = time(elapsed);
+		// rebase the time sync
+		this._current.elapsed = Number(data["elapsed"] || 0);
+		this._current.at = performance.now();
+	}
 
-		if (data["file"] != this._current["file"]) { // changed song
-			if (data["file"]) { // playing at all?
-				let duration = Number(data["duration"]);
-				DOM.duration.textContent = time(duration);
-				DOM.progress.max = duration;
-				DOM.progress.disabled = false;
+	async _updateCurrent() {
+		const data = await this._mpd.currentSong();
+		const DOM = this._dom;
+
+		if (data["file"] != this._current.song["file"]) { // changed song
+			if (data["file"]) { // is there a song at all?
 				DOM.title.textContent = data["Title"] || fileName(data["file"]);
 				DOM.subtitle.textContent = subtitle(data, {duration:false});
 			} else {
 				DOM.title.textContent = "";
 				DOM.subtitle.textContent = "";
-				DOM.progress.value = 0;
-				DOM.progress.disabled = true;
 			}
 
 			this._dispatchSongChange(data);
 		}
 
-		this._app.style.setProperty("--progress", DOM.progress.value/DOM.progress.max);
-
 		let artistNew = data["AlbumArtist"] || data["Artist"];
-		let artistOld = this._current["AlbumArtist"] || this._current["Artist"];
+		let artistOld = this._current.song["AlbumArtist"] || this._current.song["Artist"];
+		let albumNew = data["Album"];
+		let albumOld = this._current.song["Album"];
 
-		if (artistNew != artistOld || data["Album"] != this._current["Album"]) { // changed album (art)
+		Object.assign(this._current.song, data);
+
+		if (artistNew != artistOld || albumNew != albumOld) { // changed album (art)
 			clear(DOM.art);
-			get(this._mpd, artistNew, data["Album"], data["file"]).then(src => {
-				if (src) {
-					node("img", {src}, "", DOM.art);
-				} else {
-					icon("music", DOM.art);
-				}
-			});
+			let src = await get(this._mpd, artistNew, data["Album"], data["file"]);
+			if (src) {
+				node("img", {src}, "", DOM.art);
+			} else {
+				icon("music", DOM.art);
+			}
+		}
+	}
+
+	_updateElapsed() {
+		const DOM = this._dom;
+
+		let elapsed = 0;
+		if (this._current.song["file"]) {
+			elapsed = this._current.elapsed;
+			if (this.dataset.state == "play") { elapsed += (performance.now() - this._current.at)/1000; }
 		}
 
+		DOM.progress.value = elapsed;
+		DOM.elapsed.textContent = time(elapsed);
+		this._app.style.setProperty("--progress", DOM.progress.value/DOM.progress.max);
+	}
+
+	_updateFlags(data) {
 		let flags = [];
 		if (data["random"] == "1") { flags.push("random"); }
 		if (data["repeat"] == "1") { flags.push("repeat"); }
 		this.dataset.flags = flags.join(" ");
 		this.dataset.state = data["state"];
+	}
 
-		this._current = data;
+	_updateVolume(data) {
+		const DOM = this._dom;
+
+		if ("volume" in data) {
+			let volume = Number(data["volume"]);
+
+			DOM.mute.disabled = false;
+			DOM.volume.disabled = false;
+			DOM.volume.value = volume;
+
+			if (volume == 0 && this._current.volume > 0) { // muted
+				this._toggledVolume = this._current.volume;
+				clear(DOM.mute);
+				DOM.mute.appendChild(icon("volume-off"));
+			}
+
+			if (volume > 0 && this._current.volume == 0) { // restored
+				this._toggledVolume = 0;
+				clear(DOM.mute);
+				DOM.mute.appendChild(icon("volume-high"));
+			}
+			this._current.volume = volume;
+		} else {
+			DOM.mute.disabled = true;
+			DOM.volume.disabled = true;
+			DOM.volume.value = 50;
+		}
+	}
+
+	_addEvents() {
+		const DOM = this._dom;
+
+		DOM.play.addEventListener("click", _ => this._app.mpd.command("play"));
+		DOM.pause.addEventListener("click", _ => this._app.mpd.command("pause 1"));
+		DOM.prev.addEventListener("click", _ => this._app.mpd.command("previous"));
+		DOM.next.addEventListener("click", _ => this._app.mpd.command("next"));
+
+		DOM.random.addEventListener("click", _ => {
+			let isRandom = this.dataset.flags.split(" ").includes("random");
+			this._app.mpd.command(`random ${isRandom ? "0" : "1"}`);
+		});
+		DOM.repeat.addEventListener("click", _ => {
+			let isRepeat = this.dataset.flags.split(" ").includes("repeat");
+			this._app.mpd.command(`repeat ${isRepeat ? "0" : "1"}`);
+		});
+
+		DOM.volume.addEventListener("input", e => this._app.mpd.command(`setvol ${e.target.valueAsNumber}`));
+		DOM.progress.addEventListener("input", e => this._app.mpd.command(`seekcur ${e.target.valueAsNumber}`));
+
+		DOM.mute.addEventListener("click", _ => this._app.mpd.command(`setvol ${this._toggledVolume}`));
 	}
 
 	_dispatchSongChange(detail) {
@@ -1151,22 +1211,22 @@ class Queue extends Component {
 				this._updateCurrent();
 			break;
 
-			case "queue-change":
-				this._sync();
+			case "idle-change":
+				e.detail.includes("playlist") && this._sync();
 			break;
 		}
 	}
 
 	_onAppLoad() {
+		window.addEventListener("idle-change", this);
+
 		this._app.addEventListener("song-change", this);
-		this._app.addEventListener("queue-change", this);
+
 		this._sync();
 	}
 
 	_onComponentChange(c, isThis) {
 		this.hidden = !isThis;
-
-		isThis && this._sync();
 	}
 
 	async _sync() {
@@ -1204,19 +1264,17 @@ class Queue extends Component {
 
 		sel.addCommandAll();
 
-		sel.addCommand(async items => {
+		sel.addCommand(items => {
 			const commands = generateMoveCommands(items, -1, Array.from(this.children));
-			await this._mpd.command(commands);
-			this._sync();
+			this._mpd.command(commands);
 		}, {label:"Up", icon:"arrow-up-bold"});
 
-		sel.addCommand(async items => {
+		sel.addCommand(items => {
 			const commands = generateMoveCommands(items, +1, Array.from(this.children));
-			await this._mpd.command(commands.reverse()); // move last first
-			this._sync();
+			this._mpd.command(commands.reverse()); // move last first
 		}, {label:"Down", icon:"arrow-down-bold"});
 
-		sel.addCommand(async items => {
+		sel.addCommand(items => {
 			let name = prompt("Save selected songs as a playlist?", "name");
 			if (name === null) { return; }
 
@@ -1225,16 +1283,14 @@ class Queue extends Component {
 				return `playlistadd "${name}" "${escape(item.file)}"`;
 			});
 
-			await this._mpd.command(commands); // FIXME notify?
+			this._mpd.command(commands); // FIXME notify?
 		}, {label:"Save", icon:"content-save"});
 
 		sel.addCommand(async items => {
 			if (!confirm(`Remove these ${items.length} songs from the queue?`)) { return; }
 
 			const commands = items.map(item => `deleteid ${item.songId}`);
-			await this._mpd.command(commands);
-
-			this._sync();
+			this._mpd.command(commands);
 		}, {label:"Remove", icon:"delete"});
 
 		sel.addCommandCancel();
@@ -1263,9 +1319,21 @@ class Playlists extends Component {
 		this._initCommands();
 	}
 
+	handleEvent(e) {
+		switch (e.type) {
+			case "idle-change":
+				e.detail.includes("stored_playlist") && this._sync();
+			break;
+		}
+	}
+
+	_onAppLoad() {
+		window.addEventListener("idle-change", this);
+		this._sync();
+	}
+
 	_onComponentChange(c, isThis) {
 		this.hidden = !isThis;
-		if (isThis) { this._sync(); }
 	}
 
 	async _sync() {
@@ -1287,15 +1355,13 @@ class Playlists extends Component {
 			const name = item.name;
 			const commands = ["clear", `load "${escape(name)}"`, "play"];
 			await this._mpd.command(commands);
-			this.selection.clear();
-			this._app.dispatchEvent(new CustomEvent("queue-change")); // fixme notification?
+			this.selection.clear(); // fixme notification?
 		}, {label:"Play", icon:"play"});
 
 		sel.addCommand(async item => {
 			const name = item.name;
 			await this._mpd.command(`load "${escape(name)}"`);
-			this.selection.clear();
-			this._app.dispatchEvent(new CustomEvent("queue-change")); // fixme notification?
+			this.selection.clear(); // fixme notification?
 		}, {label:"Enqueue", icon:"plus"});
 
 		sel.addCommand(async item => {
@@ -1303,7 +1369,6 @@ class Playlists extends Component {
 			if (!confirm(`Really delete playlist '${name}'?`)) { return; }
 
 			await this._mpd.command(`rm "${escape(name)}"`);
-			this._sync();
 		}, {label:"Delete", icon:"delete"});
 
 		sel.addCommandCancel();
@@ -1819,15 +1884,13 @@ class Library extends Component {
 		sel.addCommand(async items => {
 			const commands = ["clear",...items.map(createEnqueueCommand), "play"];
 			await this._mpd.command(commands);
-			this.selection.clear();
-			this._app.dispatchEvent(new CustomEvent("queue-change")); // fixme notification?
+			this.selection.clear(); // fixme notification?
 		}, {label:"Play", icon:"play"});
 
 		sel.addCommand(async items => {
 			const commands = items.map(createEnqueueCommand);
 			await this._mpd.command(commands);
-			this.selection.clear();
-			this._app.dispatchEvent(new CustomEvent("queue-change")); // fixme notification?
+			this.selection.clear(); // fixme notification?
 		}, {label:"Enqueue", icon:"plus"});
 
 		sel.addCommandCancel();

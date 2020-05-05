@@ -2,22 +2,23 @@ export function command(cmd) {
 	console.warn(`mpd-mock does not know "${cmd}"`);
 }
 
-export function commandAndStatus(cmd) {
-	command(cmd);
-	return status();
-}
-
 export function status() {
 	return {
 		volume: 50,
 		elapsed: 10,
+		duration: 70,
+		state: "play"
+	}
+}
+
+export function currentSong() {
+	return {
 		duration: 70,
 		file: "name.mp3",
 		Title: "Title of song",
 		Artist: "Artist of song",
 		Album: "Album of song",
 		Track: "6",
-		state: "play",
 		Id: 2
 	}
 }
@@ -25,7 +26,7 @@ export function status() {
 export function listQueue() {
 	return [
 		{Id:1, Track:"5", Title:"Title 1", Artist:"AAA", Album:"BBB", duration:30, file:"a.mp3"},
-		status(),
+		currentSong(),
 		{Id:3, Track:"7", Title:"Title 3", Artist:"CCC", Album:"DDD", duration:230, file:"c.mp3"},
 	];
 }

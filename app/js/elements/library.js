@@ -223,15 +223,13 @@ class Library extends Component {
 		sel.addCommand(async items => {
 			const commands = ["clear",...items.map(createEnqueueCommand), "play"];
 			await this._mpd.command(commands);
-			this.selection.clear();
-			this._app.dispatchEvent(new CustomEvent("queue-change")); // fixme notification?
+			this.selection.clear(); // fixme notification?
 		}, {label:"Play", icon:"play"});
 
 		sel.addCommand(async items => {
 			const commands = items.map(createEnqueueCommand);
 			await this._mpd.command(commands);
-			this.selection.clear();
-			this._app.dispatchEvent(new CustomEvent("queue-change")); // fixme notification?
+			this.selection.clear(); // fixme notification?
 		}, {label:"Enqueue", icon:"plus"});
 
 		sel.addCommandCancel();
