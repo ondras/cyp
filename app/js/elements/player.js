@@ -21,7 +21,6 @@ class Player extends Component {
 		const all = this.querySelectorAll("[class]");
 		[...all].forEach(node => DOM[node.className] = node);
 		DOM.progress = DOM.timeline.querySelector("x-range");
-		DOM.progress.step = "0.1"; // FIXME
 		DOM.volume = DOM.volume.querySelector("x-range");
 
 		this._dom = DOM;
@@ -171,9 +170,14 @@ class Player extends Component {
 			this._app.mpd.command(`repeat ${isRepeat ? "0" : "1"}`);
 		});
 
-		DOM.volume.addEventListener("input", e => this._app.mpd.command(`setvol ${e.target.valueAsNumber}`));
-		DOM.progress.addEventListener("input", e => this._app.mpd.command(`seekcur ${e.target.valueAsNumber}`));
+		DOM.progress.addEventListener("input", e => {
+			let elapsed = e.target.valueAsNumber;
+			this._current.elapsed = elapsed;
+			this._current.at = performance.now();
+			this._app.mpd.command(`seekcur ${elapsed}`);
+		});
 
+		DOM.volume.addEventListener("input", e => this._app.mpd.command(`setvol ${e.target.valueAsNumber}`));
 		DOM.mute.addEventListener("click", _ => this._app.mpd.command(`setvol ${this._toggledVolume}`));
 	}
 
