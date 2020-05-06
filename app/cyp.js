@@ -670,8 +670,10 @@ function text(txt, parent) {
 
 function initIcons() {
 	Array.from(document.querySelectorAll("[data-icon]")).forEach(/** @param {HTMLElement} node */ node => {
-		let icon$1 = icon(node.dataset.icon);
-		node.insertBefore(icon$1, node.firstChild);
+		node.dataset.icon.split(" ").forEach(name => {
+			let icon$1 = icon(name);
+			node.insertBefore(icon$1, node.firstChild);
+		});
 	});
 }
 
@@ -1058,6 +1060,7 @@ class Player extends Component {
 		let flags = [];
 		if (data["random"] == "1") { flags.push("random"); }
 		if (data["repeat"] == "1") { flags.push("repeat"); }
+		if (data["volume"] === "0") { flags.push("mute"); } // strict, because volume might be missing
 		this.dataset.flags = flags.join(" ");
 		this.dataset.state = data["state"];
 	}
@@ -1072,17 +1075,8 @@ class Player extends Component {
 			DOM.volume.disabled = false;
 			DOM.volume.value = volume;
 
-			if (volume == 0 && this._current.volume > 0) { // muted
-				this._toggledVolume = this._current.volume;
-				clear(DOM.mute);
-				DOM.mute.appendChild(icon("volume-off"));
-			}
-
-			if (volume > 0 && this._current.volume == 0) { // restored
-				this._toggledVolume = 0;
-				clear(DOM.mute);
-				DOM.mute.appendChild(icon("volume-high"));
-			}
+			if (volume == 0 && this._current.volume > 0) { this._toggledVolume = this._current.volume; } // muted
+			if (volume > 0 && this._current.volume == 0) { this._toggledVolume = 0; } // restored
 			this._current.volume = volume;
 		} else {
 			DOM.mute.disabled = true;

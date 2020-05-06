@@ -7,6 +7,8 @@ cyp-player {
 	&:not([data-state=play]) .pause { display: none; }
 	&[data-state=play] .play { display: none; }
 	&:not([data-flags~=random]) .random, &:not([data-flags~=repeat]) .repeat { opacity: 0.5; }
+	&[data-flags~=mute] .mute .icon-volume-high { display: none; }
+	&:not([data-flags~=mute]) .mute .icon-volume-off { display: none; }
 
 	x-range {
 		flex: auto;

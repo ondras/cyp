@@ -4,8 +4,10 @@ import * as html from "../html.js";
 
 function initIcons() {
 	Array.from(document.querySelectorAll("[data-icon]")).forEach(/** @param {HTMLElement} node */ node => {
-		let icon = html.icon(node.dataset.icon);
-		node.insertBefore(icon, node.firstChild);
+		node.dataset.icon.split(" ").forEach(name => {
+			let icon = html.icon(name);
+			node.insertBefore(icon, node.firstChild);
+		})
 	});
 }
 
