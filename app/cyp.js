@@ -242,21 +242,6 @@ let commandQueue = [];
 let current;
 let canTerminateIdle = false;
 
-function onMessage(e) {
-	if (!current) { return; }
-
-	let lines = JSON.parse(e.data);
-	let last = lines.pop();
-	if (last.startsWith("OK")) {
-		current.resolve(lines);
-	} else {
-		console.warn(last);
-		current.reject(last);
-	}
-	current = null;
-	setTimeout(processQueue, 0); // after other potential commands are enqueued
-}
-
 function onError(e) {
 	console.error(e);
 	current && current.reject(e);
@@ -269,24 +254,36 @@ function onClose(e) {
 	ws = null; // fixme
 }
 
-function processQueue() {
-	if (commandQueue.length == 0) {
-		if (!current) { idle(); } // nothing to do
-	} else if (current) { // stuff waiting in queue but there is a command under way
-		if (canTerminateIdle) {
-			ws.send("noidle");
-			canTerminateIdle = false;
-		}
-	} else { // advance to next command
-		current = commandQueue.shift();
-		ws.send(current.cmd);
+function onMessage(e) {
+	if (!current) { return; }
+
+	let lines = JSON.parse(e.data);
+	let last = lines.pop();
+	if (last.startsWith("OK")) {
+		current.resolve(lines);
+	} else {
+		console.warn(last);
+		current.reject(last);
+	}
+	current = null;
+
+	if (commandQueue.length > 0) {
+		advanceQueue();
+	} else {
+		setTimeout(idle, 0); // only after resolution callbacks
 	}
 }
 
+function advanceQueue(){
+	current = commandQueue.shift();
+	ws.send(current.cmd);
+}
+
 async function idle() {
-	let promise = command("idle stored_playlist playlist player options");
+	if (current) { return; }
+
 	canTerminateIdle = true;
-	let lines = await promise;
+	let lines = await command("idle stored_playlist playlist player options");
 	canTerminateIdle = false;
 	let changed = linesToStruct(lines).changed || [];
 	changed = [].concat(changed);
@@ -301,7 +298,13 @@ async function command(cmd) {
 
 	return new Promise((resolve, reject) => {
 		commandQueue.push({cmd, resolve, reject});
-		processQueue();
+
+		if (!current) {
+			advanceQueue();
+		} else if (canTerminateIdle) {
+			ws.send("noidle");
+			canTerminateIdle = false;
+		}
 	});
 }
 
