@@ -11,6 +11,10 @@ export function status() {
 	}
 }
 
+export function commandAndStatus() {
+	return status();
+}
+
 export function currentSong() {
 	return {
 		duration: 70,

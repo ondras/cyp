@@ -68,6 +68,12 @@ export async function command(cmd) {
 	});
 }
 
+export async function commandAndStatus(...args) {
+	args.push("status");
+	let lines = await command(args);
+	return parser.linesToStruct(lines);
+}
+
 export async function status() {
 	let lines = await command("status");
 	return parser.linesToStruct(lines);

@@ -305,6 +305,12 @@ async function command(cmd) {
 	});
 }
 
+async function commandAndStatus(...args) {
+	args.push("status");
+	let lines = await command(args);
+	return linesToStruct(lines);
+}
+
 async function status() {
 	let lines = await command("status");
 	return linesToStruct(lines);
@@ -423,6 +429,7 @@ async function init() {
 var mpd = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	command: command,
+	commandAndStatus: commandAndStatus,
 	status: status,
 	currentSong: currentSong,
 	listQueue: listQueue,
@@ -448,6 +455,10 @@ function status$1() {
 		duration: 70,
 		state: "play"
 	}
+}
+
+function commandAndStatus$1() {
+	return status$1();
 }
 
 function currentSong$1() {
@@ -518,6 +529,7 @@ var mpdMock = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	command: command$1,
 	status: status$1,
+	commandAndStatus: commandAndStatus$1,
 	currentSong: currentSong$1,
 	listQueue: listQueue$1,
 	listPlaylists: listPlaylists$1,
@@ -955,7 +967,7 @@ class Player extends Component {
 			at: 0,
 			volume: 0
 		};
-		this._toggledVolume = 0;
+		this._toggleVolume = 0;
 
 		const DOM = {};
 		const all = this.querySelectorAll("[class]");
@@ -988,20 +1000,9 @@ class Player extends Component {
 
 	async _updateStatus() {
 		const data = await this._mpd.status();
-		const DOM = this._dom;
 
 		this._updateFlags(data);
 		this._updateVolume(data);
-
-		if ("duration" in data) { // play/pause
-			let duration = Number(data["duration"]);
-			DOM.duration.textContent = time(duration);
-			DOM.progress.max = duration;
-			DOM.progress.disabled = false;
-		} else { // no song at all
-			DOM.progress.value = 0;
-			DOM.progress.disabled = true;
-		}
 
 		// rebase the time sync
 		this._current.elapsed = Number(data["elapsed"] || 0);
@@ -1016,9 +1017,16 @@ class Player extends Component {
 			if (data["file"]) { // is there a song at all?
 				DOM.title.textContent = data["Title"] || fileName(data["file"]);
 				DOM.subtitle.textContent = subtitle(data, {duration:false});
+
+				let duration = Number(data["duration"]);
+				DOM.duration.textContent = time(duration);
+				DOM.progress.max = duration;
+				DOM.progress.disabled = false;
 			} else {
 				DOM.title.textContent = "";
 				DOM.subtitle.textContent = "";
+				DOM.progress.value = 0;
+				DOM.progress.disabled = true;
 			}
 
 			this._dispatchSongChange(data);
@@ -1075,8 +1083,8 @@ class Player extends Component {
 			DOM.volume.disabled = false;
 			DOM.volume.value = volume;
 
-			if (volume == 0 && this._current.volume > 0) { this._toggledVolume = this._current.volume; } // muted
-			if (volume > 0 && this._current.volume == 0) { this._toggledVolume = 0; } // restored
+			if (volume == 0 && this._current.volume > 0) { this._toggleVolume = this._current.volume; } // muted
+			if (volume > 0 && this._current.volume == 0) { this._toggleVolume = 0; } // restored
 			this._current.volume = volume;
 		} else {
 			DOM.mute.disabled = true;
@@ -1110,7 +1118,11 @@ class Player extends Component {
 		});
 
 		DOM.volume.addEventListener("input", e => this._app.mpd.command(`setvol ${e.target.valueAsNumber}`));
-		DOM.mute.addEventListener("click", _ => this._app.mpd.command(`setvol ${this._toggledVolume}`));
+		DOM.mute.addEventListener("click", async _ => {
+			let data = await this._app.mpd.commandAndStatus(`setvol ${this._toggleVolume}`);
+			this._updateFlags(data);
+			this._updateVolume(data);
+		});
 	}
 
 	_dispatchSongChange(detail) {
