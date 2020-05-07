@@ -11,9 +11,9 @@ function initIcons() {
 	});
 }
 
-async function initMpd() {
+async function initMpd(app) {
 	try {
-		await mpd.init();
+		await mpd.init(app);
 		return mpd;
 	} catch (e) {
 		return mpdMock;
@@ -30,7 +30,7 @@ class App extends HTMLElement {
 	}
 
 	async connectedCallback() {
-		this.mpd = await initMpd();
+		this.mpd = await initMpd(this);
 
 		const children = Array.from(this.querySelectorAll("*"));
 		const names = children.map(node => node.nodeName.toLowerCase())
@@ -61,7 +61,7 @@ class App extends HTMLElement {
 	}
 
 	get component() { return this.getAttribute("component"); }
-	set component(component) { return this.setAttribute("component", component); }
+	set component(component) { this.setAttribute("component", component); }
 }
 
 customElements.define("cyp-app", App);

@@ -37,10 +37,8 @@ class Queue extends Component {
 	}
 
 	_onAppLoad() {
-		window.addEventListener("idle-change", this);
-
+		this._app.addEventListener("idle-change", this);
 		this._app.addEventListener("song-change", this);
-
 		this._sync();
 	}
 

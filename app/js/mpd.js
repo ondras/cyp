@@ -1,6 +1,6 @@
 import * as parser from "./parser.js";
 
-let ws;
+let ws, app;
 let commandQueue = [];
 let current;
 let canTerminateIdle = false;
@@ -50,10 +50,7 @@ async function idle() {
 	canTerminateIdle = false;
 	let changed = parser.linesToStruct(lines).changed || [];
 	changed = [].concat(changed);
-	if (changed.length > 0) {
-		// FIXME not on window
-		window.dispatchEvent(new CustomEvent("idle-change", {detail:changed}));
-	}
+	(changed.length > 0) && app.dispatchEvent(new CustomEvent("idle-change", {detail:changed}));
 }
 
 export async function command(cmd) {
@@ -166,14 +163,13 @@ export function escape(str) {
 	return str.replace(/(['"\\])/g, "\\$1");
 }
 
-export async function init() {
+export async function init(a) {
+	app = a;
 	let response = await fetch("/ticket", {method:"POST"});
 	let ticket = (await response.json()).ticket;
 
-	let resolve, reject;
-	let promise = new Promise((res, rej) => {
-		resolve = res;
-		reject = rej;
+	return new Promise((resolve, reject) => {
+		current = {resolve, reject};
 
 		try {
 			let url = new URL(location.href);
@@ -187,7 +183,4 @@ export async function init() {
 		ws.addEventListener("message", onMessage);
 		ws.addEventListener("close", onClose);
 	});
-
-	current = {resolve, reject, promise};
-	return Promise;
 }

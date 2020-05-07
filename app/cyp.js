@@ -237,7 +237,7 @@ function pathContents(lines) {
 	return result;
 }
 
-let ws;
+let ws, app;
 let commandQueue = [];
 let current;
 let canTerminateIdle = false;
@@ -287,10 +287,7 @@ async function idle() {
 	canTerminateIdle = false;
 	let changed = linesToStruct(lines).changed || [];
 	changed = [].concat(changed);
-	if (changed.length > 0) {
-		// FIXME not on window
-		window.dispatchEvent(new CustomEvent("idle-change", {detail:changed}));
-	}
+	(changed.length > 0) && app.dispatchEvent(new CustomEvent("idle-change", {detail:changed}));
 }
 
 async function command(cmd) {
@@ -403,14 +400,13 @@ function escape(str) {
 	return str.replace(/(['"\\])/g, "\\$1");
 }
 
-async function init() {
+async function init(a) {
+	app = a;
 	let response = await fetch("/ticket", {method:"POST"});
 	let ticket = (await response.json()).ticket;
 
-	let resolve, reject;
-	let promise = new Promise((res, rej) => {
-		resolve = res;
-		reject = rej;
+	return new Promise((resolve, reject) => {
+		current = {resolve, reject};
 
 		try {
 			let url = new URL(location.href);
@@ -424,9 +420,6 @@ async function init() {
 		ws.addEventListener("message", onMessage);
 		ws.addEventListener("close", onClose);
 	});
-
-	current = {resolve, reject, promise};
-	return Promise;
 }
 
 var mpd = /*#__PURE__*/Object.freeze({
@@ -692,9 +685,9 @@ function initIcons() {
 	});
 }
 
-async function initMpd() {
+async function initMpd(app) {
 	try {
-		await init();
+		await init(app);
 		return mpd;
 	} catch (e) {
 		return mpdMock;
@@ -711,7 +704,7 @@ class App extends HTMLElement {
 	}
 
 	async connectedCallback() {
-		this.mpd = await initMpd();
+		this.mpd = await initMpd(this);
 
 		const children = Array.from(this.querySelectorAll("*"));
 		const names = children.map(node => node.nodeName.toLowerCase())
@@ -742,7 +735,7 @@ class App extends HTMLElement {
 	}
 
 	get component() { return this.getAttribute("component"); }
-	set component(component) { return this.setAttribute("component", component); }
+	set component(component) { this.setAttribute("component", component); }
 }
 
 customElements.define("cyp-app", App);
@@ -996,7 +989,7 @@ class Player extends Component {
 		this._addEvents();
 		this._updateStatus();
 		this._updateCurrent();
-		window.addEventListener("idle-change", this);
+		this._app.addEventListener("idle-change", this);
 
 		setInterval(() => this._updateElapsed(), ELAPSED_PERIOD);
 	}
@@ -1233,10 +1226,8 @@ class Queue extends Component {
 	}
 
 	_onAppLoad() {
-		window.addEventListener("idle-change", this);
-
+		this._app.addEventListener("idle-change", this);
 		this._app.addEventListener("song-change", this);
-
 		this._sync();
 	}
 
@@ -1343,7 +1334,7 @@ class Playlists extends Component {
 	}
 
 	_onAppLoad() {
-		window.addEventListener("idle-change", this);
+		this._app.addEventListener("idle-change", this);
 		this._sync();
 	}
 

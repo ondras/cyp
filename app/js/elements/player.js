@@ -41,7 +41,7 @@ class Player extends Component {
 		this._addEvents();
 		this._updateStatus();
 		this._updateCurrent();
-		window.addEventListener("idle-change", this);
+		this._app.addEventListener("idle-change", this);
 
 		setInterval(() => this._updateElapsed(), ELAPSED_PERIOD);
 	}
