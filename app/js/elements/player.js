@@ -31,7 +31,8 @@ class Player extends Component {
 			case "idle-change":
 				let hasOptions = e.detail.includes("options");
 				let hasPlayer = e.detail.includes("player");
-				(hasOptions || hasPlayer) && this._updateStatus();
+				let hasMixer = e.detail.includes("mixer");
+				(hasOptions || hasPlayer || hasMixer) && this._updateStatus();
 				hasPlayer && this._updateCurrent();
 			break;
 		}
@@ -166,11 +167,7 @@ class Player extends Component {
 		});
 
 		DOM.volume.addEventListener("input", e => this._app.mpd.command(`setvol ${e.target.valueAsNumber}`));
-		DOM.mute.addEventListener("click", async _ => {
-			let data = await this._app.mpd.commandAndStatus(`setvol ${this._toggleVolume}`);
-			this._updateFlags(data);
-			this._updateVolume(data);
-		});
+		DOM.mute.addEventListener("click", _ => this._app.mpd.command(`setvol ${this._toggleVolume}`));
 	}
 
 	_dispatchSongChange(detail) {

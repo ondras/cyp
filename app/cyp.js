@@ -283,7 +283,7 @@ async function idle() {
 	if (current) { return; }
 
 	canTerminateIdle = true;
-	let lines = await command("idle stored_playlist playlist player options");
+	let lines = await command("idle stored_playlist playlist player options mixer");
 	canTerminateIdle = false;
 	let changed = linesToStruct(lines).changed || [];
 	changed = [].concat(changed);
@@ -303,12 +303,6 @@ async function command(cmd) {
 			canTerminateIdle = false;
 		}
 	});
-}
-
-async function commandAndStatus(...args) {
-	args.push("status");
-	let lines = await command(args);
-	return linesToStruct(lines);
 }
 
 async function status() {
@@ -425,7 +419,6 @@ async function init(a) {
 var mpd = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	command: command,
-	commandAndStatus: commandAndStatus,
 	status: status,
 	currentSong: currentSong,
 	listQueue: listQueue,
@@ -451,10 +444,6 @@ function status$1() {
 		duration: 70,
 		state: "play"
 	}
-}
-
-function commandAndStatus$1() {
-	return status$1();
 }
 
 function currentSong$1() {
@@ -525,7 +514,6 @@ var mpdMock = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	command: command$1,
 	status: status$1,
-	commandAndStatus: commandAndStatus$1,
 	currentSong: currentSong$1,
 	listQueue: listQueue$1,
 	listPlaylists: listPlaylists$1,
@@ -979,7 +967,8 @@ class Player extends Component {
 			case "idle-change":
 				let hasOptions = e.detail.includes("options");
 				let hasPlayer = e.detail.includes("player");
-				(hasOptions || hasPlayer) && this._updateStatus();
+				let hasMixer = e.detail.includes("mixer");
+				(hasOptions || hasPlayer || hasMixer) && this._updateStatus();
 				hasPlayer && this._updateCurrent();
 			break;
 		}
@@ -1114,11 +1103,7 @@ class Player extends Component {
 		});
 
 		DOM.volume.addEventListener("input", e => this._app.mpd.command(`setvol ${e.target.valueAsNumber}`));
-		DOM.mute.addEventListener("click", async _ => {
-			let data = await this._app.mpd.commandAndStatus(`setvol ${this._toggleVolume}`);
-			this._updateFlags(data);
-			this._updateVolume(data);
-		});
+		DOM.mute.addEventListener("click", _ => this._app.mpd.command(`setvol ${this._toggleVolume}`));
 	}
 
 	_dispatchSongChange(detail) {

@@ -46,7 +46,7 @@ async function idle() {
 	if (current) { return; }
 
 	canTerminateIdle = true;
-	let lines = await command("idle stored_playlist playlist player options");
+	let lines = await command("idle stored_playlist playlist player options mixer");
 	canTerminateIdle = false;
 	let changed = parser.linesToStruct(lines).changed || [];
 	changed = [].concat(changed);
@@ -66,12 +66,6 @@ export async function command(cmd) {
 			canTerminateIdle = false;
 		}
 	});
-}
-
-export async function commandAndStatus(...args) {
-	args.push("status");
-	let lines = await command(args);
-	return parser.linesToStruct(lines);
 }
 
 export async function status() {
