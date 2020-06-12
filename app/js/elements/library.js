@@ -17,9 +17,7 @@ const TAGS = {
 function nonempty(str) { return (str.length > 0); }
 
 function createEnqueueCommand(node) {
-	if (node instanceof Song) {
-		return `add "${escape(node.data["file"])}"`;
-	} else if (node instanceof Path) {
+	if (node instanceof Song || node instanceof Path) {
 		return `add "${escape(node.file)}"`;
 	} else if (node instanceof Tag) {
 		return [

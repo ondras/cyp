@@ -2,6 +2,8 @@ import Component from "../component.js";
 
 class Menu extends Component {
 	connectedCallback() {
+		super.connectedCallback();
+
 		/** @type HTMLElement[] */
 		this._tabs = Array.from(this.querySelectorAll("[data-for]"));
 
