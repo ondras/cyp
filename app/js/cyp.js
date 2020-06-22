@@ -11,3 +11,10 @@ import "./elements/library.js";
 import "./elements/tag.js";
 import "./elements/back.js";
 import "./elements/path.js";
+
+function updateSize() {
+	document.body.style.setProperty("--vh", window.innerHeight/100);
+}
+
+window.addEventListener("resize", updateSize);
+updateSize();

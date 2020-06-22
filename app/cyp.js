@@ -1807,3 +1807,10 @@ class Library extends Component {
 }
 
 customElements.define("cyp-library", Library);
+
+function updateSize() {
+	document.body.style.setProperty("--vh", window.innerHeight/100);
+}
+
+window.addEventListener("resize", updateSize);
+updateSize();
