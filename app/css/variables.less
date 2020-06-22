@@ -34,6 +34,12 @@ cyp-app[theme=dark] { .dark(); }
 	cyp-app[theme=auto] { .light(); }
 }
 
+@media (max-width: 640px), (max-height:640px) {
+	cyp-app[theme] {
+		--text-shadow: none;
+	}
+}
+
 cyp-app[color=dodgerblue] {
 	--primary-raw: 30, 144, 255;
 }
