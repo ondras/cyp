@@ -23,9 +23,13 @@ async function bytesToImage(bytes) {
 }
 
 function resize(image) {
+	while (Math.min(image.width, image.height) >= 2*conf.artSize) {
+		let tmp = html.node("canvas", {width:image.width/2, height:image.height/2});
+		tmp.getContext("2d").drawImage(image, 0, 0, tmp.width, tmp.height);
+		image = tmp;
+	}
 	const canvas = html.node("canvas", {width:conf.artSize, height:conf.artSize});
-	const ctx = canvas.getContext("2d");
-	ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+	canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
 	return canvas;
 }
 
