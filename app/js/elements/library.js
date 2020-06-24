@@ -5,6 +5,7 @@ import Path from "./path.js";
 import Back from "./back.js";
 import Song from "./song.js";
 import Search from "./search.js";
+import Filter from "./filter.js";
 import { escape, serializeFilter } from "../mpd.js";
 
 
@@ -42,6 +43,8 @@ class Library extends Component {
 			if (query.length < 3) { return; }
 			this._doSearch(query);
 		}
+
+		this._filter = new Filter();
 	}
 
 	_popState() {
@@ -100,11 +103,12 @@ class Library extends Component {
 	}
 
 	async _listTags(tag, filter = {}) {
-		const values = await this._mpd.listTags(tag, filter);
+		const values = (await this._mpd.listTags(tag, filter)).filter(nonempty);
 		html.clear(this);
 
 		if ("AlbumArtist" in filter) { this._buildBack(); }
-		values.filter(nonempty).forEach(value => this._buildTag(tag, value, filter));
+		(values.length > 0) && this._addFilter();
+		values.forEach(value => this._buildTag(tag, value, filter));
 	}
 
 	async _listPath(path) {
@@ -112,6 +116,7 @@ class Library extends Component {
 		html.clear(this);
 
 		path && this._buildBack();
+		(paths["directory"].length + paths["file"].length > 0) && this._addFilter();
 		paths["directory"].forEach(path => this._buildPath(path));
 		paths["file"].forEach(path => this._buildPath(path));
 	}
@@ -120,6 +125,7 @@ class Library extends Component {
 		const songs = await this._mpd.listSongs(filter);
 		html.clear(this);
 		this._buildBack();
+		(songs.length > 0 && this._addFilter());
 		songs.forEach(song => this.appendChild(new Song(song)));
 	}
 
@@ -211,6 +217,11 @@ class Library extends Component {
 			const path = data["directory"];
 			node.addButton("chevron-double-right", _ => this._pushState({type:"path", path}));
 		}
+	}
+
+	_addFilter() {
+		this.appendChild(this._filter);
+		this._filter.value = "";
 	}
 
 	_initCommands() {

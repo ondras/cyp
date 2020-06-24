@@ -19,4 +19,8 @@ export default class Item extends HTMLElement {
 	_buildTitle(title) {
 		return html.node("span", {className:"title"}, title, this);
 	}
+
+	matchPrefix(prefix) {
+		return this.textContent.match(/\w+/g).some(word => word.toLowerCase().startsWith(prefix));
+	}
 }
