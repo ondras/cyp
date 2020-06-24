@@ -1455,15 +1455,19 @@ class YT extends Component {
 
 		let url = `/youtube?q=${encodeURIComponent(query)}&limit=${encodeURIComponent(ytLimit)}`;
 		let response = await fetch(url);
-		let results = await response.json();
+		if (response.status == 200) {
+			let results = await response.json();
+			results.forEach(result => {
+				let node = new YtResult(result.title);
+				this.appendChild(node);
+				node.addButton("download", () => this._download(result.id));
+			});
+		} else {
+			let text = await response.text();
+			alert(text);
+		}
 
 		this._search.pending(false);
-
-		results.forEach(result => {
-			let node = new YtResult(result.title);
-			this.appendChild(node);
-			node.addButton("download", () => this._download(result.id));
-		});
 	}
 
 
@@ -1497,7 +1501,7 @@ class YT extends Component {
 		const wasHidden = this.hidden;
 		this.hidden = !isThis;
 
-		if (!wasHidden && isThis) { this._showRoot(); }
+		if (!wasHidden && isThis) { this._clear(); }
 	}
 }
 
