@@ -12,7 +12,8 @@ import { escape, serializeFilter } from "../mpd.js";
 const SORT = "-Track";
 const TAGS = {
 	"Album": "Albums",
-	"AlbumArtist": "Artists"
+	"AlbumArtist": "Artists",
+	"Genre": "Genres"
 }
 
 function nonempty(str) { return (str.length > 0); }
@@ -79,6 +80,9 @@ class Library extends Component {
 		html.button({icon:"artist"}, "Artists and albums", nav)
 			.addEventListener("click", _ => this._pushState({type:"tags", tag:"AlbumArtist"}));
 
+		html.button({icon:"music"}, "Genres", nav)
+			.addEventListener("click", _ => this._pushState({type:"tags", tag:"Genre"}));
+
 		html.button({icon:"folder"}, "Files and directories", nav)
 			.addEventListener("click", _ => this._pushState({type:"path", path:""}));
 
@@ -106,7 +110,7 @@ class Library extends Component {
 		const values = (await this._mpd.listTags(tag, filter)).filter(nonempty);
 		html.clear(this);
 
-		if ("AlbumArtist" in filter) { this._buildBack(); }
+		if ("AlbumArtist" in filter || "Genre" in filter) { this._buildBack(); }
 		(values.length > 0) && this._addFilter();
 		values.forEach(value => this._buildTag(tag, value, filter));
 	}
@@ -181,6 +185,7 @@ class Library extends Component {
 		let node;
 		switch (tag) {
 			case "AlbumArtist":
+			case "Genre":
 				node = new Tag(tag, value, filter);
 				this.appendChild(node);
 				node.onClick = () => this._pushState({type:"tags", tag:"Album", filter:node.createChildFilter()});

@@ -5,7 +5,8 @@ import Item from "../item.js";
 
 const ICONS = {
 	"AlbumArtist": "artist",
-	"Album": "album"
+	"Album": "album",
+	"Genre": "music"
 }
 
 export default class Tag extends Item {
