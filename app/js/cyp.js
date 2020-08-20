@@ -11,6 +11,7 @@ import "./elements/library.js";
 import "./elements/tag.js";
 import "./elements/back.js";
 import "./elements/path.js";
+import "./elements/media-handler.js";
 
 function updateSize() {
 	document.body.style.setProperty("--vh", window.innerHeight/100);
