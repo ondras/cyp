@@ -1193,16 +1193,18 @@ class Queue extends Component {
 			this._mpd.command(commands.reverse()); // move last first
 		}, {label:"Down", icon:"arrow-down-bold"});
 
-		sel.addCommand(items => {
+		sel.addCommand(async items => {
 			let name = prompt("Save selected songs as a playlist?", "name");
 			if (name === null) { return; }
 
 			name = escape(name);
 			const commands = items.map(item => {
-				return `playlistadd "${name}" "${escape(item.file)}"`;
+				return `playlistadd "${escape(name)}" "${escape(item.file)}"`;
 			});
+			commands.unshift(`rm "${escape(name)}"`);
 
-			this._mpd.command(commands); // FIXME notify?
+			await this._mpd.command(commands);
+			sel.clear();
 		}, {label:"Save", icon:"content-save"});
 
 		sel.addCommand(async items => {
