@@ -57,6 +57,18 @@ docker run --network=host -v "$(pwd)"/_youtube:/cyp/_youtube cyp
 docker run --network=host -e PORT=12345 cyp
 ```
 
+## Password-protected MPD
+
+Create a `passwords.json` file in CYPs home directory. Specify passwords for available MPD servers:
+
+```json
+{
+  "localhost:6600": "my-pass-1",
+  "some.other.server.or.ip:12345": "my-pass-2
+}
+```
+
+Make sure that hostnames and ports match those specified via the `server` querystring argument (defaults to `localhost:6600`).
 
 ## Technology
   - Connected to MPD via WebSockets (using the [ws2mpd](https://github.com/ondras/ws2mpd/) bridge)

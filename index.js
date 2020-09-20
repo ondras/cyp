@@ -124,5 +124,12 @@ function requestValidator(request) {
 }
 
 let httpServer = require("http").createServer(onRequest).listen(port);
-require("ws2mpd").ws2mpd(httpServer, requestValidator);
+let passwords = {};
+try {
+	passwords = require("./passwords.json");
+	console.log("loaded passwords.json file");
+} catch (e) {
+	console.log("no passwords.json found");
+}
+require("ws2mpd").ws2mpd(httpServer, requestValidator, passwords);
 require("ws2mpd").logging(false);
