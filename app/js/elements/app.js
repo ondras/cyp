@@ -27,7 +27,6 @@ class App extends HTMLElement {
 		await this._connect();
 		this.dispatchEvent(new CustomEvent("load"));
 
-		this.mediaSessionInit = false;
 		this._initMediaHandler();
 	}
 
@@ -83,11 +82,11 @@ class App extends HTMLElement {
 		html.node("source", {src: 'https://raw.githubusercontent.com/anars/blank-audio/master/10-seconds-of-silence.mp3'}, '', audio);
 
 		// Init event session (play audio) on click (because restrictions by web browsers)
+		let mediaSessionInit = false;
 		window.addEventListener('click', () => {
-			if (!this.mediaSessionInit) {
+			if (mediaSessionInit) return;
+				mediaSessionInit = true;
 				audio.play();
-				this.mediaSessionInit = true;
-			}
 		});
 
 		// mediaSession define metadata
