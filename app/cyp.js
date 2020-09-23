@@ -643,12 +643,9 @@ class App extends HTMLElement {
 		node("source", {src: 'https://raw.githubusercontent.com/anars/blank-audio/master/10-seconds-of-silence.mp3'}, '', audio);
 
 		// Init event session (play audio) on click (because restrictions by web browsers)
-		let mediaSessionInit = false;
 		window.addEventListener('click', () => {
-			if (mediaSessionInit) return;
-				mediaSessionInit = true;
 				audio.play();
-		});
+		}, {once: true});
 
 		// mediaSession define metadata
 		navigator.mediaSession.metadata = new MediaMetadata({
