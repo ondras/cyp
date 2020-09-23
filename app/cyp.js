@@ -645,8 +645,6 @@ class App extends HTMLElement {
 		// Init event session (play audio) on click (because restrictions by web browsers)
 		window.addEventListener('click', () => {
 				audio.play();
-				alert('ok');
-				console.log('ok');
 		}, {once: true});
 
 		// mediaSession define metadata
