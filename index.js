@@ -36,6 +36,7 @@ function downloadYoutube(id, response) {
 	let args = [
 		"-f", "bestaudio",
 		"-o", `${__dirname}/_youtube/%(title)s-%(id)s.%(ext)s`,
+		"--",
 		id
 	]
 	let child = require("child_process").spawn(cmd, args);
