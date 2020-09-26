@@ -17,7 +17,7 @@ function searchYoutube(q, limit, response) {
 	q = escape(`ytsearch${limit}:${q}`);
 	const command = `set -o pipefail; ${cmd} -j ${q} | jq "{id,title}" | jq -s .`;
 
-	require("child_process").exec(command, {shell:"/bin/bash"}, (error, stdout, stderr) => {
+	require("child_process").exec(command, {shell:"bash"}, (error, stdout, stderr) => {
 		if (error) {
 			console.log("error", error);
 			response.writeHead(500);
