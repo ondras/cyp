@@ -96,12 +96,15 @@ class Queue extends Component {
 			if (name === null) { return; }
 
 			name = escape(name);
-			const commands = items.map(item => {
-				return `playlistadd "${escape(name)}" "${escape(item.file)}"`;
-			});
-			commands.unshift(`rm "${escape(name)}"`);
+			try { // might not exist
+				await this._mpd.command(`rm "${name}"`);
+			} catch (e) {}
 
+			const commands = items.map(item => {
+				return `playlistadd "${name}" "${escape(item.file)}"`;
+			});
 			await this._mpd.command(commands);
+
 			sel.clear();
 		}, {label:"Save", icon:"content-save"});
 
