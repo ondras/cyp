@@ -81,8 +81,8 @@ class Player extends Component {
 			this._dispatchSongChange(data);
 		}
 
-		let artistNew = data["AlbumArtist"] || data["Artist"];
-		let artistOld = this._current.song["AlbumArtist"] || this._current.song["Artist"];
+		let artistNew = data["Artist"] || data["AlbumArtist"];
+		let artistOld = this._current.song["Artist"] || this._current.song["AlbumArtist"];
 		let albumNew = data["Album"];
 		let albumOld = this._current.song["Album"];
 

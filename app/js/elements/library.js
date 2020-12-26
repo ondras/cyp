@@ -166,7 +166,7 @@ class Library extends Component {
 		let results = new Map();
 		songs.forEach(song => {
 			let filter = {}, value;
-			const artist = song["AlbumArtist"] || song["Artist"]
+			const artist = song["AlbumArtist"] || song["Artist"];
 
 			if (tag == "Album") {
 				value = song[tag];

@@ -896,9 +896,16 @@ function time(sec) {
 
 function subtitle(data, options = {duration:true}) {
 	let tokens = [];
-	data["Artist"] && tokens.push(data["Artist"]);
+
+	if (data["Artist"]) {
+		tokens.push(data["Artist"]);
+	} else if (data["AlbumArtist"]) {
+		tokens.push(data["AlbumArtist"]);
+	}
+
 	data["Album"] && tokens.push(data["Album"]);
 	options.duration && data["duration"] && tokens.push(time(Number(data["duration"])));
+
 	return tokens.join(SEPARATOR);
 }
 
@@ -983,8 +990,8 @@ class Player extends Component {
 			this._dispatchSongChange(data);
 		}
 
-		let artistNew = data["AlbumArtist"] || data["Artist"];
-		let artistOld = this._current.song["AlbumArtist"] || this._current.song["Artist"];
+		let artistNew = data["Artist"] || data["AlbumArtist"];
+		let artistOld = this._current.song["Artist"] || this._current.song["AlbumArtist"];
 		let albumNew = data["Album"];
 		let albumOld = this._current.song["Album"];
 

@@ -9,9 +9,16 @@ export function time(sec) {
 
 export function subtitle(data, options = {duration:true}) {
 	let tokens = [];
-	data["Artist"] && tokens.push(data["Artist"]);
+
+	if (data["Artist"]) {
+		tokens.push(data["Artist"]);
+	} else if (data["AlbumArtist"]) {
+		tokens.push(data["AlbumArtist"]);
+	}
+
 	data["Album"] && tokens.push(data["Album"]);
 	options.duration && data["duration"] && tokens.push(time(Number(data["duration"])));
+
 	return tokens.join(SEPARATOR);
 }
 
