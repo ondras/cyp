@@ -38,6 +38,36 @@ docker build -t cyp .
 docker run --network=host cyp
 ```
 
+## Installation - Apache ProxyPass
+
+If you want to run CYP as a service and proxy it through Apache2, you will need to enable several modules.
+
+    # a2enmod proxy
+    # a2enmod proxy_http
+    # a2enmod proxy_wstunnel
+    # a2enmod proxypass
+
+
+To present CYP in a virutal folder named "music" (https://example.com/music/) add the following to your site config.
+
+	
+    # MPD daemon
+	RewriteEngine on						# Enable the RewriteEngine
+	RewriteCond %{REQUEST_FILENAME} !-f		# If the requested file isn't a file
+	RewriteCond %{REQUEST_FILENAME} !-d		# And if it isn't a directory
+	RewriteCond %{REQUEST_URI} .*/music$	# And if they only requested /music instead of /music/
+	RewriteRule ^(.+[^/])$ %{REQUEST_URI}/ [QSA,L,R=301] # Then append a trailing slash
+
+	ProxyPass /music/ http://localhost:3366/	# Proxy all request to /music/ to the CYP server (running on the same server as apache)
+	ProxyWebsocketFallbackToProxyHttp Off		# Don't fallback to http for WebSocket requests
+
+	# Rewrite WebSocket requests to CYP WebSocket requets, (also converts wss to ws)
+	RewriteEngine on						
+	RewriteCond %{HTTP:Upgrade} websocket [NC]  
+	RewriteCond %{HTTP:Connection} upgrade [NC]
+	RewriteRule ^/music/?(.*) "ws://localhost:3366/$1" [P,L]
+
+
 ## Youtube-dl integration
 
 You will need a working [youtube-dl](https://ytdl-org.github.io/youtube-dl/index.html) installation. Audio files are downloaded into the `_youtube` directory, so make sure it is available to your MPD library (use a symlink).
