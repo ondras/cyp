@@ -39,7 +39,7 @@ class YT extends Component {
 		this._clear();
 		this._search.pending(true);
 
-		let url = `/youtube?q=${encodeURIComponent(query)}&limit=${encodeURIComponent(conf.ytLimit)}`;
+		let url = `youtube?q=${encodeURIComponent(query)}&limit=${encodeURIComponent(conf.ytLimit)}`;
 		let response = await fetch(url);
 		if (response.status == 200) {
 			let results = await response.json();
@@ -65,7 +65,7 @@ class YT extends Component {
 
 		let body = new URLSearchParams();
 		body.set("id", id);
-		let response = await fetch("/youtube", {method:"POST", body});
+		let response = await fetch("youtube", {method:"POST", body});
 
 		let reader = response.body.getReader();
 		while (true) {

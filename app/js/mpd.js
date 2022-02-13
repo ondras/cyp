@@ -3,7 +3,7 @@ import * as parser from "./parser.js";
 
 export default class MPD {
 	static async connect() {
-		let response = await fetch("/ticket", {method:"POST"});
+		let response = await fetch("ticket", {method:"POST"});
 		let ticket = (await response.json()).ticket;
 
 		let ws = new WebSocket(createURL(ticket).href);
@@ -181,7 +181,7 @@ export function serializeFilter(filter, operator = "==") {
 
 function createURL(ticket) {
 	let url = new URL(location.href);
-	url.protocol = "ws";
+	url.protocol = ( url.protocol == 'https:' ? "wss" : "ws" );
 	url.hash = "";
 	url.searchParams.set("ticket", ticket);
 	return url;
