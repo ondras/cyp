@@ -10,11 +10,21 @@ function escape(arg) {
     return `'${arg.replace(/'/g, `'\\''`)}'`;
 }
 
+function isUrl(str) {
+	return str.startsWith("https:");
+}
+
 function searchYoutube(q, limit, response) {
 	response.setHeader("Content-Type", "text/plain"); // necessary for firefox to read by chunks
 
-	console.log("YouTube searching", q, limit);
-	q = escape(`ytsearch${limit}:${q}`);
+	if (isUrl(q)) {
+		console.log("YouTube searching url", q, limit);
+		q = escape(q);
+	} else {
+		console.log("YouTube searching query", q, limit);
+		q = escape(`ytsearch${limit}:${q}`);
+	}
+
 	const command = `set -o pipefail; ${cmd} -j ${q} | jq "{id,title}" | jq -s .`;
 
 	require("child_process").exec(command, {shell:"bash"}, (error, stdout, stderr) => {
