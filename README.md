@@ -67,6 +67,22 @@ To present CYP in a virutal folder named "music" (https://example.com/music/) ad
 	RewriteCond %{HTTP:Connection} upgrade [NC]
 	RewriteRule ^/music/?(.*) "ws://localhost:3366/$1" [P,L]
 
+## Installation - nginx
+
+    location /music/ {
+      proxy_pass_header  Set-Cookie;
+      proxy_set_header   Host               $host;
+      proxy_set_header   X-Real-IP          $remote_addr;
+      proxy_set_header   X-Forwarded-Proto  $scheme;
+      proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "Upgrade";
+      proxy_set_header Host $host;
+      proxy_pass http://localhost:8080/;
+    }
+  
+
 
 ## Youtube-dl integration
 
