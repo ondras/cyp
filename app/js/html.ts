@@ -1,17 +1,20 @@
 import icons from "./icons.js";
 
-export function node(name, attrs, content, parent) {
+
+type Attrs = Record<string, string | number | boolean>;
+
+export function node<T extends keyof HTMLElementTagNameMap>(name:T, attrs?: Attrs, content?: string, parent?: HTMLElement): HTMLElementTagNameMap[T] {
 	let n = document.createElement(name);
 	Object.assign(n, attrs);
 
-	if (attrs && attrs.title) { n.setAttribute("aria-label", attrs.title); }
+	if (attrs && attrs.title) { n.setAttribute("aria-label", attrs.title as string); }
 
 	content && text(content, n);
-	parent && parent.appendChild(n);
+	parent && parent.append(n);
 	return n;
 }
 
-export function icon(type, parent) {
+export function icon(type: string, parent?: HTMLElement) {
 	let str = icons[type];
 	if (!str) {
 		console.error("Bad icon type '%s'", type);
@@ -26,27 +29,27 @@ export function icon(type, parent) {
 	s.classList.add("icon");
 	s.classList.add(`icon-${type}`);
 
-	parent && parent.appendChild(s);
+	parent && parent.append(s);
 	return s;
 }
 
-export function button(attrs, content, parent) {
+export function button(attrs: Attrs, content?: string, parent?: HTMLElement) {
 	let result = node("button", attrs, content, parent);
 	if (attrs && attrs.icon) {
-		let i = icon(attrs.icon);
+		let i = icon(attrs.icon as string);
 		result.insertBefore(i, result.firstChild);
 	}
 	return result;
 }
 
-export function clear(node) {
-	while (node.firstChild) { node.firstChild.parentNode.removeChild(node.firstChild); }
+export function clear(node: HTMLElement) {
+	while (node.firstChild) { node.firstChild.remove(); }
 	return node;
 }
 
-export function text(txt, parent) {
+export function text(txt: string, parent?: HTMLElement) {
 	let n = document.createTextNode(txt);
-	parent && parent.appendChild(n);
+	parent && parent.append(n);
 	return n;
 }
 

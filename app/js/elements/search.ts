@@ -1,21 +1,19 @@
 import * as html from "../html.js";
 
-export default class Search extends HTMLElement {
-	constructor() {
-		super();
-		this._built = false;
-	}
 
-	get value() { return this._input.value.trim(); }
-	set value(value) { this._input.value = value; }
-	get _input() { return this.querySelector("input"); }
+export default class Search extends HTMLElement {
+	protected built = false;
+
+	get value() { return this.input.value.trim(); }
+	set value(value) { this.input.value = value; }
+	protected get input() { return this.querySelector<HTMLInputElement>("input")!; }
 
 	onSubmit() {}
-	focus() { this._input.focus(); }
-	pending(pending) { this.classList.toggle("pending", pending); }
+	focus() { this.input.focus(); }
+	pending(pending: boolean) { this.classList.toggle("pending", pending); }
 
 	connectedCallback() {
-		if (this._built) { return; }
+		if (this.built) { return; }
 
 		const form = html.node("form", {}, "", this);
 		html.node("input", {type:"text"}, "", form);
@@ -26,7 +24,7 @@ export default class Search extends HTMLElement {
 			this.onSubmit();
 		});
 
-		this._built = true;
+		this.built = true;
 	}
 }
 
