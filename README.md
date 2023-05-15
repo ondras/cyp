@@ -110,7 +110,7 @@ Create a `passwords.json` file in CYPs home directory. Specify passwords for ava
 ```json
 {
   "localhost:6600": "my-pass-1",
-  "some.other.server.or.ip:12345": "my-pass-2
+  "some.other.server.or.ip:12345": "my-pass-2"
 }
 ```
 
