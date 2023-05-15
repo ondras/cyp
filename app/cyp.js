@@ -1082,18 +1082,6 @@
     constructor(data) {
       super();
       this.data = data;
-    }
-    get file() {
-      return this.data.file;
-    }
-    get songId() {
-      return this.data.Id;
-    }
-    set playing(playing) {
-      this.classList.toggle("playing", playing);
-    }
-    connectedCallback() {
-      const { data } = this;
       icon("music", this);
       icon("play", this);
       const block = node("div", { className: "multiline" }, "", this);
@@ -1109,6 +1097,15 @@
         node("span", { className: "subtitle" }, subtitle2, block);
       }
       this.playing = false;
+    }
+    get file() {
+      return this.data.file;
+    }
+    get songId() {
+      return this.data.Id;
+    }
+    set playing(playing) {
+      this.classList.toggle("playing", playing);
     }
     buildSongTitle(data) {
       return super.buildTitle(data.Title || fileName(this.file));
@@ -1164,13 +1161,14 @@
     }
     buildSongs(songs) {
       clear(this);
-      let nodes = songs.map((song) => new Song(song));
-      this.append(...nodes);
-      nodes.forEach((node2) => {
+      let nodes = songs.map((song) => {
+        let node2 = new Song(song);
         node2.addButton("play", async () => {
           await this.mpd.command(`playid ${node2.songId}`);
         });
+        return node2;
       });
+      this.append(...nodes);
       this.configureSelection(nodes);
       this.updateCurrent();
     }
@@ -1230,11 +1228,8 @@
     constructor(name) {
       super();
       this.name = name;
-      this.name = name;
-    }
-    connectedCallback() {
       icon("playlist-music", this);
-      this.buildTitle(this.name);
+      this.buildTitle(name);
     }
   };
   customElements.define("cyp-playlist", Playlist);
@@ -1243,11 +1238,8 @@
   var Back = class extends Item {
     constructor(title) {
       super();
-      this.title = title;
-    }
-    connectedCallback() {
       this.append(icon("keyboard-backspace"));
-      this.buildTitle(this.title);
+      this.buildTitle(title);
     }
   };
   customElements.define("cyp-back", Back);
@@ -1288,14 +1280,15 @@
     }
     buildLists(lists) {
       clear(this);
-      let playlists = lists.map((name) => new Playlist(name));
-      this.append(...playlists);
-      playlists.forEach((playlist) => {
-        playlist.addButton("chevron-double-right", () => {
-          this.current = playlist.name;
+      let playlists = lists.map((name) => {
+        let node2 = new Playlist(name);
+        node2.addButton("chevron-double-right", () => {
+          this.current = name;
           this.sync();
         });
+        return node2;
       });
+      this.append(...playlists);
       this.configureSelectionLists(playlists);
     }
     buildBack() {
@@ -1436,8 +1429,14 @@
   // app/js/elements/search.ts
   var Search = class extends HTMLElement {
     constructor() {
-      super(...arguments);
-      this.built = false;
+      super();
+      const form = node("form", {}, "", this);
+      node("input", { type: "text" }, "", form);
+      button({ icon: "magnify" }, "", form);
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        this.onSubmit();
+      });
     }
     get value() {
       return this.input.value.trim();
@@ -1456,19 +1455,6 @@
     pending(pending) {
       this.classList.toggle("pending", pending);
     }
-    connectedCallback() {
-      if (this.built) {
-        return;
-      }
-      const form = node("form", {}, "", this);
-      node("input", { type: "text" }, "", form);
-      button({ icon: "magnify" }, "", form);
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        this.onSubmit();
-      });
-      this.built = true;
-    }
   };
   customElements.define("cyp-search", Search);
 
@@ -1476,11 +1462,8 @@
   var YtResult = class extends Item {
     constructor(title) {
       super();
-      this.title = title;
-    }
-    connectedCallback() {
       this.append(icon("magnify"));
-      this.buildTitle(this.title);
+      this.buildTitle(title);
     }
   };
   customElements.define("cyp-yt-result", YtResult);
@@ -1494,9 +1477,6 @@
         let query = this.search.value;
         query && this.doSearch(query);
       };
-    }
-    connectedCallback() {
-      super.connectedCallback();
       this.clear();
     }
     clear() {
@@ -1569,10 +1549,8 @@
       this.type = type;
       this.value = value;
       this.filter = filter;
-    }
-    connectedCallback() {
       node("span", { className: "art" }, "", this);
-      this.buildTitle(this.value);
+      this.buildTitle(value);
     }
     createChildFilter() {
       return Object.assign({ [this.type]: this.value }, this.filter);
@@ -1608,13 +1586,11 @@
       super();
       this.data = data;
       this.isDirectory = "directory" in this.data;
+      this.append(icon(this.isDirectory ? "folder" : "music"));
+      this.buildTitle(fileName(this.file));
     }
     get file() {
       return this.isDirectory ? this.data.directory : this.data.file;
-    }
-    connectedCallback() {
-      this.append(icon(this.isDirectory ? "folder" : "music"));
-      this.buildTitle(fileName(this.file));
     }
   };
   customElements.define("cyp-path", Path);
@@ -1623,8 +1599,10 @@
   var SELECTOR = ["cyp-tag", "cyp-path", "cyp-song"].join(", ");
   var Filter = class extends HTMLElement {
     constructor() {
-      super(...arguments);
-      this.built = false;
+      super();
+      node("input", { type: "text" }, "", this);
+      icon("filter-variant", this);
+      this.input.addEventListener("input", (e) => this.apply());
     }
     get value() {
       return this.input.value.trim();
@@ -1634,15 +1612,6 @@
     }
     get input() {
       return this.querySelector("input");
-    }
-    connectedCallback() {
-      if (this.built) {
-        return;
-      }
-      node("input", { type: "text" }, "", this);
-      icon("filter-variant", this);
-      this.input.addEventListener("input", (e) => this.apply());
-      this.built = true;
     }
     apply() {
       let value = this.value.toLowerCase();
@@ -1731,6 +1700,7 @@
       }
       values.length > 0 && this.addFilter();
       let nodes = values.map((value) => this.buildTag(tag, value, filter));
+      this.append(...nodes);
       let albumNodes = nodes.filter((node2) => node2.type == "Album");
       this.configureSelection(albumNodes);
     }
@@ -1740,7 +1710,15 @@
       path && this.buildBack();
       paths["directory"].length + paths["file"].length > 0 && this.addFilter();
       let items = [...paths["directory"], ...paths["file"]];
-      let nodes = items.map((item) => this.buildPath(item));
+      let nodes = items.map((data) => {
+        let node2 = new Path(data);
+        if (data.directory) {
+          const path2 = data.directory;
+          node2.addButton("chevron-double-right", () => this.pushState({ type: "path", path: path2 }));
+        }
+        return node2;
+      });
+      this.append(...nodes);
       this.configureSelection(nodes);
     }
     async listSongs(filter) {
@@ -1774,7 +1752,7 @@
       let nodes1 = this.aggregateSearch(songs1, "AlbumArtist");
       let nodes2 = this.aggregateSearch(songs2, "Album");
       let nodes3 = songs3.map((song) => new Song(song));
-      this.append(...nodes3);
+      this.append(...nodes1, ...nodes2, ...nodes3);
       let selectableNodes = [...nodes2, ...nodes3];
       this.configureSelection(selectableNodes);
     }
@@ -1803,7 +1781,6 @@
     }
     buildTag(tag, value, filter) {
       let node2 = new Tag(tag, value, filter);
-      this.append(node2);
       node2.fillArt(this.mpd);
       switch (tag) {
         case "AlbumArtist":
@@ -1833,15 +1810,6 @@
       const node2 = new Back(title);
       this.append(node2);
       node2.onclick = () => this.popState();
-    }
-    buildPath(data) {
-      let node2 = new Path(data);
-      this.append(node2);
-      if (data.directory) {
-        const path = data.directory;
-        node2.addButton("chevron-double-right", () => this.pushState({ type: "path", path }));
-      }
-      return node2;
     }
     addFilter() {
       this.append(this.filter);

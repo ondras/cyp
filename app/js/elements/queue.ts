@@ -66,14 +66,15 @@ class Queue extends Component {
 	protected buildSongs(songs: SongData[]) {
 		html.clear(this);
 
-		let nodes = songs.map(song => new Song(song));
-		this.append(...nodes);
-
-		nodes.forEach(node => { // fixme nutno az po appendovani, divny
+		let nodes = songs.map(song => {
+			let node = new Song(song);
 			node.addButton("play", async () => {
 				await this.mpd.command(`playid ${node.songId}`);
 			});
+			return node;
 		});
+		this.append(...nodes);
+
 		this.configureSelection(nodes);
 		this.updateCurrent();
 	}

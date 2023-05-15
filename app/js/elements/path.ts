@@ -7,17 +7,14 @@ import { PathData } from "../parser.js";
 export default class Path extends Item {
 	protected isDirectory: boolean;
 
-	constructor(readonly data: PathData) {
+	constructor(protected data: PathData) {
 		super();
 		this.isDirectory = ("directory" in this.data);
-	}
-
-	get file() { return (this.isDirectory ? this.data.directory : this.data.file) as string; }
-
-	connectedCallback() {
 		this.append(html.icon(this.isDirectory ? "folder" : "music"));
 		this.buildTitle(format.fileName(this.file));
 	}
+
+	get file() { return (this.isDirectory ? this.data.directory : this.data.file) as string; }
 }
 
 customElements.define("cyp-path", Path);

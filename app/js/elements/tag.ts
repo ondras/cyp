@@ -17,11 +17,8 @@ export type TagFilter = Record<string, string>;
 export default class Tag extends Item {
 	constructor(readonly type: TagType, protected value: string, protected filter: TagFilter) {
 		super();
-	}
-
-	connectedCallback() {
 		html.node("span", {className:"art"}, "", this);
-		this.buildTitle(this.value);
+		this.buildTitle(value);
 	}
 
 	createChildFilter(): TagFilter {

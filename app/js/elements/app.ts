@@ -93,8 +93,8 @@ export default class App extends HTMLElement {
 		html.node("source", {src: 'https://raw.githubusercontent.com/anars/blank-audio/master/10-seconds-of-silence.mp3'}, '', audio);
 
 		// Init event session (play audio) on click (because restrictions by web browsers)
-		window.addEventListener('click', () => {
-				audio.play();
+		window.addEventListener("click", () => {
+			audio.play();
 		}, {once: true});
 
 		// mediaSession define metadata

@@ -7,17 +7,6 @@ import { SongData } from "../parser.js";
 export default class Song extends Item {
 	constructor(protected data: SongData) {
 		super();
-	}
-
-	get file() { return this.data.file; }
-	get songId() { return this.data.Id; }
-
-	set playing(playing: boolean) {
-		this.classList.toggle("playing", playing);
-	}
-
-	connectedCallback() {
-		const { data } = this;
 
 		html.icon("music", this);
 		html.icon("play", this);
@@ -26,6 +15,7 @@ export default class Song extends Item {
 
 		const title = this.buildSongTitle(data);
 		block.append(title);
+
 		if (data.Track) {
 			const track = html.node("span", {className:"track"}, data.Track.padStart(2, "0"));
 			title.insertBefore(html.text(" "), title.firstChild);
@@ -38,6 +28,13 @@ export default class Song extends Item {
 		}
 
 		this.playing = false;
+	}
+
+	get file() { return this.data.file; }
+	get songId() { return this.data.Id; }
+
+	set playing(playing: boolean) {
+		this.classList.toggle("playing", playing);
 	}
 
 	protected buildSongTitle(data: SongData) {

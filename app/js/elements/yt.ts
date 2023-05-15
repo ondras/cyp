@@ -21,10 +21,7 @@ class YT extends Component {
 			let query = this.search.value;
 			query && this.doSearch(query);
 		}
-	}
 
-	connectedCallback() {
-		super.connectedCallback();
 		this.clear();
 	}
 

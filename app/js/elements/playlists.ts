@@ -54,14 +54,15 @@ class Playlists extends Component {
 	protected buildLists(lists: string[]) {
 		html.clear(this);
 
-		let playlists = lists.map(name => new Playlist(name));
-		this.append(...playlists);
-		playlists.forEach(playlist => {
-			playlist.addButton("chevron-double-right", () => {
-				this.current = playlist.name;
+		let playlists = lists.map(name => {
+			let node = new Playlist(name);
+			node.addButton("chevron-double-right", () => {
+				this.current = name;
 				this.sync();
 			});
-		})
+			return node;
+		});
+		this.append(...playlists);
 
 		this.configureSelectionLists(playlists);
 	}

@@ -3,13 +3,10 @@ import * as html from "../html.js";
 
 
 export default class YtResult extends Item {
-	constructor(readonly title: string) {
-		super();
-	}
-
-	connectedCallback() {
+	constructor(title: string) {
+		super()
 		this.append(html.icon("magnify"));
-		this.buildTitle(this.title);
+		this.buildTitle(title);
 	}
 }
 

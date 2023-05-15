@@ -119,7 +119,7 @@ class Library extends Component {
 		(values.length > 0) && this.addFilter();
 
 		let nodes = values.map(value => this.buildTag(tag, value, filter));
-		// FIXME append
+		this.append(...nodes);
 
 		let albumNodes = nodes.filter(node => node.type == "Album");
 		this.configureSelection(albumNodes);
@@ -133,8 +133,17 @@ class Library extends Component {
 		(paths["directory"].length + paths["file"].length > 0) && this.addFilter();
 
 		let items = [...paths["directory"], ...paths["file"]];
-		let nodes = items.map(item => this.buildPath(item));
-		// FIXME append
+		let nodes = items.map(data => {
+			let node = new Path(data);
+
+			if (data.directory) {
+				const path = data.directory;
+				node.addButton("chevron-double-right", () => this.pushState({type:"path", path}));
+			}
+
+			return node;
+		});
+		this.append(...nodes);
 
 		this.configureSelection(nodes);
 	}
@@ -180,8 +189,7 @@ class Library extends Component {
 		let nodes1 = this.aggregateSearch(songs1, "AlbumArtist");
 		let nodes2 = this.aggregateSearch(songs2, "Album");
 		let nodes3 = songs3.map(song => new Song(song));
-		// FIXME append
-		this.append(...nodes3);
+		this.append(...nodes1, ...nodes2, ...nodes3);
 
 		let selectableNodes = [...nodes2, ...nodes3];
 		this.configureSelection(selectableNodes);
@@ -215,7 +223,6 @@ class Library extends Component {
 
 	protected buildTag(tag: TagType, value: string, filter: TagFilter) {
 		let node = new Tag(tag, value, filter);
-		this.append(node);
 		node.fillArt(this.mpd);
 
 		switch (tag) {
@@ -244,18 +251,6 @@ class Library extends Component {
 		const node = new Back(title);
 		this.append(node);
 		node.onclick = () => this.popState();
-	}
-
-	protected buildPath(data: PathData) {
-		let node = new Path(data);
-		this.append(node);
-
-		if (data.directory) {
-			const path = data.directory;
-			node.addButton("chevron-double-right", () => this.pushState({type:"path", path}));
-		}
-
-		return node;
 	}
 
 	protected addFilter() {
