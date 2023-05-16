@@ -1,5 +1,4 @@
 LESS := npm exec -- lessc
-ROLLUP := npm exec -- rollup
 ESBUILD := npm exec -- esbuild
 APP := app
 CSS := $(APP)/cyp.css

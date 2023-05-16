@@ -50,7 +50,7 @@ If you want to run CYP as a service and proxy it through Apache2, you will need 
 
 To present CYP in a virutal folder named "music" (https://example.com/music/) add the following to your site config.
 
-	
+
     # MPD daemon
 	RewriteEngine on						# Enable the RewriteEngine
 	RewriteCond %{REQUEST_FILENAME} !-f		# If the requested file isn't a file
@@ -62,8 +62,8 @@ To present CYP in a virutal folder named "music" (https://example.com/music/) ad
 	ProxyWebsocketFallbackToProxyHttp Off		# Don't fallback to http for WebSocket requests
 
 	# Rewrite WebSocket requests to CYP WebSocket requets, (also converts wss to ws)
-	RewriteEngine on						
-	RewriteCond %{HTTP:Upgrade} websocket [NC]  
+	RewriteEngine on
+	RewriteCond %{HTTP:Upgrade} websocket [NC]
 	RewriteCond %{HTTP:Connection} upgrade [NC]
 	RewriteRule ^/music/?(.*) "ws://localhost:3366/$1" [P,L]
 
@@ -81,7 +81,7 @@ To present CYP in a virutal folder named "music" (https://example.com/music/) ad
       proxy_set_header Host $host;
       proxy_pass http://localhost:8080/;
     }
-  
+
 
 
 ## Youtube-dl integration
@@ -117,6 +117,7 @@ Create a `passwords.json` file in CYPs home directory. Specify passwords for ava
 Make sure that hostnames and ports match those specified via the `server` querystring argument (defaults to `localhost:6600`).
 
 ## Technology
+  - TypeScript
   - Connected to MPD via WebSockets (using the [ws2mpd](https://github.com/ondras/ws2mpd/) bridge)
   - Token-based access to the WebSocket endpoint (better than an `Origin` check)
   - Written using [*Custom Elements*](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)
