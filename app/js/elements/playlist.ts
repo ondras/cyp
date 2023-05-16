@@ -1,15 +1,12 @@
 import * as html from "../html.js";
 import Item from "../item.js";
 
-export default class Playlist extends Item {
-	constructor(name) {
-		super();
-		this.name = name;
-	}
 
-	connectedCallback() {
+export default class Playlist extends Item {
+	constructor(readonly name: string) {
+		super();
 		html.icon("playlist-music", this);
-		this._buildTitle(this.name);
+		this.buildTitle(name);
 	}
 }
 

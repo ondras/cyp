@@ -1,6 +1,7 @@
 import * as html from "../html.js";
 import * as art from "../art.js";
 import Item from "../item.js";
+import MPD from "../mpd.js";
 
 
 const ICONS = {
@@ -9,25 +10,23 @@ const ICONS = {
 	"Genre": "music"
 }
 
+export type TagType = "Album" | "AlbumArtist" | "Genre";
+export type TagFilter = Record<string, string>;
+
+
 export default class Tag extends Item {
-	constructor(type, value, filter) {
+	constructor(readonly type: TagType, protected value: string, protected filter: TagFilter) {
 		super();
-		this._type = type;
-		this._value = value;
-		this._filter = filter;
-	}
-
-	connectedCallback() {
 		html.node("span", {className:"art"}, "", this);
-		this._buildTitle(this._value);
+		this.buildTitle(value);
 	}
 
-	createChildFilter() {
-		return Object.assign({[this._type]:this._value}, this._filter);
+	createChildFilter(): TagFilter {
+		return Object.assign({[this.type]:this.value}, this.filter);
 	}
 
-	async fillArt(mpd) {
-		const parent = this.firstChild;
+	async fillArt(mpd: MPD) {
+		const parent = this.firstChild as HTMLElement;
 		const filter = this.createChildFilter();
 
 		let artist = filter["AlbumArtist"];
@@ -47,7 +46,7 @@ export default class Tag extends Item {
 		if (src) {
 			html.node("img", {src}, "", parent);
 		} else {
-			const icon = ICONS[this._type];
+			const icon = ICONS[this.type];
 			html.icon(icon, parent);
 		}
 	}

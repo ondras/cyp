@@ -1,16 +1,20 @@
 import MPD from "../mpd.js";
 import * as html from "../html.js";
+import Selection from "../selection.js";
+
 
 function initIcons() {
-	Array.from(document.querySelectorAll("[data-icon]")).forEach(/** @param {HTMLElement} node */ node => {
-		node.dataset.icon.split(" ").forEach(name => {
+	[...document.querySelectorAll<HTMLElement>("[data-icon]")].forEach(node => {
+		node.dataset.icon!.split(" ").forEach(name => {
 			let icon = html.icon(name);
-			node.insertBefore(icon, node.firstChild);
-		})
+			node.prepend(icon);
+		});
 	});
 }
 
-class App extends HTMLElement {
+export default class App extends HTMLElement {
+	mpd!: MPD;
+
 	static get observedAttributes() { return ["component"]; }
 
 	constructor() {
@@ -21,16 +25,16 @@ class App extends HTMLElement {
 	async connectedCallback() {
 		await waitForChildren(this);
 
-		window.addEventListener("hashchange", e => this._onHashChange());
-		this._onHashChange();
+		window.addEventListener("hashchange", e => this.onHashChange());
+		this.onHashChange();
 
-		await this._connect();
+		await this.connect();
 		this.dispatchEvent(new CustomEvent("load"));
 
-		this._initMediaHandler();
+		this.initMediaHandler();
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
+	attributeChangedCallback(name: string, oldValue: string, newValue: string) {
 		switch (name) {
 			case "component":
 				location.hash = newValue;
@@ -40,27 +44,34 @@ class App extends HTMLElement {
 		}
 	}
 
-	get component() { return this.getAttribute("component"); }
+	get component() { return this.getAttribute("component") || ""; }
 	set component(component) { this.setAttribute("component", component); }
 
-	_onHashChange() {
+	createSelection() {
+		let selection = new Selection();
+		this.querySelector("footer")!.append(selection.commands);
+		return selection;
+	}
+
+	protected onHashChange() {
 		const component = location.hash.substring(1) || "queue";
 		if (component != this.component) { this.component = component; }
 	}
 
-	_onChange(changed) { this.dispatchEvent(new CustomEvent("idle-change", {detail:changed})); }
+	protected onChange(changed: string[]) { this.dispatchEvent(new CustomEvent("idle-change", {detail:changed})); }
 
-	_onClose(e) {
-		setTimeout(() => this._connect(), 3000);
+	protected async onClose(e: CloseEvent) {
+		await sleep(3000);
+		this.connect();
 	}
 
-	async _connect() {
+	protected async connect() {
 		const attempts = 3;
 		for (let i=0;i<attempts;i++) {
 			try {
 				let mpd = await MPD.connect();
-				mpd.onChange = changed => this._onChange(changed);
-				mpd.onClose = e => this._onClose(e);
+				mpd.onChange = changed => this.onChange(changed);
+				mpd.onClose = e => this.onClose(e);
 				this.mpd = mpd;
 				return;
 			} catch (e) {
@@ -70,7 +81,7 @@ class App extends HTMLElement {
 		alert(`Failed to connect to MPD after ${attempts} attempts. Please reload the page to try again.`);
 	}
 
-	_initMediaHandler() {
+	protected initMediaHandler() {
 		// check support mediaSession
 		if (!('mediaSession' in navigator)) {
 			console.log('mediaSession is not supported');
@@ -82,8 +93,8 @@ class App extends HTMLElement {
 		html.node("source", {src: 'https://raw.githubusercontent.com/anars/blank-audio/master/10-seconds-of-silence.mp3'}, '', audio);
 
 		// Init event session (play audio) on click (because restrictions by web browsers)
-		window.addEventListener('click', () => {
-				audio.play();
+		window.addEventListener("click", () => {
+			audio.play();
 		}, {once: true});
 
 		// mediaSession define metadata
@@ -113,10 +124,10 @@ class App extends HTMLElement {
 
 customElements.define("cyp-app", App);
 
-function sleep(ms) { return new Promise(resolve =>setTimeout(resolve, ms)); }
+function sleep(ms: number) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
-function waitForChildren(app) {
-	const children = Array.from(app.querySelectorAll("*"));
+function waitForChildren(app: App) {
+	const children = [...app.querySelectorAll("*")];
 	const names = children.map(node => node.nodeName.toLowerCase())
 		.filter(name => name.startsWith("cyp-"));
 	const unique = new Set(names);

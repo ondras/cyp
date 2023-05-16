@@ -9,8 +9,8 @@
     "ws2mpd": "^2.3.0"
   },
   "devDependencies": {
-    "less": "^3.9.0",
-    "rollup": "^2.0.6"
+    "esbuild": "^0.17.19",
+    "less": "^3.9.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,43 +1,45 @@
 import * as html from "./html.js";
 import * as conf from "./conf.js";
+import MPD from "./mpd.js";
 
-const cache = {};
+
+const cache: Record<string, string | null | Promise<string | null>>  = {};
 const MIME = "image/jpeg";
 const STORAGE_PREFIX = `art-${conf.artSize}` ;
 
-function store(key, data) {
+function store(key: string, data: string) {
 	localStorage.setItem(`${STORAGE_PREFIX}-${key}`, data);
 }
 
-function load(key) {
+function load(key: string) {
 	return localStorage.getItem(`${STORAGE_PREFIX}-${key}`);
 }
 
-async function bytesToImage(bytes) {
+async function bytesToImage(bytes: Uint8Array) {
 	const blob = new Blob([bytes]);
 	const src = URL.createObjectURL(blob);
 	const image = html.node("img", {src});
-	return new Promise(resolve => {
+	return new Promise<HTMLImageElement>(resolve => {
 		image.onload = () => resolve(image);
 	});
 }
 
-function resize(image) {
+function resize(image: HTMLImageElement | HTMLCanvasElement) {
 	while (Math.min(image.width, image.height) >= 2*conf.artSize) {
 		let tmp = html.node("canvas", {width:image.width/2, height:image.height/2});
-		tmp.getContext("2d").drawImage(image, 0, 0, tmp.width, tmp.height);
+		tmp.getContext("2d")!.drawImage(image, 0, 0, tmp.width, tmp.height);
 		image = tmp;
 	}
 	const canvas = html.node("canvas", {width:conf.artSize, height:conf.artSize});
-	canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+	canvas.getContext("2d")!.drawImage(image, 0, 0, canvas.width, canvas.height);
 	return canvas;
 }
 
-export async function get(mpd, artist, album, songUrl = null) {
+export async function get(mpd: MPD, artist: string, album: string, songUrl?: string): Promise<string | null> {
 	const key = `${artist}-${album}`;
 	if (key in cache) { return cache[key]; }
 
-	const loaded = await load(key);
+	const loaded = load(key);
 	if (loaded) {
 		cache[key] = loaded;
 		return loaded;
@@ -47,7 +49,7 @@ export async function get(mpd, artist, album, songUrl = null) {
 
 	// promise to be returned in the meantime
 	let resolve;
-	const promise = new Promise(res => resolve = res);
+	const promise = new Promise<string | null>(res => resolve = res);
 	cache[key] = promise;
 
 	const data = await mpd.albumArt(songUrl);

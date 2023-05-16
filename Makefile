@@ -1,9 +1,10 @@
-LESS := $(shell npm bin)/lessc
-ROLLUP := $(shell npm bin)/rollup
+LESS := npm exec -- lessc
+ROLLUP := npm exec -- rollup
+ESBUILD := npm exec -- esbuild
 APP := app
 CSS := $(APP)/cyp.css
 JS := $(APP)/cyp.js
-ICONS := $(APP)/js/icons.js
+ICONS := $(APP)/js/icons.ts
 SYSD_USER := ~/.config/systemd/user
 SERVICE := cyp.service
 
@@ -15,7 +16,7 @@ $(ICONS): $(APP)/icons/*
 	$(APP)/svg2js.sh $(APP)/icons > $@
 
 $(JS): $(APP)/js/* $(APP)/js/elements/*
-	$(ROLLUP) -i $(APP)/js/cyp.js > $@
+	$(ESBUILD) --bundle --target=es2017 $(APP)/js/cyp.ts > $@
 
 $(CSS): $(APP)/css/* $(APP)/css/elements/*
 	$(LESS) -x $(APP)/css/cyp.less > $@
@@ -39,3 +40,5 @@ docker-run:
 	docker run --network=host -v "$$(pwd)"/_youtube:/cyp/_youtube cyp
 
 .PHONY: all watch icons service clean
+
+.DELETE_ON_ERROR:

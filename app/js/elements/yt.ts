@@ -6,89 +6,89 @@ import Search from "./search.js";
 import Result from "./yt-result.js";
 
 
-const decoder = new TextDecoder("utf-8");
-
-function decodeChunk(byteArray) {
-	// \r => \n
-	return decoder.decode(byteArray).replace(/\u000d/g, "\n");
+interface ResultData {
+	title: string;
+	id: string;
 }
 
 class YT extends Component {
+	search = new Search();
+
 	constructor() {
 		super();
-		this._search = new Search();
 
-		this._search.onSubmit = _ => {
-			let query = this._search.value;
-			query && this._doSearch(query);
+		this.search.onSubmit = () => {
+			let query = this.search.value;
+			query && this.doSearch(query);
 		}
+
+		this.clear();
 	}
 
-	connectedCallback() {
-		super.connectedCallback();
-
-		this._clear();
-	}
-
-	_clear() {
+	protected clear() {
 		html.clear(this);
-		this.appendChild(this._search);
+		this.append(this.search);
 	}
 
-	async _doSearch(query) {
-		this._clear();
-		this._search.pending(true);
+	protected async doSearch(query: string) {
+		this.clear();
+		this.search.pending(true);
 
 		let url = `youtube?q=${encodeURIComponent(query)}&limit=${encodeURIComponent(conf.ytLimit)}`;
 		let response = await fetch(url);
 		if (response.status == 200) {
-			let results = await response.json();
+			let results = await response.json() as ResultData[];
 			results.forEach(result => {
 				let node = new Result(result.title);
-				this.appendChild(node);
-				node.addButton("download", () => this._download(result.id));
+				this.append(node);
+				node.addButton("download", () => this.download(result.id));
 			});
 		} else {
 			let text = await response.text();
 			alert(text);
 		}
 
-		this._search.pending(false);
+		this.search.pending(false);
 	}
 
-
-	async _download(id) {
-		this._clear();
+	protected async download(id: string) {
+		this.clear();
 
 		let pre = html.node("pre", {}, "", this);
-		this._search.pending(true);
+		this.search.pending(true);
 
 		let body = new URLSearchParams();
 		body.set("id", id);
 		let response = await fetch("youtube", {method:"POST", body});
 
-		let reader = response.body.getReader();
+		let reader = response.body!.getReader();
 		while (true) {
 			let { done, value } = await reader.read();
 			if (done) { break; }
-			pre.textContent += decodeChunk(value);
+			pre.textContent += decodeChunk(value!);
 			pre.scrollTop = pre.scrollHeight;
 		}
 		reader.releaseLock();
 
-		this._search.pending(false);
+		this.search.pending(false);
 
 		if (response.status == 200) {
-			this._mpd.command(`update ${escape(conf.ytPath)}`);
+			this.mpd.command(`update ${escape(conf.ytPath)}`);
 		}
 	}
 
-	_onComponentChange(c, isThis) {
+	protected onComponentChange(c: string, isThis: boolean) {
 		const wasHidden = this.hidden;
 		this.hidden = !isThis;
 
-		if (!wasHidden && isThis) { this._clear(); }
+		if (!wasHidden && isThis) { this.clear(); }
 	}
 }
 
 customElements.define("cyp-yt", YT);
+
+const decoder = new TextDecoder("utf-8");
+function decodeChunk(byteArray: Uint8Array) {
+	// \r => \n
+	return decoder.decode(byteArray).replace(/\u000d/g, "\n");
+}

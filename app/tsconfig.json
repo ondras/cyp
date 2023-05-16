@@ -1,14 +1,14 @@
 {
 	"compilerOptions": {
-		"allowJs": true,
-		"checkJs": true,
+//		"allowJs": true,
+//		"checkJs": true,
 		"noEmit": true,
-		"lib": ["es2017", "dom"],
-		"target": "es6",
-		"baseUrl": "js/app",
-
+//		"lib": ["es2017", "dom"],
+		"target": "es2017",
+		"baseUrl": "js",
+		"strict": true,
 		"noImplicitReturns": true,
 		"strictFunctionTypes": true
 	},
-	"files": ["js/app.js"]
+	"files": ["js/cyp.ts"]
 }

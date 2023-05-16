@@ -4,7 +4,7 @@ cyp-app {
 	box-sizing: border-box;
 	margin: 0 auto;
 	max-width: 800px;
-	height: calc(100px * var(--vh));
+	height: 100vh;
 
 	font-family: lato, sans-serif;
 	font-size: 16px;
@@ -13,4 +13,10 @@ cyp-app {
 	color: var(--fg);
 
 	white-space: nowrap;
+}
+
+@supports (height: 100dvh) {
+	cyp-app {
+		height: 100dvh;
+	}
 }

@@ -1,31 +1,26 @@
 import * as html from "../html.js";
+import Item from "../item.js";
 
 
 const SELECTOR = ["cyp-tag", "cyp-path", "cyp-song"].join(", ");
 
 export default class Filter extends HTMLElement {
 	constructor() {
-		super();
-		this._built = false;
-	}
-
-	get value() { return this._input.value.trim(); }
-	set value(value) { this._input.value = value; }
-	get _input() { return this.querySelector("input"); }
-
-	connectedCallback() {
-		if (this._built) { return; }
+		super()
 
 		html.node("input", {type:"text"}, "", this);
 		html.icon("filter-variant", this);
 
-		this._input.addEventListener("input", e => this._apply());
-		this._built = true;
+		this.input.addEventListener("input", e => this.apply());
 	}
 
-	_apply() {
+	get value() { return this.input.value.trim(); }
+	set value(value) { this.input.value = value; }
+	protected get input() { return this.querySelector<HTMLInputElement>("input")!; }
+
+	protected apply() {
 		let value = this.value.toLowerCase();
-		let all = [...this.parentNode.querySelectorAll(SELECTOR)];
+		let all = [...this.parentNode!.querySelectorAll<Item>(SELECTOR)];
 		all.forEach(item => item.hidden = !item.matchPrefix(value));
 	}
 }
