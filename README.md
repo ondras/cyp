@@ -26,7 +26,9 @@ npm i
 node .
 ```
 
-Point your browser to http://localhost:8080 to open the interface. Specify a custom MPD address via a `server` querystring argument (`?server=localhost:6655`).
+Point your browser to http://localhost:8080 to open the interface. Specifying a custom MPD address can be done:
+  1. using `MPD_HOST` and `MPD_PORT` environment variables, or
+  1. via a `server` querystring argument (`?server=localhost:6655`).
 
 ## Instalation - Docker
 
