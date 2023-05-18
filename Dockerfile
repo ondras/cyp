@@ -1,6 +1,5 @@
 FROM node:16
-RUN apt update
-RUN apt install -y jq
+RUN apt update && apt install -y jq && apt clean
 RUN curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl \
 	&& chmod a+rx /usr/local/bin/youtube-dl
 WORKDIR /cyp
