@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:16
 RUN apt update
 RUN apt install -y jq
 RUN curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl \
