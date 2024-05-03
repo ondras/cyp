@@ -4,7 +4,7 @@ const port = Number(process.argv[2]) || process.env.PORT || 8080;
 
 let tickets = [];
 
-const cmd = "youtube-dl";
+const cmd = process.env.YOUTUBE || "youtube-dl";
 
 function escape(arg) {
     return `'${arg.replace(/'/g, `'\\''`)}'`;
