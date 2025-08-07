@@ -15,7 +15,7 @@ $(ICONS): $(APP)/icons/*
 	$(APP)/svg2js.sh $(APP)/icons > $@
 
 $(JS): $(APP)/js/* $(APP)/js/elements/*
-	$(ESBUILD) --bundle --target=es2017 $(APP)/js/cyp.ts > $@
+	$(ESBUILD) --bundle --target=es2017 $(APP)/js/cyp.ts --outfile=$@
 
 $(CSS): $(APP)/css/* $(APP)/css/elements/*
 	$(LESS) -x $(APP)/css/cyp.less > $@
