@@ -38,7 +38,7 @@ export default class Song extends Item {
 	}
 
 	protected buildSongTitle(data: SongData) {
-		return super.buildTitle(data.Title || format.fileName(this.file));
+		return super.buildTitle(data.Title || data.Name || format.fileName(this.file));
 	}
 }
 

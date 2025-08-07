@@ -68,7 +68,7 @@ class Player extends Component {
 
 		if (data.file != current.song.file) { // changed song
 			if (data.file) { // is there a song at all?
-				DOM.title.textContent = data.Title || format.fileName(data.file);
+				DOM.title.textContent = data.Title || data.Name || format.fileName(data.file);
 				DOM.subtitle.textContent = format.subtitle(data, {duration:false});
 
 				let duration = Number(data.duration);

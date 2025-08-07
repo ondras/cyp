@@ -966,7 +966,7 @@
       const data = await mpd.currentSong();
       if (data.file != current.song.file) {
         if (data.file) {
-          DOM.title.textContent = data.Title || fileName(data.file);
+          DOM.title.textContent = data.Title || data.Name || fileName(data.file);
           DOM.subtitle.textContent = subtitle(data, { duration: false });
           let duration = Number(data.duration);
           if (duration) {
@@ -1128,7 +1128,7 @@
       this.classList.toggle("playing", playing);
     }
     buildSongTitle(data) {
-      return super.buildTitle(data.Title || fileName(this.file));
+      return super.buildTitle(data.Title || data.Name || fileName(this.file));
     }
   };
   customElements.define("cyp-song", Song);
