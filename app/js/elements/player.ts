@@ -66,29 +66,29 @@ class Player extends Component {
 		const { current, mpd, DOM } = this;
 		const data = await mpd.currentSong();
 
-		if (data.file != current.song.file) { // changed song
-			if (data.file) { // is there a song at all?
-				DOM.title.textContent = data.Title || data.Name || format.fileName(data.file);
-				DOM.subtitle.textContent = format.subtitle(data, {duration:false});
+		if (data.file) { // is there a song at all?
+			DOM.title.textContent = data.Title || data.Name || format.fileName(data.file);
+			DOM.subtitle.textContent = format.subtitle(data, {duration:false});
 
-				let duration = Number(data.duration);
-				if (duration) {
-					DOM.duration.textContent = format.time(duration);
-					(DOM.progress as HTMLInputElement).max = String(duration);
-					(DOM.progress as HTMLInputElement).disabled = false;
-				} else {
-					DOM.duration.textContent = "";
-					(DOM.progress as HTMLInputElement).max = "0";
-					(DOM.progress as HTMLInputElement).disabled = true;
-				}
+			let duration = Number(data.duration);
+			if (duration) {
+				DOM.duration.textContent = format.time(duration);
+				(DOM.progress as HTMLInputElement).max = String(duration);
+				(DOM.progress as HTMLInputElement).disabled = false;
 			} else {
-				DOM.title.textContent = "";
-				DOM.subtitle.textContent = "";
 				DOM.duration.textContent = "";
 				(DOM.progress as HTMLInputElement).max = "0";
-				(DOM.progress as HTMLInputElement).value = "0";
 				(DOM.progress as HTMLInputElement).disabled = true;
 			}
+		} else {
+			DOM.title.textContent = "";
+			DOM.subtitle.textContent = "";
+			DOM.duration.textContent = "";
+			(DOM.progress as HTMLInputElement).max = "0";
+			(DOM.progress as HTMLInputElement).value = "0";
+			(DOM.progress as HTMLInputElement).disabled = true;
+		}
+		if (data.file != current.song.file) { // changed song
 			this.dispatchSongChange(data);
 		}
 
