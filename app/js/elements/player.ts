@@ -72,16 +72,23 @@ class Player extends Component {
 				DOM.subtitle.textContent = format.subtitle(data, {duration:false});
 
 				let duration = Number(data.duration);
-				DOM.duration.textContent = format.time(duration);
-				(DOM.progress as HTMLInputElement).max = String(duration);
-				(DOM.progress as HTMLInputElement).disabled = false;
+				if (duration) {
+					DOM.duration.textContent = format.time(duration);
+					(DOM.progress as HTMLInputElement).max = String(duration);
+					(DOM.progress as HTMLInputElement).disabled = false;
+				} else {
+					DOM.duration.textContent = "";
+					(DOM.progress as HTMLInputElement).max = "0";
+					(DOM.progress as HTMLInputElement).disabled = true;
+				}
 			} else {
 				DOM.title.textContent = "";
 				DOM.subtitle.textContent = "";
+				DOM.duration.textContent = "";
+				(DOM.progress as HTMLInputElement).max = "0";
 				(DOM.progress as HTMLInputElement).value = "0";
 				(DOM.progress as HTMLInputElement).disabled = true;
 			}
-
 			this.dispatchSongChange(data);
 		}
 

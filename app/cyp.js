@@ -968,12 +968,20 @@
           DOM.title.textContent = data.Title || fileName(data.file);
           DOM.subtitle.textContent = subtitle(data, { duration: false });
           let duration = Number(data.duration);
-          DOM.duration.textContent = time(duration);
-          DOM.progress.max = String(duration);
-          DOM.progress.disabled = false;
+          if (duration) {
+            DOM.duration.textContent = time(duration);
+            DOM.progress.max = String(duration);
+            DOM.progress.disabled = false;
+          } else {
+            DOM.duration.textContent = "";
+            DOM.progress.max = "0";
+            DOM.progress.disabled = true;
+          }
         } else {
           DOM.title.textContent = "";
           DOM.subtitle.textContent = "";
+          DOM.duration.textContent = "";
+          DOM.progress.max = "0";
           DOM.progress.value = "0";
           DOM.progress.disabled = true;
         }
