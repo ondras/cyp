@@ -27,7 +27,7 @@ $(SERVICE): misc/cyp.service.template
 	cat $^ | envsubst > $@
 
 watch: all
-	while inotifywait -e MODIFY -r $(APP)/css $(APP)/js ; do make $^ ; done
+	while inotifywait -e MODIFY -r --exclude '~$$' $(APP)/css $(APP)/js ; do make $^ ; done
 
 clean:
 	rm -f $(SERVICE) $(CSS) $(JS)
