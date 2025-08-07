@@ -1507,6 +1507,7 @@
       this.search.pending(true);
       let body = new URLSearchParams();
       body.set("id", id);
+      body.set("folder", escape(ytPath));
       let response = await fetch("youtube", { method: "POST", body });
       let reader = response.body.getReader();
       while (true) {

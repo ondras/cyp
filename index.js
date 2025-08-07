@@ -1,3 +1,4 @@
+const path = require('path');
 const static = require("node-static");
 const app = new static.Server("./app");
 const port = Number(process.argv[2]) || process.env.PORT || 8080;
@@ -39,13 +40,18 @@ function searchYoutube(q, limit, response) {
 }
 
 
-function downloadYoutube(id, response) {
+function downloadYoutube(id, response, folder) {
 	response.setHeader("Content-Type", "text/plain"); // necessary for firefox to read by chunks
 
+	if (folder) {
+		folder = path.basename(folder); // prevent escaping from base folder
+	} else {
+		folder = "_youtube";
+	}
 	console.log("YouTube downloading", id);
 	let args = [
 		"-f", "bestaudio",
-		"-o", `${__dirname}/_youtube/%(title)s-%(id)s.%(ext)s`,
+		"-o", `${__dirname}/${folder}/%(title)s-%(id)s.%(ext)s`,
 		"--",
 		id
 	]
@@ -83,9 +89,10 @@ function handleYoutubeDownload(request, response) {
 	request.setEncoding("utf8");
 	request.on("data", chunk => str += chunk);
 	request.on("end", () => {
+		let folder = require("querystring").parse(str)["folder"];
 		let id = require("querystring").parse(str)["id"];
 		if (id) {
-			downloadYoutube(id, response);
+			downloadYoutube(id, response, folder);
 		} else {
 			response.writeHead(404);
 			response.end();
