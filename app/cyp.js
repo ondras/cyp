@@ -902,6 +902,7 @@
   }
   function subtitle(data, options = { duration: true }) {
     let tokens = [];
+    data.Name && tokens.push(data.Name);
     if (data.Artist) {
       tokens.push(data.Artist);
     } else if (data.AlbumArtist) {
