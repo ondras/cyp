@@ -1,10 +1,10 @@
 const static = require("node-static");
 const app = new static.Server("./app");
 const port = Number(process.argv[2]) || process.env.PORT || 8080;
+const youtubeDir = process.env.YOUTUBE_DIR || "_youtube";
+const cmd = process.env.YOUTUBE || "youtube-dl";
 
 let tickets = [];
-
-const cmd = process.env.YOUTUBE || "youtube-dl";
 
 function escape(arg) {
     return `'${arg.replace(/'/g, `'\\''`)}'`;
@@ -45,10 +45,10 @@ function downloadYoutube(id, response) {
 	console.log("YouTube downloading", id);
 	let args = [
 		"-f", "bestaudio",
-		"-o", `${__dirname}/_youtube/%(title)s-%(id)s.%(ext)s`,
+		"-o", `${__dirname}/${youtubeDir}/%(title)s-%(id)s.%(ext)s`,
 		"--",
 		id
-	]
+	];
 	let child = require("child_process").spawn(cmd, args);
 
 	child.stdout.setEncoding("utf8").on("data", chunk => response.write(chunk));
@@ -65,6 +65,12 @@ function downloadYoutube(id, response) {
 		}
 		response.end();
 	});
+}
+
+function handleSettings(response) {
+	response.setHeader("Content-Type", "application/json");
+	const settings = { youtubeDir };
+	response.end(JSON.stringify(settings));
 }
 
 function handleYoutubeSearch(url, response) {
@@ -115,7 +121,10 @@ function onRequest(request, response) {
 		case request.method == "POST" && url.pathname == "/youtube":
 			return handleYoutubeDownload(request, response);
 
-		case request.method == "POST" && url.pathname == "/ticket":
+		case request.method == "GET" && url.pathname == "/settings":
+			return handleSettings(response);
+
+			case request.method == "POST" && url.pathname == "/ticket":
 			return handleTicket(request, response);
 
 		default:
@@ -142,5 +151,6 @@ try {
 } catch (e) {
 	console.log("no passwords.json found");
 }
+console.log("youtube download dir:", youtubeDir);
 require("ws2mpd").ws2mpd(httpServer, requestValidator, passwords);
 require("ws2mpd").logging(false);

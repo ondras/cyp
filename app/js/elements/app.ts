@@ -1,6 +1,7 @@
 import MPD from "../mpd.js";
 import * as html from "../html.js";
 import Selection from "../selection.js";
+import * as conf from "../conf.js";
 
 
 function initIcons() {
@@ -27,6 +28,8 @@ export default class App extends HTMLElement {
 
 		window.addEventListener("hashchange", e => this.onHashChange());
 		this.onHashChange();
+
+		await loadSettings();
 
 		await this.connect();
 		this.dispatchEvent(new CustomEvent("load"));
@@ -134,4 +137,10 @@ function waitForChildren(app: App) {
 
 	const promises = [...unique].map(name => customElements.whenDefined(name));
 	return Promise.all(promises);
+}
+
+async function loadSettings() {
+	const response = await fetch("settings");
+	const settings = await response.json();
+	if (settings.ytPath) { conf.setYtPath(settings.ytPath); }
 }

@@ -651,6 +651,17 @@
   };
   customElements.define("cyp-commands", Commands);
 
+  // app/js/conf.ts
+  var artSize = 96 * (window.devicePixelRatio || 1);
+  var ytPath = "_youtube";
+  var ytLimit = 3;
+  function setYtLimit(limit) {
+    ytLimit = limit;
+  }
+  function setYtPath(path) {
+    ytPath = path;
+  }
+
   // app/js/elements/app.ts
   function initIcons() {
     [...document.querySelectorAll("[data-icon]")].forEach((node2) => {
@@ -672,6 +683,7 @@
       await waitForChildren(this);
       window.addEventListener("hashchange", (e) => this.onHashChange());
       this.onHashChange();
+      await loadSettings();
       await this.connect();
       this.dispatchEvent(new CustomEvent("load"));
       this.initMediaHandler();
@@ -766,6 +778,13 @@
     const promises = [...unique].map((name) => customElements.whenDefined(name));
     return Promise.all(promises);
   }
+  async function loadSettings() {
+    const response = await fetch("settings");
+    const settings = await response.json();
+    if (settings.ytPath) {
+      setYtPath(settings.ytPath);
+    }
+  }
 
   // app/js/component.ts
   var Component = class extends HTMLElement {
@@ -814,14 +833,6 @@
     }
   };
   customElements.define("cyp-menu", Menu);
-
-  // app/js/conf.ts
-  var artSize = 96 * (window.devicePixelRatio || 1);
-  var ytPath = "_youtube";
-  var ytLimit = 3;
-  function setYtLimit(limit) {
-    ytLimit = limit;
-  }
 
   // app/js/art.ts
   var cache = {};
