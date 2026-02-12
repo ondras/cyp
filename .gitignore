@@ -3,3 +3,6 @@ _youtube/*
 !_youtube/.empty
 cyp.service
 passwords.json
+
+*~
+*.bak
