@@ -781,8 +781,8 @@
   async function loadSettings() {
     const response = await fetch("settings");
     const settings = await response.json();
-    if (settings.ytPath) {
-      setYtPath(settings.ytPath);
+    if (settings.youtubeDir) {
+      setYtPath(settings.youtubeDir);
     }
   }
 
