@@ -142,5 +142,5 @@ function waitForChildren(app: App) {
 async function loadSettings() {
 	const response = await fetch("settings");
 	const settings = await response.json();
-	if (settings.ytPath) { conf.setYtPath(settings.ytPath); }
+	if (settings.youtubeDir) { conf.setYtPath(settings.youtubeDir); }
 }
