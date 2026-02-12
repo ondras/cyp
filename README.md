@@ -96,6 +96,7 @@ If you use Docker, you need to mount the `_youtube` directory into the image:
 docker run --network=host -v "$(pwd)"/_youtube:/cyp/_youtube cyp
 ```
 
+The download directory name (`_youtube` by default) can be changed with a `YOUTUBE_DIR` environment variable.
 
 ## Changing the port
 
