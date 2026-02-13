@@ -902,6 +902,7 @@
   }
   function subtitle(data, options = { duration: true }) {
     let tokens = [];
+    data.Name && tokens.push(data.Name);
     if (data.Artist) {
       tokens.push(data.Artist);
     } else if (data.AlbumArtist) {
@@ -963,20 +964,28 @@
     async updateCurrent() {
       const { current, mpd, DOM } = this;
       const data = await mpd.currentSong();
-      if (data.file != current.song.file) {
-        if (data.file) {
-          DOM.title.textContent = data.Title || fileName(data.file);
-          DOM.subtitle.textContent = subtitle(data, { duration: false });
-          let duration = Number(data.duration);
+      if (data.file) {
+        DOM.title.textContent = data.Title || data.Name || fileName(data.file);
+        DOM.subtitle.textContent = subtitle(data, { duration: false });
+        let duration = Number(data.duration);
+        if (duration) {
           DOM.duration.textContent = time(duration);
           DOM.progress.max = String(duration);
           DOM.progress.disabled = false;
         } else {
-          DOM.title.textContent = "";
-          DOM.subtitle.textContent = "";
-          DOM.progress.value = "0";
+          DOM.duration.textContent = "";
+          DOM.progress.max = "0";
           DOM.progress.disabled = true;
         }
+      } else {
+        DOM.title.textContent = "";
+        DOM.subtitle.textContent = "";
+        DOM.duration.textContent = "";
+        DOM.progress.max = "0";
+        DOM.progress.value = "0";
+        DOM.progress.disabled = true;
+      }
+      if (data.file != current.song.file) {
         this.dispatchSongChange(data);
       }
       let artistNew = data.Artist || data.AlbumArtist || "";
@@ -1119,7 +1128,7 @@
       this.classList.toggle("playing", playing);
     }
     buildSongTitle(data) {
-      return super.buildTitle(data.Title || fileName(this.file));
+      return super.buildTitle(data.Title || data.Name || fileName(this.file));
     }
   };
   customElements.define("cyp-song", Song);

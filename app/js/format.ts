@@ -13,6 +13,8 @@ export function time(sec: number) {
 export function subtitle(data: SongData, options = {duration:true}) {
 	let tokens: string[] = [];
 
+	data.Name && tokens.push(data.Name);
+
 	if (data.Artist) {
 		tokens.push(data.Artist);
 	} else if (data.AlbumArtist) {
